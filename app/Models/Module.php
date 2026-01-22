@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Module extends Model
+{
+    use HasFactory;
+
+    protected $table = 'modules';
+
+    protected $fillable = [
+        'teacher_id',
+        'grade_category_id',
+        'subject_category_id',
+        'title',
+        'desc',
+        'track',
+        'is_published',
+        'like',
+    ];
+
+    // === RELATIONS ===
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function gradeCategory()
+    {
+        return $this->belongsTo(GradeCategory::class);
+    }
+
+    public function subjectCategory()
+    {
+        return $this->belongsTo(SubjectCategory::class);
+    }
+
+    public function contents()
+    {
+        return $this->hasMany(ModuleContent::class);
+    }
+}

@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Gabungkan hanya menjadi satu Schema::create untuk users
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->id(); // Primary Key: Bigint
+            $table->string('username')->unique(); // Username: String
+            $table->string('password'); // Password: Hash
+            $table->enum('role', ['siswa', 'guru']); // Role: Enum
+
+            // Opsional: Tetap gunakan email jika ingin fitur Reset Password Laravel
+            // $table->string('email')->unique();
+
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamps(); // Mencakup Created_at
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
