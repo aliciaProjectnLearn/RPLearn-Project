@@ -3,7 +3,7 @@
 <head>
     <title>Dashboard Guru</title>
 </head>
-<body>
+<body> 
     <h1>Dashboard Guru</h1>
 
     <p>Halo, {{ auth()->user()->username }}</p>

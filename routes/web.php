@@ -14,6 +14,10 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Route::get('dashboard-student', function () {
+//     return view('student.dashboard');
+// });
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard/student', function () {
@@ -23,6 +27,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/teacher', function () {
         return view('dashboard.teacher');
     })->name('dashboard.teacher');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard/profile', [ProfileController::class, 'index'])->name('profile');
 });
 
 
