@@ -1,47 +1,72 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login | RPLearn</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/icons/pplg-logo.ico') }}">
+    <link rel="stylesheet" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+</head>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+<body>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        {{-- LOGO --}}
+        <div class="login-logo">
+            <img src="{{ asset('images/pplg-logo.png') }}" alt="Logo">
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        {{-- FORM --}}
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+            {{-- <h2 class="login-title"></h2> --}}
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            {{-- Username --}}
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    value="{{ old('username') }}"
+                    required
+                >
+            </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+            {{-- Password --}}
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                >
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+        </form>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    </div>
+
+</div>
+
+{{-- 🔔 ALERT --}}
+@if (session('success'))
+<script>alert("{{ session('success') }}");</script>
+@endif
+
+@if ($errors->has('username'))
+<script>alert("{{ $errors->first('username') }}");</script>
+@endif
+
+</body>
+</html>
