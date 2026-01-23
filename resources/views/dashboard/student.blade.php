@@ -2,6 +2,12 @@
 
 @section('content')
 
+{{-- Flash success popup --}}
+    @if (session('success'))
+        <script>
+            alert("{{ session('success') }}");
+        </script>
+    @endif 
 <section class="hero">
     <h1>Start <span>Learning.</span> Keep Growing.</h1>
     <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and guided learning.

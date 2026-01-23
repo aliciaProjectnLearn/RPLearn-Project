@@ -72,6 +72,52 @@
     transform: translateX(6px);
 }
 
+/* LOGOUT BUTTON */
+.sidebar-logout {
+    margin-top: 40px;
+}
+
+.btn-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: linear-gradient(135deg, #F6973F, #D65A31);
+    color: white;
+
+    padding: 14px 18px;
+    border: none;
+    border-radius: 12px;
+
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+.btn-logout i {
+    font-size: 1.2rem;
+}
+
+/* HOVER */
+.btn-logout:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(246,151,63,0.4);
+}
+
+/* ACTIVE (klik) */
+.btn-logout:active {
+    transform: scale(0.97);
+}
+
+/* FOCUS (aksesibilitas) */
+.btn-logout:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(246,151,63,0.35);
+}
+
 /* MAIN */
 .main-content {
     flex: 1;
@@ -413,6 +459,100 @@
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
+}
+
+
+/* ======================
+   PROFILE DASHBOARD
+====================== */
+.profile-dashboard {
+    padding: 90px 30px;
+}
+
+/* GRID */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+}
+
+/* BOX */
+.profile-box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    animation: fadeUp 0.5s ease;
+}
+
+.profile-box h3 {
+    margin-bottom: 25px;
+    color: var(--dark-soft);
+}
+
+/* FORM STYLE */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    font-size: 0.95rem;
+    color: var(--dark-soft);
+}
+
+/* disable look */
+.form-group input[readonly] {
+    cursor: not-allowed;
+}
+
+/* QUESTIONS */
+.question-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.question-item {
+    background: #f9f9f9;
+    padding: 18px 20px;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.question-item h4 {
+    font-size: 1rem;
+    color: var(--dark-soft);
+    margin-bottom: 6px;
+}
+
+.question-item span {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* hover effect */
+.question-item:hover {
+    transform: translateX(6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 
