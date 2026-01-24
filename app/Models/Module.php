@@ -31,16 +31,16 @@ class Module extends Model
 
     public function gradeCategory()
     {
-        return $this->belongsTo(GradeCategory::class);
+        return $this->belongsTo(GradeCategory::class, 'grade_category_id');
     }
 
     public function subjectCategory()
     {
-        return $this->belongsTo(SubjectCategory::class);
+        return $this->belongsTo(SubjectCategory::class, 'subject_category_id');
     }
 
     public function contents()
     {
-        return $this->hasMany(ModuleContent::class);
+        return $this->hasMany(ModuleContent::class, 'module_id');
     }
 }
