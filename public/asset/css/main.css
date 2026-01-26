@@ -315,31 +315,6 @@
     font-size: 1.1rem;
     margin-bottom: 30px;
 }
-
-/* SEARCH
-.dictionary-search {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: white;
-    padding: 14px 20px;
-    border-radius: 14px;
-    max-width: 420px;
-    margin: 0 auto 40px auto;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-}
-
-.dictionary-search i {
-    font-size: 1.3rem;
-    color: #999;
-}
-
-.dictionary-search input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 1rem;
-} */
 .dictionary-horizontal-wrapper {
     display: flex;
     gap: 24px;
@@ -371,7 +346,6 @@
 
 .clickable-term {
     cursor: pointer;
-    color: var(--orange);
     font-weight: 600;
 }
 
@@ -757,7 +731,7 @@
 
 /* --- WARNA TEKS ORANYE KELAS | MATERI --- */
 .module-meta-text {
-    color: #f15a24 !important;
+    color: var(--orange) !important;
     font-weight: 700;
     font-size: 0.8rem;
 }
@@ -768,7 +742,7 @@
     transition: transform 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column;
 }
 .module-card:hover {
-    transform: translateY(-8px); border-color: #f15a24;
+    transform: translateY(-8px); border-color: var(--orange);
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
@@ -778,10 +752,10 @@
 
 /* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
 .btn-pelajari-orange, .pdf-btn {
-    background: #f15a24; color: white; border: none; padding: 10px;
+    background: var(--orange); color: white; border: none; padding: 10px;
     border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s;
 }
-.btn-pelajari-orange:hover, .pdf-btn:hover { background: #d44a1c; }
+.btn-pelajari-orange:hover, .pdf-btn:hover { background: #f15a24; }
 
 .pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 12px; }
 
@@ -833,7 +807,7 @@
 
 /* Efek saat Hover: Border jadi Oranye Sidebar */
 .custom-select-wrapper:hover {
-    border-color: #f15a24;
+    border-color: var(--orange);
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(241, 90, 36, 0.12);
 }
@@ -856,7 +830,7 @@
 
 /* Ikon Samping Teks */
 .select-icon {
-    color: #f15a24;
+    color: var(--orange);
     font-size: 1.25rem;
     pointer-events: none;
 }
@@ -898,6 +872,7 @@
 
 .btn-reset-simple:hover {
     transform: rotate(-15deg);
+}
 /* Dictionary Table */
 .dictionary-table-wrapper {
     margin-top: 2rem;

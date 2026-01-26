@@ -26,10 +26,6 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Route::get('dashboard-student', function () {
-//     return view('student.dashboard');
-// });
-
 Route::middleware(['auth'])->group(function () {
     // Ubah dari function () ke ModuleController
     Route::get('/dashboard/student', [ModuleController::class, 'index'])->name('dashboard.student');
@@ -37,8 +33,10 @@ Route::middleware(['auth'])->group(function () {
         $dictionaries = Dictionary::orderBy('term', 'asc')
             ->limit(6)
             ->get();
-
-        return view('dashboard.student', compact('dictionaries'));
+        $grades=\App\Models\GradeCategory::all(); 
+        $subjects=\App\Models\SubjectCategory::all();
+        $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory'])->get();
+        return view('dashboard.student', compact('dictionaries', 'grades', 'subjects', 'modules')); 
     })->name('dashboard.student');
 
 
