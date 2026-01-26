@@ -15,10 +15,12 @@ class ModuleContent extends Model
         'module_id',
         'title',
         'content',
+        'video_url',
+        'file_path',
     ];
 
     public function module()
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(Module::class, 'module_id');
     }
 }
