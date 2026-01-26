@@ -10,6 +10,7 @@ use App\Models\SubjectCategory;
 use App\Models\Module;
 use App\Models\ModuleContent;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Dictionary;
 
 class DatabaseSeeder extends Seeder
 {
@@ -65,6 +66,10 @@ class DatabaseSeeder extends Seeder
             'module_id' => $module->id,
             'title' => 'Instalasi Laravel',
             'content' => 'Langkah-langkah instalasi Laravel menggunakan composer...',
+        ]);
+
+        $this->call([
+            DictionarySeeder::class,
         ]);
     }
 }
