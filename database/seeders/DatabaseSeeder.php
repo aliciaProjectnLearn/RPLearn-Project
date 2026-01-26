@@ -10,6 +10,7 @@ use App\Models\SubjectCategory;
 use App\Models\Module;
 use App\Models\ModuleContent;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Dictionary;
 
 class DatabaseSeeder extends Seeder
 {
@@ -112,6 +113,10 @@ class DatabaseSeeder extends Seeder
             'title' => 'Konsep Props & State',
             'content' => 'Materi mendalam mengenai data flow di React Native.',
             'file_path' => 'modul/react-native-guide.pdf'
+        ]);
+
+        $this->call([
+            DictionarySeeder::class,
         ]);
     }
 }
