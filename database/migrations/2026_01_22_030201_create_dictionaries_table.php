@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('dictionaries', function (Blueprint $table) {
             $table->id();
-            // Relasi ke module (opsional, jika istilah hanya untuk modul tertentu)
             $table->foreignId('module_id')->nullable()->constrained('modules')->onDelete('cascade');
-            $table->string('term'); // Istilahnya (contoh: "API")
-            $table->text('definition'); // Penjelasannya
+            $table->string('term'); 
+            $table->text('definition');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Dictionary;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -19,19 +20,22 @@ Route::get('/', function () {
 // });
 
 Route::middleware(['auth'])->group(function () {
-
     Route::get('/dashboard/student', function () {
-        return view('dashboard.student');
+        $dictionaries = Dictionary::orderBy('term', 'asc')
+            ->limit(6)
+            ->get();
+
+        return view('dashboard.student', compact('dictionaries'));
     })->name('dashboard.student');
+
 
     Route::get('/dashboard/teacher', function () {
         return view('dashboard.teacher');
     })->name('dashboard.teacher');
-});
 
-Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile', [ProfileController::class, 'index'])->name('profile');
 });
+
 
 
 require __DIR__ . '/auth.php';
