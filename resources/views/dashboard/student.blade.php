@@ -109,8 +109,6 @@
 </section>
 
 <section class="dictionary-section reveal">
-    <h2>Dictionary</h2>
-    <p class="dictionary-desc">Learn common technical terms used in vocational learning.</p>
     <h2>Dict<span>io</span>nary</h2>
     <p class="dictionary-desc">
         Learn common technical terms used in vocational learning.
@@ -119,23 +117,6 @@
     <div class="dictionary-search">
         <i class="ri-search-line"></i>
         <input type="text" id="dictionarySearch" placeholder="Search terms..." />
-    </div>
-    <div class="dictionary-cards reveal" id="dictionary-cards">
-        <div class="dictionary-card">
-            <h4>HTML</h4>
-            <p>HyperText Markup Language used to structure web content.</p>
-        </div>
-        <div class="dictionary-card">
-            <h4>CSS</h4>
-            <p>Cascading Style Sheets used to style and layout web pages.</p>
-        </div>
-        <div class="dictionary-card">
-            <h4>JavaScript</h4>
-            <p>A programming language that adds interactivity to websites.</p>
-        </div>
-    </div>
-    <div class="dictionary-more">
-        <a href="#">View Full Dictionary</a>
     </div>
 
 <div class="dictionary-table-wrapper reveal">
