@@ -66,5 +66,10 @@ class DatabaseSeeder extends Seeder
             'title' => 'Instalasi Laravel',
             'content' => 'Langkah-langkah instalasi Laravel menggunakan composer...',
         ]);
+
+        $this->call([
+            FAQSeeder::class,
+        ]);
+
     }
 }

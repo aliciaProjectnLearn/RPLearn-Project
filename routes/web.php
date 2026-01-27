@@ -1,37 +1,47 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FAQController;
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        if (auth()->user()->role === 'guru') {
-            return redirect()->route('dashboard.teacher');
-        }
-        return redirect()->route('dashboard.student');
-    }
-
-    return redirect()->route('login');
-});
-
-// Route::get('dashboard-student', function () {
-//     return view('student.dashboard');
-// });
-
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED ROUTES
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard/student', function () {
-        return view('dashboard.student');
-    })->name('dashboard.student');
+    // DASHBOARD SISWA (FAQ + SEARCH + FORM TANYA)
+    Route::get('/dashboard/student', [FAQController::class, 'student'])
+        ->name('dashboard.student');
 
+    // DASHBOARD GURU
     Route::get('/dashboard/teacher', function () {
         return view('dashboard.teacher');
     })->name('dashboard.teacher');
+
+    // PROFILE
+    Route::get('/dashboard/profile', [ProfileController::class, 'index'])
+        ->name('profile');
+
+    // LOGOUT
+    Route::post('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login');
+    })->name('logout');
+
+    // FAQ
+    Route::post('/faq', [FAQController::class, 'store']);
+    Route::get('/faq/search', [FAQController::class, 'index']); 
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard/profile', [ProfileController::class, 'index'])->name('profile');
-});
-
-
+/*
+|--------------------------------------------------------------------------
+| AUTH ROUTES (BREEZE)
+|--------------------------------------------------------------------------
+*/
 require __DIR__ . '/auth.php';
