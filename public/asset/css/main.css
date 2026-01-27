@@ -221,12 +221,12 @@
     margin-bottom: 1rem;
 }
 
-.module-section h1 span, .faq-section h2 span {
+.module-section h1 span, .faq-section h2 span, .dictionary-section h2 span {
     color: var(--orange);
 }
 
 /* SEARCH BAR */
-.module-search {
+.module-search, .dictionary-search {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -239,12 +239,12 @@
     transition: all 0.3s ease;
 }
 
-.module-search i {
+.module-search i, .dictionary-search i {
     font-size: 1.3rem;
     color: #999;
 }
 
-.module-search input {
+.module-search input, .dictionary-search input {
     border: none;
     outline: none;
     width: 100%;
@@ -252,17 +252,17 @@
     color: var(--dark-soft);
 }
 
-.module-search input::placeholder {
+.module-search input::placeholder, .dictionary-search input::placeholder {
     color: #aaa;
 }
 
 /* HOVER & FOCUS EFFECT */
-.module-search:focus-within {
+.module-search:focus-within, .dictionary-search:focus-within {
     box-shadow: 0 12px 30px rgba(214,90,49,0.25);
     transform: translateY(-2px);
 }
 
-.module-search:focus-within i {
+.module-search:focus-within i, .dictionary-search:focus-within i {
     color: var(--orange);
 }
 
@@ -503,79 +503,111 @@
     font-size: 1.1rem;
     margin-bottom: 30px;
 }
-
-/* SEARCH */
-.dictionary-search {
+.dictionary-horizontal-wrapper {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: white;
-    padding: 14px 20px;
-    border-radius: 14px;
-    max-width: 420px;
-    margin: 0 auto 40px auto;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 10px;
 }
 
-.dictionary-search i {
-    font-size: 1.3rem;
-    color: #999;
+.dictionary-column {
+    min-width: 220px;
+    flex-shrink: 0;
 }
 
-.dictionary-search input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 1rem;
-}
-
-/* CARDS */
-.dictionary-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-}
-
-.dictionary-card {
-    background-color: white;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
-
-.dictionary-card h4 {
-    font-size: 1.3rem;
-    color: var(--orange);
+.dictionary-letter {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
     margin-bottom: 10px;
 }
 
-.dictionary-card p {
-    font-size: 0.95rem;
-    color: #555;
-    line-height: 1.6;
+.dictionary-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.dictionary-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+.dictionary-table td {
+    border: 1px solid #e5e7eb;
+    padding: 10px;
 }
 
-/* VIEW MORE */
-.dictionary-more {
-    text-align: center;
-    margin-top: 35px;
-}
-
-.dictionary-more a {
-    color: var(--orange);
-    text-decoration: none;
+.clickable-term {
+    cursor: pointer;
     font-weight: 600;
-    font-size: 1rem;
 }
 
-.dictionary-more a:hover {
-    text-decoration: underline;
+
+
+/* ===== Dictionary Modal ===== */
+.dictionary-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.dictionary-modal.active {
+    display: flex;
+}
+
+.dictionary-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.dictionary-modal-box {
+    position: relative;
+    background: #ffffff;
+    width: 90%;
+    max-width: 520px;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    animation: modalFadeUp 0.25s ease;
+}
+
+.dictionary-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #555;
+}
+
+.dictionary-modal-close:hover {
+    color: #000;
+}
+
+.dictionary-modal-term {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 12px;
+}
+
+.dictionary-modal-definition {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #444;
+}
+
+/* Animation */
+@keyframes modalFadeUp {
+    from {
+        transform: translateY(20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 
@@ -882,5 +914,234 @@
 
     .footer-links li {
         justify-content: center;
+    }
+}
+
+/* --- WARNA TEKS ORANYE KELAS | MATERI --- */
+.module-meta-text {
+    color: var(--orange) !important;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+/* --- CARD HOVER & DESIGN --- */
+.module-card {
+    background: white; border-radius: 15px; padding: 20px; border: 1px solid #eee;
+    transition: transform 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column;
+}
+.module-card:hover {
+    transform: translateY(-8px); border-color: var(--orange);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.module-title { color: #333 !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
+.author-label { font-size: 0.8rem; color: #777; margin-bottom: 10px; }
+.module-desc-text { font-size: 0.9rem; color: #666 !important; line-height: 1.5; margin-bottom: 15px; }
+
+/* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
+.btn-pelajari-orange, .pdf-btn {
+    background: var(--orange); color: white; border: none; padding: 10px;
+    border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+}
+.btn-pelajari-orange:hover, .pdf-btn:hover { background: #f15a24; }
+
+.pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 12px; }
+
+/* --- LAYOUT ELEMEN --- */
+.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.media-icons-row { display: flex; gap: 8px; font-size: 1.1rem; }
+.filter-container-simple { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
+.filter-container-simple select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
+
+/* --- MODAL (SESUAI SKETSA FOTO) --- */
+.modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
+.modal-card-box { background: white; margin: 5% auto; padding: 25px; border-radius: 15px; width: 85%; max-width: 900px; position: relative; }
+.modal-split { display: flex; gap: 20px; flex-wrap: wrap; }
+.modal-side-media { flex: 1.5; min-width: 300px; }
+.modal-side-text { flex: 1; min-width: 250px; background: #fbfbfb; padding: 15px; border-radius: 10px; }
+.modal-tags-row { display: flex; gap: 8px; margin-bottom: 15px; }
+.m-tag { background: #f15a24; color: white; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; }
+.modal-footer-info { font-size: 0.8rem; color: #777; line-height: 1.4; }
+.modal-title-text { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px; color: #333; }
+.close-modal-btn { position: absolute; right: 20px; top: 10px; font-size: 30px; cursor: pointer; color: #999; }
+
+/* --- MODERN FILTER & DROPDOWN --- */
+.module-filter-form {
+    max-width: 900px;
+    margin: 0 auto 40px;
+}
+
+/* --- REFINING THE DROPDOWN TEXT & UI --- */
+.filter-group-modern {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 2px solid #eeeeee;
+    border-radius: 50px; /* Bentuk Pill Sempurna */
+    padding: 0 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 220px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+/* Efek saat Hover: Border jadi Oranye Sidebar */
+.custom-select-wrapper:hover {
+    border-color: var(--orange);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(241, 90, 36, 0.12);
+}
+
+/* Styling Teks di Dalam Select */
+.custom-select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 14px 35px 14px 12px; /* Padding ditingkatkan agar teks bernapas */
+    width: 100%;
+    font-weight: 800; /* Teks dibuat lebih tebal agar jelas */
+    color: #2d3436;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Ikon Samping Teks */
+.select-icon {
+    color: var(--orange);
+    font-size: 1.25rem;
+    pointer-events: none;
+}
+
+/* Panah Custom di Kanan */
+.arrow-icon {
+    position: absolute;
+    right: 20px;
+    pointer-events: none;
+    color: #b2bec3;
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+/* Animasi Panah Berputar saat Select Fokus */
+.custom-select-wrapper:focus-within .arrow-icon {
+    transform: rotate(180deg);
+    color: #f15a24;
+}
+
+/* Fokus State untuk Wrapper */
+.custom-select-wrapper:focus-within {
+    border-color: #f15a24;
+    background: #fff9f7;
+}
+
+/* Tombol Reset yang Lebih Manis */
+.btn-reset-simple {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #f15a24;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0 10px;
+    transition: 0.3s;
+}
+
+.btn-reset-simple:hover {
+    transform: rotate(-15deg);
+}
+/* Dictionary Table */
+.dictionary-table-wrapper {
+    margin-top: 2rem;
+}
+
+.dictionary-group {
+    margin-bottom: 2.5rem;
+}
+
+.dictionary-letter {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.25rem;
+}
+
+.dictionary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.dictionary-table th,
+.dictionary-table td {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: top;
+}
+
+.dictionary-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+}
+
+.dictionary-table tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+.dictionary-term {
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.dictionary-term:hover {
+    color: var(--orange);
+}
+
+.dictionary-definition {
+    color: #374151;
+    line-height: 1.5;
+}
+@media (max-width: 768px) {
+    .dictionary-table,
+    .dictionary-table thead,
+    .dictionary-table tbody,
+    .dictionary-table th,
+    .dictionary-table td,
+    .dictionary-table tr {
+        display: block;
+    }
+
+    .dictionary-table thead {
+        display: none;
+    }
+
+    .dictionary-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #e5e7eb;
+        padding: 0.75rem;
+    }
+
+    .dictionary-table td {
+        border: none;
+        padding: 0.25rem 0;
+    }
+
+    .dictionary-term {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
     }
 }

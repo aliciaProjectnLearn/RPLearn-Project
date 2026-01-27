@@ -17,19 +17,52 @@ Route::middleware(['auth'])->group(function () {
         ->name('dashboard.student');
 
     // DASHBOARD GURU
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student\ModuleController;
+use Illuminate\Support\Facades\Route;
+use App\Models\Dictionary;
+
+Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('student')->name('student. ')->group(function () {
+    Route::get('/modules', [ModuleController::class, 'index'])->name('module.index');
+    Route::get('/modules/{id}', [ModuleController::class, 'show'])->name('modules.show');
+});
+
+Route::get('/student/modules/{id}/json', function($id) {
+    // Kita tambahkan gradeCategory, subjectCategory, dan teacher agar datanya ada
+    return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
+});
+
+Route::get('/', function () {
+    if (auth()->check()) {
+        if (auth()->user()->role === 'guru') {
+            return redirect()->route('dashboard.teacher');
+        }
+        return redirect()->route('dashboard.student');
+    }
+
+    return redirect()->route('login');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Ubah dari function () ke ModuleController
+    Route::get('/dashboard/student', [ModuleController::class, 'index'])->name('dashboard.student');
+    Route::get('/dashboard/student', function () {
+        $dictionaries = Dictionary::orderBy('term', 'asc')
+            ->limit(6)
+            ->get();
+        $grades=\App\Models\GradeCategory::all(); 
+        $subjects=\App\Models\SubjectCategory::all();
+        $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory'])->get();
+        return view('dashboard.student', compact('dictionaries', 'grades', 'subjects', 'modules')); 
+    })->name('dashboard.student');
+
+
     Route::get('/dashboard/teacher', function () {
         return view('dashboard.teacher');
     })->name('dashboard.teacher');
 
-    // PROFILE
-    Route::get('/dashboard/profile', [ProfileController::class, 'index'])
-        ->name('profile');
-
-    // LOGOUT
-    Route::post('/logout', function () {
-        Auth::logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+    Route::get('/dashboard/profile', [ProfileController::class, 'index'])->name('profile');
+});
 
         return redirect()->route('login');
     })->name('logout');
