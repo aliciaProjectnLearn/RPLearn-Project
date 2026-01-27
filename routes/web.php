@@ -1,5 +1,22 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FAQController;
+
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+
+    // DASHBOARD SISWA (FAQ + SEARCH + FORM TANYA)
+    Route::get('/dashboard/student', [FAQController::class, 'student'])
+        ->name('dashboard.student');
+
+    // DASHBOARD GURU
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\ModuleController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +64,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/profile', [ProfileController::class, 'index'])->name('profile');
 });
 
+        return redirect()->route('login');
+    })->name('logout');
 
+    // FAQ
+    Route::post('/faq', [FAQController::class, 'store']);
+    Route::get('/faq/search', [FAQController::class, 'index']); 
+});
 
+/*
+|--------------------------------------------------------------------------
+| AUTH ROUTES (BREEZE)
+|--------------------------------------------------------------------------
+*/
 require __DIR__ . '/auth.php';

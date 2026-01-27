@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('student')->onDelete('cascade'); // Harus ada tabel student dulu
-            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('teacher_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('module_id')->nullable()->constrained('modules')->onDelete('set null');
             $table->string('title');
             $table->text('question');
