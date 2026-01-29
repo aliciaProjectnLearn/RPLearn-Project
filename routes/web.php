@@ -29,15 +29,17 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Ubah dari function () ke ModuleController
     Route::get('/dashboard/student', [ModuleController::class, 'index'])->name('dashboard.student');
-    Route::get('/dashboard/student', function () {
-        $dictionaries = Dictionary::orderBy('term', 'asc')
-            ->limit(6)
-            ->get();
-        $grades=\App\Models\GradeCategory::all(); 
-        $subjects=\App\Models\SubjectCategory::all();
-        $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory'])->get();
-        return view('dashboard.student', compact('dictionaries', 'grades', 'subjects', 'modules')); 
-    })->name('dashboard.student');
+
+    // Bisa di aktifkan jika perlu(tidak jadi dihapus).
+    // Route::get('/dashboard/student', function () {
+    //     $dictionaries = Dictionary::orderBy('term', 'asc')
+    //         ->limit(6)
+    //         ->get();
+    //     $grades=\App\Models\GradeCategory::all();
+    //     $subjects=\App\Models\SubjectCategory::all();
+    //     $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory'])->get();
+    //     return view('dashboard.student', compact('dictionaries', 'grades', 'subjects', 'modules'));
+    // })->name('dashboard.student');
 
 
     Route::get('/dashboard/teacher', function () {
