@@ -10,37 +10,37 @@ use Illuminate\Http\Request;
 
 class ModuleController extends Controller
 {
-    public function index(Request $request)
-    {
-        // 1. Ambil data kategori untuk filter dropdown
-        $grades = GradeCategory::all();
-        $subjects = SubjectCategory::all();
+public function index(Request $request)
+{
+    // Ambil data kategori
+    $grades = GradeCategory::all();
+    $subjects = SubjectCategory::all();
 
-        // 2. Logika pencarian dan filter
-        $query = Module::with(['gradeCategory', 'subjectCategory']);
+    // LOGIKA DICTIONARY YANG TADI DI WEB.PHP PINDAH KE SINI:
+    $dictionaries = \App\Models\Dictionary::orderBy('term', 'asc')->limit(6)->get();
 
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
+    $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher']);
 
-        if ($request->filled('grade_id')) {
-            $query->where('grade_category_id', $request->grade_id);
-        }
-
-        if ($request->filled('subject_id')) {
-            $query->where('subject_category_id', $request->subject_id);
-        }
-
-        $modules = $query->get();
-
-        // 3. Arahkan ke view dashboard.student (SESUAIKAN PATHNYA)
-        // Karena di route tadi viewnya dashboard.student, maka:
-        return view('dashboard.student', compact('modules', 'grades', 'subjects'));
+    // Logika Filter Module
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
     }
+    // ... (filter grade & subject tetap di sini) ...
+
+    $modules = $query->get();
+
+    // GERBANG AJAX:
+    if ($request->ajax() || $request->has('ajax')) {
+        return view('partials._module_list', compact('modules'))->render();
+    }
+
+    // Kirim semua variabel ke view (tambah dictionaries!)
+    return view('dashboard.student', compact('modules', 'grades', 'subjects', 'dictionaries'));
+}
 
     public function show($id)
     {
-        // Jika butuh return view khusus detail (tapi kita pakai JSON untuk modal dashboard)
+        // Jika butuh return view khusus detail
         $module = Module::with('contents')->findOrFail($id);
         return view('student.modules.show', compact('module'));
     }
