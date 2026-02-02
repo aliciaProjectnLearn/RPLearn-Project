@@ -101,6 +101,10 @@
     font-size: 1.2rem;
 }
 
+.swal2-timer-progress-bar {
+    background: #F6973F !important;
+}
+
 /* HOVER */
 .btn-logout:hover {
     transform: translateY(-3px);

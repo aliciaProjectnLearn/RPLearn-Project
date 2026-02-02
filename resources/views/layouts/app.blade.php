@@ -7,7 +7,7 @@
     <title>RPLearn</title>
 
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="{{ asset('asset/css/main.css') }}">
 </head>
 <body>
