@@ -2,10 +2,26 @@
 
 @section('content')
 
-{{-- Flash success popup --}}
-@if (session('success'))
-    <script>alert("{{ session('success') }}");</script>
-@endif
+    {{-- 🔔 LOGIN SUCCESS ALERT --}}
+    @if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 1800,
+            timerProgressBar: true,
+            background: '#393E46',
+            color: '#ffffff',
+            backdrop: `
+                rgba(0,0,0,0.4)
+                url("{{ asset('images/nyan-cat.gif') }}")
+                left top
+                no-repeat
+            `
+        });
+    </script>
+    @endif
 
 <section class="hero">
     <h1>Start <span>Learning.</span> Keep Growing.</h1>
