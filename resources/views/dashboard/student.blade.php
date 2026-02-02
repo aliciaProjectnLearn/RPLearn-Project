@@ -1,84 +1,158 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- Flash success popup --}}
-    @if (session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
-    @endif
 
-    {{-- ================= HERO ================= --}}
-    <section class="hero">
-        <h1>Start <span>Learning.</span> Keep Growing.</h1>
-        <p>
-            RPLearn is designed to support vocational students <br>
-            in developing real-world skills through structured and guided learning.
-        </p>
+{{-- Flash success popup --}}
+@if (session('success'))
+    <script>alert("{{ session('success') }}");</script>
+@endif
 
-        <div class="features-card">
-            <div class="feat-card">
-                <i class="ri-book-open-line"></i>
-                <span>Learning Modules</span>
-            </div>
-            <div class="feat-card">
-                <i class="ri-bookmark-line"></i>
-                <span>Dictionary</span>
-            </div>
-            <div class="feat-card">
-                <i class="ri-question-line"></i>
-                <span>FAQ</span>
-            </div>
-        </div>
-    </section>
+<section class="hero">
+    <h1>Start <span>Learning.</span> Keep Growing.</h1>
+    <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and guided learning.</p>
 
-    {{-- ================= MODULE ================= --}}
-    <section class="module-section reveal" id="module-section">
-        <h1>Cari <span>Modul</span> Belajarmu!</h1>
+    <div class="features-card">
+        <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
+        <div class="feat-card"><i class="ri-bookmark-line"></i><span>Dictionary</span></div>
+        <div class="feat-card"><i class="ri-question-line"></i><span>FAQ</span></div>
+    </div>
+</section>
 
-        <div class="module-search">
-            <i class="ri-search-line"></i>
-            <input type="text" placeholder="Search modules...">
-        </div>
+<section class="module-section" id="module-section">
+    <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-        <div class="module-cards">
-            <div class="module-card">Modul 1</div>
-            <div class="module-card">Modul 2</div>
-            <div class="module-card">Modul 3</div>
-        </div>
-    </section>
-
-    {{-- ================= DICTIONARY ================= --}}
-    <section class="dictionary-section reveal">
-        <h2>Dictionary</h2>
-        <p class="dictionary-desc">
-            Learn common technical terms used in vocational learning.
-        </p>
-
-        <div class="dictionary-search">
-            <i class="ri-search-line"></i>
-            <input type="text" placeholder="Search terms..." />
-        </div>
-
-        <div class="dictionary-cards reveal" id="dictionary-cards">
-            <div class="dictionary-card">
-                <h4>HTML</h4>
-                <p>HyperText Markup Language used to structure web content.</p>
-            </div>
-            <div class="dictionary-card">
-                <h4>CSS</h4>
-                <p>Cascading Style Sheets used to style and layout web pages.</p>
-            </div>
-            <div class="dictionary-card">
-                <h4>JavaScript</h4>
-                <p>A programming language that adds interactivity to websites.</p>
+    {{-- SEARCH & FILTER UPGRADED --}}
+    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
+        <div class="search-wrapper">
+            <div class="module-search">
+                <i class="ri-search-line"></i>
+                <input type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
             </div>
         </div>
 
-        <div class="dictionary-more">
-            <a href="#">View Full Dictionary</a>
+        <div class="filter-group-modern">
+            {{-- Dropdown Kelas --}}
+            <div class="custom-select-wrapper">
+                <i class="ri-government-line select-icon"></i>
+                <select name="grade_id" onchange="this.form.submit()">
+                    <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
+                    @foreach($grades as $grade)
+                        <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
+                            {{ $grade->grade }}
+                        </option>
+                    @endforeach
+                </select>
+                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            </div>
+
+            {{-- Dropdown Materi --}}
+            <div class="custom-select-wrapper">
+                <i class="ri-book-3-line select-icon"></i>
+                <select name="subject_id" onchange="this.form.submit()">
+                    <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
+                    @foreach($subjects as $subject)
+                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                            {{ $subject->subject }}
+                        </option>
+                    @endforeach
+                </select>
+                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            </div>
         </div>
-    </section>
+    </form>
+
+    {{-- MODULE CARDS --}}
+    <div class="module-cards">
+        @forelse($modules as $module)
+            <div class="module-card">
+                <div class="card-header-row">
+                    {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
+                    <span class="module-meta-text">
+                        {{ $module->gradeCategory->grade ?? 'Kelas' }} | {{ $module->subjectCategory->subject ?? 'Materi' }}
+                    </span>
+
+                    {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
+                    <div class="media-icons-row">
+                        @php
+                            $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
+                            $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
+                        @endphp
+                        @if($hasVideo) <i class="ri-youtube-fill" style="color: #FF0000;"></i> @endif
+                        @if($hasPdf) <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i> @endif
+                    </div>
+                </div>
+
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
+
+                <div class="author-label">
+                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
+                </div>
+
+                <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
+
+                {{-- TOMBOL ORANYE DENGAN HOVER --}}
+                <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
+                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                </button>
+            </div>
+        @empty
+            <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
+        @endforelse
+    </div>
+</section>
+
+<section class="dictionary-section reveal">
+    <h2>Dict<span>io</span>nary</h2>
+    <p class="dictionary-desc">
+        Learn common technical terms used in vocational learning.
+    </p>
+
+    <div class="dictionary-search">
+        <i class="ri-search-line"></i>
+        <input type="text" id="dictionarySearch" placeholder="Search terms..." />
+    </div>
+
+<div class="dictionary-table-wrapper reveal">
+
+    @php
+        $grouped = $dictionaries->groupBy(function ($item) {
+            return strtoupper(substr($item->term, 0, 1));
+        });
+    @endphp
+
+    <div class="dictionary-horizontal-wrapper">
+
+        @forelse ($grouped as $letter => $items)
+
+            <div class="dictionary-column dictionary-letter-column">
+                <h3 class="dictionary-letter">{{ $letter }}</h3>
+
+                <table class="dictionary-table">
+                    <tbody>
+                        @foreach ($items as $dictionary)
+                            <tr class="dictionary-row">
+                                <td>
+                                    <span
+                                        class="dictionary-term clickable-term"
+                                        data-term="{{ $dictionary->term }}"
+                                        data-definition="{{ $dictionary->definition }}"
+                                    >
+                                        {{ $dictionary->term }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        @empty
+            <p>Data tidak ditemukan.</p>
+        @endforelse
+
+    </div>
+</div>
+
 
     {{-- ================= FAQ ================= --}}
     <section class="faq-section reveal" id="faq-section">
@@ -99,7 +173,11 @@
                                 <i class="ri-arrow-right-s-line icon"></i>
                             </button>
                             <div class="faq-answer">
-                                {{ $faq->answer->answer }}
+                                @if ($faq->answer)
+                                    {{ $faq->answer->answer }}
+                                @else
+                                    <em>Belum ada jawaban dari guru.</em>
+                                @endif
                             </div>
                         </div>
                     @empty
@@ -252,167 +330,6 @@
                 });
         });
     </script>
-
-{{-- Flash success popup --}}
-@if (session('success'))
-    <script>alert("{{ session('success') }}");</script>
-@endif
-
-<section class="hero">
-    <h1>Start <span>Learning.</span> Keep Growing.</h1>
-    <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and guided learning.</p>
-
-    <div class="features-card">
-        <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
-        <div class="feat-card"><i class="ri-bookmark-line"></i><span>Dictionary</span></div>
-        <div class="feat-card"><i class="ri-question-line"></i><span>FAQ</span></div>
-    </div>
-</section>
-
-<section class="module-section" id="module-section">
-    <h1>Cari <span>Modul</span> Belajarmu!</h1>
-
-    {{-- SEARCH & FILTER UPGRADED --}}
-    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
-        <div class="search-wrapper">
-            <div class="module-search">
-                <i class="ri-search-line"></i>
-                <input type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
-            </div>
-        </div>
-
-        <div class="filter-group-modern">
-            {{-- Dropdown Kelas --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-government-line select-icon"></i>
-                <select name="grade_id" onchange="this.form.submit()">
-                    <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
-                    @foreach($grades as $grade)
-                        <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
-                            {{ $grade->grade }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
-            </div>
-
-            {{-- Dropdown Materi --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-book-3-line select-icon"></i>
-                <select name="subject_id" onchange="this.form.submit()">
-                    <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
-                    @foreach($subjects as $subject)
-                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                            {{ $subject->subject }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
-            </div>
-        </div>
-    </form>
-
-    {{-- MODULE CARDS --}}
-    <div class="module-cards">
-        @forelse($modules as $module)
-            <div class="module-card">
-                <div class="card-header-row">
-                    {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
-                    <span class="module-meta-text">
-                        {{ $module->gradeCategory->grade ?? 'Kelas' }} | {{ $module->subjectCategory->subject ?? 'Materi' }}
-                    </span>
-
-                    {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
-                    <div class="media-icons-row">
-                        @php
-                            $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
-                            $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
-                        @endphp
-                        @if($hasVideo) <i class="ri-youtube-fill" style="color: #FF0000;"></i> @endif
-                        @if($hasPdf) <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i> @endif
-                    </div>
-                </div>
-
-                <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
-
-                <div class="author-label">
-                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
-                </div>
-
-                <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
-
-                {{-- TOMBOL ORANYE DENGAN HOVER --}}
-                <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
-                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
-                </button>
-            </div>
-        @empty
-            <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
-        @endforelse
-    </div>
-</section>
-
-{{-- FAQ SECTION --}}
-<section class="faq-section" id="faq-section">
-    <h2>F <span>A</span> Q</h2>
-    <div class="faq-box">Apa itu RPLearn?</div>
-    <div class="faq-box">Bagaimana cara belajar?</div>
-</section>
-
-<section class="dictionary-section reveal">
-    <h2>Dict<span>io</span>nary</h2>
-    <p class="dictionary-desc">
-        Learn common technical terms used in vocational learning.
-    </p>
-
-    <div class="dictionary-search">
-        <i class="ri-search-line"></i>
-        <input type="text" id="dictionarySearch" placeholder="Search terms..." />
-    </div>
-
-<div class="dictionary-table-wrapper reveal">
-
-    @php
-        $grouped = $dictionaries->groupBy(function ($item) {
-            return strtoupper(substr($item->term, 0, 1));
-        });
-    @endphp
-
-    <div class="dictionary-horizontal-wrapper">
-
-        @forelse ($grouped as $letter => $items)
-
-            <div class="dictionary-column dictionary-letter-column">
-                <h3 class="dictionary-letter">{{ $letter }}</h3>
-
-                <table class="dictionary-table">
-                    <tbody>
-                        @foreach ($items as $dictionary)
-                            <tr class="dictionary-row">
-                                <td>
-                                    <span
-                                        class="dictionary-term clickable-term"
-                                        data-term="{{ $dictionary->term }}"
-                                        data-definition="{{ $dictionary->definition }}"
-                                    >
-                                        {{ $dictionary->term }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-        @empty
-            <p>Data tidak ditemukan.</p>
-        @endforelse
-
-    </div>
-</div>
-
-
-
 
 </section>
 
