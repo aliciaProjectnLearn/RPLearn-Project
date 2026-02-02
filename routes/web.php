@@ -29,6 +29,7 @@ Route::get('/', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
+
     // DASHBOARD SISWA
     Route::get('/dashboard/student', function () {
         $dictionaries = Dictionary::orderBy('term')->limit(6)->get();

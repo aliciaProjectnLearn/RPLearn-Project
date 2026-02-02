@@ -330,10 +330,9 @@
                 });
         });
     </script>
-
 </section>
 
-{{-- MODAL DETAIL (SPLIT LAYOUT) --}}
+{{-- 5. MODALS --}}
 <div id="moduleModal" class="modal-overlay">
     <div class="modal-card-box">
         <span onclick="closeModal()" class="close-modal-btn">&times;</span>
@@ -341,143 +340,113 @@
     </div>
 </div>
 
-<script>
-function showDetail(id) {
-    const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = '<p>Loading...</p>';
-    document.getElementById('moduleModal').style.display = "block";
-
-    fetch(`/student/modules/${id}/json`)
-        .then(res => res.json())
-        .then(data => {
-            let firstContent = data.contents[0] || {};
-            let videoId = firstContent.video_url ? firstContent.video_url.split('v=')[1]?.split('&')[0] : null;
-            let videoHtml = videoId ? `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>` : `<div style="height:280px; background:#eee; border-radius:10px; display:flex; align-items:center; justify-content:center;">Video Tidak Tersedia</div>`;
-
-            modalBody.innerHTML = `
-                <div class="modal-split">
-                    {{-- SISI KIRI: MEDIA (VIDEO, PDF ORANYE, TAGS, INFO) --}}
-                    <div class="modal-side-media">
-                        <div class="video-container">${videoHtml}</div>
-                        ${firstContent.file_path ? `
-                            <a href="/storage/${firstContent.file_path}" target="_blank" class="pdf-btn">
-                                <i class="ri-file-pdf-fill"></i> Download PDF Materi
-                            </a>
-                        ` : ''}
-                        <div class="modal-tags-row">
-                            <span class="m-tag">${data.grade_category?.grade || 'Kelas'}</span>
-                            <span class="m-tag">${data.subject_category?.subject || 'Materi'}</span>
-                        </div>
-                        <div class="modal-footer-info">@ ${data.teacher?.name || 'Admin'} <br> Tgl: ${new Date(data.created_at).toLocaleDateString('id-ID')}</div>
-                    </div>
-
-                    {{-- SISI KANAN: TEKS --}}
-                    <div class="modal-side-text">
-                        <h2 class="modal-title-text">${data.title}</h2>
-                        <div class="modal-scroll">
-                            <p><strong>Deskripsi:</strong></p>
-                            <p style="margin-bottom:15px; color:#666;">${data.desc}</p>
-                            <hr style="border:0; border-top:1px solid #ddd; margin-bottom:15px;">
-                            <p><strong>Detail Materi:</strong></p>
-                            <p style="color:#666;">${firstContent.content || 'Isi materi tidak tersedia.'}</p>
-                        </div>
-                    </div>
-                </div>`;
-        });
-}
-function closeModal() { document.getElementById('moduleModal').style.display = "none"; }
-</script>
-
-
-
-<!-- Dictionary Modal -->
 <div class="dictionary-modal" id="dictionaryModal" aria-hidden="true">
     <div class="dictionary-modal-overlay"></div>
-
-    <div class="dictionary-modal-box" role="dialog" aria-modal="true">
-        <button class="dictionary-modal-close" id="dictionaryModalClose">
-            &times;
-        </button>
-
+    <div class="dictionary-modal-box">
+        <button class="dictionary-modal-close" id="dictionaryModalClose">&times;</button>
         <h3 class="dictionary-modal-term" id="dictionaryModalTerm"></h3>
         <p class="dictionary-modal-definition" id="dictionaryModalDefinition"></p>
     </div>
 </div>
+
 @endsection
 
+{{-- JAVASCRIPT MASTER --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- A. AJAX SEARCH MODUL (Instan tanpa Reload) ---
+    const filterForm = document.getElementById('moduleFilterForm');
+    const moduleContainer = document.getElementById('moduleCardsContainer');
+    const searchInput = document.getElementById('moduleSearchInput');
+    const selects = filterForm.querySelectorAll('select');
 
-   <script>
-document.addEventListener('DOMContentLoaded', function () {
+    function fetchModules() {
+        const params = new URLSearchParams(new FormData(filterForm)).toString();
+        moduleContainer.style.opacity = '0.5';
 
-    const modal = document.getElementById('dictionaryModal');
+        fetch(`${window.location.pathname}?${params}&ajax=1`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.text())
+        .then(html => {
+            moduleContainer.innerHTML = html;
+            moduleContainer.style.opacity = '1';
+        });
+    }
+
+    searchInput.addEventListener('input', debounce(fetchModules, 300));
+    selects.forEach(select => select.addEventListener('change', fetchModules));
+    filterForm.addEventListener('submit', (e) => e.preventDefault());
+
+    function debounce(func, timeout = 300){
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+
+    // --- B. DICTIONARY MODAL & SEARCH (Kodingan Asli Lo) ---
+    const dictModal = document.getElementById('dictionaryModal');
     const modalTerm = document.getElementById('dictionaryModalTerm');
     const modalDefinition = document.getElementById('dictionaryModalDefinition');
-    const modalClose = document.getElementById('dictionaryModalClose');
-    const modalOverlay = document.querySelector('.dictionary-modal-overlay');
+    const dictSearchInput = document.getElementById('dictionarySearch');
 
     document.querySelectorAll('.clickable-term').forEach(item => {
         item.addEventListener('click', function () {
             modalTerm.textContent = this.dataset.term;
             modalDefinition.textContent = this.dataset.definition;
-
-            modal.classList.add('active');
+            dictModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
     });
 
-    function closeModal() {
-        modal.classList.remove('active');
+    window.closeDictModal = function() {
+        dictModal.classList.remove('active');
         document.body.style.overflow = '';
-    }
+    };
 
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', closeModal);
+    document.getElementById('dictionaryModalClose').addEventListener('click', closeDictModal);
+    document.querySelector('.dictionary-modal-overlay').addEventListener('click', closeDictModal);
 
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    });
-
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const searchInput = document.getElementById('dictionarySearch');
-
-    searchInput.addEventListener('input', function () {
+    // Dictionary Real-time Filtering
+    dictSearchInput.addEventListener('input', function () {
         const keyword = this.value.toLowerCase();
-
-        // 1️⃣ Filter setiap row
         document.querySelectorAll('.dictionary-row').forEach(row => {
-            const term = row
-                .querySelector('.dictionary-term')
-                .textContent
-                .toLowerCase();
-
-            if (term.includes(keyword)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            const term = row.querySelector('.dictionary-term').textContent.toLowerCase();
+            row.style.display = term.includes(keyword) ? '' : 'none';
         });
 
-        // 2️⃣ Sembunyikan kolom huruf kosong
         document.querySelectorAll('.dictionary-letter-column').forEach(column => {
-            const visibleRows = column.querySelectorAll(
-                '.dictionary-row:not([style*="display: none"])'
-            );
-
-            if (visibleRows.length === 0) {
-                column.style.display = 'none';
-            } else {
-                column.style.display = '';
-            }
+            const visibleRows = column.querySelectorAll('.dictionary-row:not([style*="display: none"])');
+            column.style.display = visibleRows.length === 0 ? 'none' : '';
         });
     });
-
 });
-</script>
 
+// --- C. MODULE DETAIL MODAL ---
+function showDetail(id) {
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = '<p>Loading...</p>';
+    document.getElementById('moduleModal').style.display = "block";
+    fetch(`/student/modules/${id}/json`)
+        .then(res => res.json())
+        .then(data => {
+            let content = data.contents[0] || {};
+            let vId = content.video_url ? content.video_url.split('v=')[1]?.split('&')[0] : null;
+            let video = vId ? `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>` : `<div style="height:280px; background:#eee; border-radius:10px; display:flex; align-items:center; justify-content:center;">No Video</div>`;
+            modalBody.innerHTML = `<div class="modal-split">
+                <div class="modal-side-media">
+                    <div class="video-container">${video}</div>
+                    ${content.file_path ? `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">Download PDF</a>` : ''}
+                    <div class="modal-tags-row"><span class="m-tag">${data.grade_category?.grade || 'Kelas'}</span><span class="m-tag">${data.subject_category?.subject || 'Materi'}</span></div>
+                </div>
+                <div class="modal-side-text">
+                    <h2 class="modal-title-text">${data.title}</h2>
+                    <div class="modal-scroll"><p>${data.desc}</p></div>
+                </div>
+            </div>`;
+        });
+}
+function closeModal() { document.getElementById('moduleModal').style.display = "none"; }
+</script>
