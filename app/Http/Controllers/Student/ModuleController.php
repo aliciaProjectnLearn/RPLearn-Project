@@ -44,4 +44,12 @@ public function index(Request $request)
         $module = Module::with('contents')->findOrFail($id);
         return view('student.modules.show', compact('module'));
     }
+
+    public function getModuleJson($id)
+    {
+        // Mengambil modul beserta relasi konten (video/pdf) dan kategorinya
+        $module = \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory'])->findOrFail($id);
+
+        return response()->json($module);
+    }
 }

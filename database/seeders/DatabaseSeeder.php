@@ -32,6 +32,12 @@ class DatabaseSeeder extends Seeder
             'role' => 'siswa',
         ]);
 
+        $admin = User::create([
+            'username' => 'Admin',
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+        ]);
+
         // --- 2. Seeder Student ---
         Student::create([
             'user_id' => $userSiswa->id,

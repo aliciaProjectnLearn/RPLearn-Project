@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('subject_category_id')->constrained('subject_categories')->onDelete('cascade');
             $table->string('title');
             $table->text('desc');
-            $table->enum('track', ['FE', 'BE']);
+            $table->string('track')->nullable(); // Atau enum(...)->nullable()
             $table->boolean('is_published')->default(false);
             $table->integer('like')->default(0);
             $table->timestamps();

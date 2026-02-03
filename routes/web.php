@@ -1,54 +1,82 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Student\ModuleController;
+use App\Http\Controllers\Student\ModuleController as StudentModuleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
+use App\Http\Controllers\Admin\DictionaryController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Dictionary;
 
-Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('student')->name('student. ')->group(function () {
-    Route::get('/modules', [ModuleController::class, 'index'])->name('module.index');
-    Route::get('/modules/{id}', [ModuleController::class, 'show'])->name('modules.show');
-});
-
-Route::get('/student/modules/{id}/json', function($id) {
-    // Kita tambahkan gradeCategory, subjectCategory, dan teacher agar datanya ada
-    return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
-});
-
+/*
+|--------------------------------------------------------------------------
+| Root Redirect Logic
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     if (auth()->check()) {
-        if (auth()->user()->role === 'guru') {
-            return redirect()->route('dashboard.teacher');
-        }
-        return redirect()->route('dashboard.student');
+        $role = auth()->user()->role;
+        return match($role) {
+            'admin' => redirect()->route('admin.dashboard'),
+            'guru'  => redirect()->route('dashboard.teacher'),
+            default => redirect()->route('student.dashboard'),
+        };
     }
-
     return redirect()->route('login');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Admin Routes (Trello Task #15)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+    // 1. RUTE KHUSUS ISI MATERI (WAJIB ADA)
+    Route::get('modules/{id}/add-content', [App\Http\Controllers\Admin\ModuleController::class, 'addContent'])
+        ->name('modules.addContent');
+    Route::post('modules/{id}/store-content', [App\Http\Controllers\Admin\ModuleController::class, 'storeContent'])
+        ->name('modules.storeContent');
+
+    // 2. RESOURCE UTAMA
+    Route::resource('modules', App\Http\Controllers\Admin\ModuleController::class);
+    Route::resource('dictionaries', App\Http\Controllers\Admin\DictionaryController::class);
+    Route::resource('users', UserController::class);
+
+    // 3. FITUR FAQ
+    Route::get('faq', [App\Http\Controllers\Admin\FAQController::class, 'index'])->name('faq.index');
+    Route::post('faq/{id}/answer', [App\Http\Controllers\Admin\FAQController::class, 'answer'])->name('faq.answer');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Student Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
+    Route::get('/modules/{id}', [StudentModuleController::class, 'show'])->name('modules.show');
+
+    // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
+    Route::get('/modules/{id}/json', function($id) {
+        return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Shared Routes (Teacher & Profile)
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function () {
-    // Ubah dari function () ke ModuleController
-    Route::get('/dashboard/student', [ModuleController::class, 'index'])->name('dashboard.student');
-
-    // Bisa di aktifkan jika perlu(tidak jadi dihapus).
-    // Route::get('/dashboard/student', function () {
-    //     $dictionaries = Dictionary::orderBy('term', 'asc')
-    //         ->limit(6)
-    //         ->get();
-    //     $grades=\App\Models\GradeCategory::all();
-    //     $subjects=\App\Models\SubjectCategory::all();
-    //     $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory'])->get();
-    //     return view('dashboard.student', compact('dictionaries', 'grades', 'subjects', 'modules'));
-    // })->name('dashboard.student');
-
-
     Route::get('/dashboard/teacher', function () {
         return view('dashboard.teacher');
     })->name('dashboard.teacher');
 
-    Route::get('/dashboard/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
 
 require __DIR__ . '/auth.php';
