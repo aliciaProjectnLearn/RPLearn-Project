@@ -2,12 +2,27 @@
 
 @section('content')
 
-{{-- Flash success popup --}}
-@if (session('success'))
-    <script>alert("{{ session('success') }}");</script>
-@endif
+    {{-- 🔔 LOGIN SUCCESS ALERT --}}
+    @if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 1800,
+            timerProgressBar: true,
+            background: '#393E46',
+            color: '#ffffff',
+            backdrop: `
+                rgba(0,0,0,0.4)
+                url("{{ asset('images/nyan-cat.gif') }}")
+                left top
+                no-repeat
+            `
+        });
+    </script>
+    @endif
 
-{{-- 1. HERO SECTION --}}
 <section class="hero">
     <h1>Start <span>Learning.</span> Keep Growing.</h1>
     <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and guided learning.</p>
@@ -19,37 +34,42 @@
     </div>
 </section>
 
-{{-- 2. MODULE SECTION --}}
 <section class="module-section" id="module-section">
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-    {{-- Form Filter & Search (Tanpa onchange submit agar tidak reload) --}}
-    <form action="{{ url()->current() }}" method="GET" class="module-filter-form" id="moduleFilterForm">
+    {{-- SEARCH & FILTER UPGRADED --}}
+    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
         <div class="search-wrapper">
             <div class="module-search">
                 <i class="ri-search-line"></i>
-                <input type="text" name="search" id="moduleSearchInput" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}" autocomplete="off">
+                <input type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
             </div>
         </div>
 
         <div class="filter-group-modern">
+            {{-- Dropdown Kelas --}}
             <div class="custom-select-wrapper">
                 <i class="ri-government-line select-icon"></i>
-                <select name="grade_id" id="gradeSelect">
-                    <option value="">Semua Kelas</option>
+                <select name="grade_id" onchange="this.form.submit()">
+                    <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
                     @foreach($grades as $grade)
-                        <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>{{ $grade->grade }}</option>
+                        <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
+                            {{ $grade->grade }}
+                        </option>
                     @endforeach
                 </select>
                 <i class="ri-arrow-down-s-line arrow-icon"></i>
             </div>
 
+            {{-- Dropdown Materi --}}
             <div class="custom-select-wrapper">
                 <i class="ri-book-3-line select-icon"></i>
-                <select name="subject_id" id="subjectSelect">
-                    <option value="">Semua Materi</option>
+                <select name="subject_id" onchange="this.form.submit()">
+                    <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
                     @foreach($subjects as $subject)
-                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>{{ $subject->subject }}</option>
+                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                            {{ $subject->subject }}
+                        </option>
                     @endforeach
                 </select>
                 <i class="ri-arrow-down-s-line arrow-icon"></i>
@@ -57,56 +77,275 @@
         </div>
     </form>
 
-    {{-- Container Kartu Modul (Memanggil partial dengan path yang benar) --}}
-    <div class="module-cards" id="moduleCardsContainer">
-        @include('partials._module_list')
+    {{-- MODULE CARDS --}}
+    <div class="module-cards">
+        @forelse($modules as $module)
+            <div class="module-card">
+                <div class="card-header-row">
+                    {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
+                    <span class="module-meta-text">
+                        {{ $module->gradeCategory->grade ?? 'Kelas' }} | {{ $module->subjectCategory->subject ?? 'Materi' }}
+                    </span>
+
+                    {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
+                    <div class="media-icons-row">
+                        @php
+                            $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
+                            $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
+                        @endphp
+                        @if($hasVideo) <i class="ri-youtube-fill" style="color: #FF0000;"></i> @endif
+                        @if($hasPdf) <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i> @endif
+                    </div>
+                </div>
+
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
+
+                <div class="author-label">
+                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
+                </div>
+
+                <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
+
+                {{-- TOMBOL ORANYE DENGAN HOVER --}}
+                <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
+                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                </button>
+            </div>
+        @empty
+            <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
+        @endforelse
     </div>
 </section>
 
-{{-- 3. FAQ SECTION --}}
-<section class="faq-section" id="faq-section">
-    <h2>F <span>A</span> Q</h2>
-    <div class="faq-box">Apa itu RPLearn?</div>
-    <div class="faq-box">Bagaimana cara belajar?</div>
-</section>
-
-{{-- 4. DICTIONARY SECTION --}}
 <section class="dictionary-section reveal">
     <h2>Dict<span>io</span>nary</h2>
-    <p class="dictionary-desc">Learn common technical terms used in vocational learning.</p>
+    <p class="dictionary-desc">
+        Learn common technical terms used in vocational learning.
+    </p>
+
     <div class="dictionary-search">
         <i class="ri-search-line"></i>
         <input type="text" id="dictionarySearch" placeholder="Search terms..." />
     </div>
 
-    <div class="dictionary-table-wrapper reveal">
-        @php
-            $grouped = $dictionaries->groupBy(fn($item) => strtoupper(substr($item->term, 0, 1)));
-        @endphp
+<div class="dictionary-table-wrapper reveal">
 
-        <div class="dictionary-horizontal-wrapper">
-            @forelse ($grouped as $letter => $items)
-                <div class="dictionary-column dictionary-letter-column">
-                    <h3 class="dictionary-letter">{{ $letter }}</h3>
-                    <table class="dictionary-table">
-                        <tbody>
-                            @foreach ($items as $dictionary)
-                                <tr class="dictionary-row">
-                                    <td>
-                                        <span class="dictionary-term clickable-term" data-term="{{ $dictionary->term }}" data-definition="{{ $dictionary->definition }}">
-                                            {{ $dictionary->term }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @empty
-                <p>Data tidak ditemukan.</p>
-            @endforelse
-        </div>
+    @php
+        $grouped = $dictionaries->groupBy(function ($item) {
+            return strtoupper(substr($item->term, 0, 1));
+        });
+    @endphp
+
+    <div class="dictionary-horizontal-wrapper">
+
+        @forelse ($grouped as $letter => $items)
+
+            <div class="dictionary-column dictionary-letter-column">
+                <h3 class="dictionary-letter">{{ $letter }}</h3>
+
+                <table class="dictionary-table">
+                    <tbody>
+                        @foreach ($items as $dictionary)
+                            <tr class="dictionary-row">
+                                <td>
+                                    <span
+                                        class="dictionary-term clickable-term"
+                                        data-term="{{ $dictionary->term }}"
+                                        data-definition="{{ $dictionary->definition }}"
+                                    >
+                                        {{ $dictionary->term }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        @empty
+            <p>Data tidak ditemukan.</p>
+        @endforelse
+
     </div>
+</div>
+
+
+    {{-- ================= FAQ ================= --}}
+    <section class="faq-section reveal" id="faq-section">
+        <h2>F <span>A</span> Q</h2>
+        <div class="question-search">
+            <i class="ri-search-line"></i>
+            <input type="text" id="faq-search" placeholder="Search question...">
+        </div>
+
+        <div class="faq-wrapper">
+            {{-- KIRI: FAQ --}}
+            <div class="faq-left">
+                <div class="faq-list" id="faq-list">
+                    @forelse ($faqs as $faq)
+                        <div class="faq-item">
+                            <button type="button" class="faq-question">
+                                {{ $faq->question }}
+                                <i class="ri-arrow-right-s-line icon"></i>
+                            </button>
+                            <div class="faq-answer">
+                                @if ($faq->answer)
+                                    {{ $faq->answer->answer }}
+                                @else
+                                    <em>Belum ada jawaban dari guru.</em>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <p style="text-align:center;color:#888;">
+                            FAQ belum tersedia
+                        </p>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- KANAN: FORM TANYA --}}
+            <div class="faq-right">
+                <div class="faq-form-card">
+                    <h3>Tanya Guru</h3>
+                    <p class="form-desc">
+                        Punya pertanyaan tapi belum ada di FAQ? Kirim langsung ke guru.
+                    </p>
+
+                    <form action="/faq" method="POST">
+                        @csrf
+
+                        {{-- Nama Siswa --}}
+                        <div class="form-group">
+                            <label>Nama Siswa</label>
+                            <input type="text" value="{{ auth()->user()->username }}" readonly>
+                        </div>
+
+                        {{-- Guru --}}
+                        <div class="form-group">
+                            <label>Guru Tertuju</label>
+                            <select name="teacher_id" required>
+                                <option value="">Pilih Guru</option>
+                                @foreach ($teachers as $teacher)
+                                    <option value="{{ $teacher->id }}">
+                                        {{ $teacher->username }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Judul --}}
+                        <div class="form-group">
+                            <label>Judul Pertanyaan</label>
+                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
+                        </div>
+
+                        {{-- Pertanyaan --}}
+                        <div class="form-group">
+                            <label>Pertanyaan</label>
+                            <textarea name="question" rows="4" placeholder="Tuliskan pertanyaanmu secara jelas..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Kirim Pertanyaan
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    {{-- ================= SCRIPT ================= --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const faqList = document.getElementById('faq-list');
+            const searchInput = document.getElementById('faq-search');
+
+            // Accordion logic
+            function bindAccordion() {
+                document.querySelectorAll('.faq-question').forEach(btn => {
+                    btn.onclick = function() {
+                        const item = this.parentElement;
+
+                        document.querySelectorAll('.faq-item').forEach(i => {
+                            if (i !== item) i.classList.remove('active');
+                        });
+
+                        item.classList.toggle('active');
+                    };
+                });
+            }
+
+            bindAccordion();
+
+            // Search logic
+            let delay = null;
+
+            searchInput.addEventListener('keyup', function() {
+                clearTimeout(delay);
+
+                delay = setTimeout(() => {
+                    fetch(`/faq/search?search=${this.value}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            faqList.innerHTML = '';
+
+                            if (data.length === 0) {
+                                faqList.innerHTML = `
+                                    <p style="text-align:center;color:#888;">
+                                        FAQ tidak ditemukan
+                                    </p>
+                                `;
+                                return;
+                            }
+
+                            data.forEach(faq => {
+                                faqList.innerHTML += `
+                                    <div class="faq-item">
+                                        <button type="button" class="faq-question">
+                                            ${faq.question}
+                                            <i class="ri-arrow-right-s-line icon"></i>
+                                        </button>
+                                        <div class="faq-answer">
+                                            ${faq.answer.answer}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+
+                            bindAccordion();
+                        });
+                }, 300);
+            });
+
+        });
+    </script>
+    <script>
+        document.getElementById('ask-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('/faq', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(res => {
+                    alert(res.message);
+                    this.reset();
+                })
+                .catch(() => {
+                    alert('Gagal mengirim pertanyaan');
+                });
+        });
+    </script>
 </section>
 
 {{-- 5. MODALS --}}

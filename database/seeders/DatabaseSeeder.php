@@ -124,5 +124,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             DictionarySeeder::class,
         ]);
+
+        $this->call([
+            FAQSeeder::class,
+        ]);
+
     }
 }

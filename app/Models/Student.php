@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Termwind\Question;
+use App\Models\Question;
+
+
 
 class Student extends Model
 {
