@@ -25,20 +25,20 @@
         {{-- MENU KHUSUS SISWA --}}
         @else
             <li class="{{ Route::is('student.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('student.dashboard') }}">Dashboard</a>
+                <a href="{{ route('student.dashboard') }}" class="sidebar-link">Dashboard</a>
             </li>
             <li>
-                <a href="{{ Route::is('student.dashboard') ? '#module-section' : route('student.dashboard').'#module-section' }}">
+                <a href="{{ Route::is('student.dashboard') ? '#module-section' : route('student.dashboard').'#module-section' }}" class="sidebar-link">
                     Modules
                 </a>
             </li>
             <li>
-                <a href="{{ Route::is('student.dashboard') ? '#dictionary-cards' : route('student.dashboard').'#dictionary-cards' }}">
+                <a href="{{ Route::is('student.dashboard') ? '#dictionary-section' : route('student.dashboard').'#dictionary-section' }}" class="sidebar-link">
                     Dictionary
                 </a>
             </li>
             <li>
-                <a href="{{ Route::is('student.dashboard') ? '#faq-section' : route('student.dashboard').'#faq-section' }}">
+                <a href="{{ Route::is('student.dashboard') ? '#faq-section' : route('student.dashboard').'#faq-section' }}" class="sidebar-link">
                     FAQ
                 </a>
             </li>

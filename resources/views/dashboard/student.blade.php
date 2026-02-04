@@ -117,7 +117,7 @@
     </div>
 </section>
 
-<section class="dictionary-section reveal">
+<section class="dictionary-section reveal" id="dictionary-section">
     <h2>Dict<span>io</span>nary</h2>
     <p class="dictionary-desc">
         Learn common technical terms used in vocational learning.
@@ -182,7 +182,7 @@
             {{-- KIRI: FAQ --}}
             <div class="faq-left">
                 <div class="faq-list" id="faq-list">
-                    @forelse ($faqs as $faq)
+                    @forelse ($faqs ?? [] as $faq)
                         <div class="faq-item">
                             <button type="button" class="faq-question">
                                 {{ $faq->question }}
@@ -226,7 +226,7 @@
                             <label>Guru Tertuju</label>
                             <select name="teacher_id" required>
                                 <option value="">Pilih Guru</option>
-                                @foreach ($teachers as $teacher)
+                                @foreach ($teachers ?? [] as $teacher)
                                     <option value="{{ $teacher->id }}">
                                         {{ $teacher->username }}
                                     </option>

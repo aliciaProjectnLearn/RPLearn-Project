@@ -45,7 +45,7 @@
     width: 60px;
     margin-left: 70px;
 }
-
+ 
 .sidebar-menu {
     list-style: none;
     font-size: 1.2rem;
@@ -122,12 +122,14 @@
     box-shadow: 0 0 0 3px rgba(246,151,63,0.35);
 }
 
+
+
 /* MAIN */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-
+    margin-top: 80px; /* Height navbar */
     margin-left: 300px; /* Width sidebar */
 }
 
@@ -216,6 +218,7 @@
 /* MODULE */
 .module-section {
     margin-bottom: 35px;
+    padding-top: 7.5rem;
 }
 
 .module-section h1, .faq-section h2{
@@ -290,6 +293,7 @@
 
 .faq-section {
     margin-top: 80px;
+    padding-top: 7.5rem;
 }
 
 .faq-list {
@@ -492,6 +496,7 @@
 .dictionary-section {
     margin-top: 80px;
     padding: 0 4rem;
+    padding-top: 7.5rem;
 }
 
 .dictionary-section h2 {
@@ -1370,7 +1375,9 @@
     background: #fdfdfd;
     border-radius: 0 12px 12px 0;
 }
+
 .faq-status-answered { border-left-color: #2ecc71; background: #f0fff4; }
+
 .faq-status-pending { border-left-color: #f1c40f; background: #fffdf0; }
 
 /* Navbar Profile Link */

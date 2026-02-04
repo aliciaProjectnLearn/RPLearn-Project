@@ -3,8 +3,8 @@
 <div class="admin-spacer"></div>
 <div class="page-content">
     <div class="hero" style="margin-top: 0; padding: 20px 0;">
-        <h1>Selamat Datang, <span>Admin!</span> 👋</h1>
-        <p style="padding-left: 0;">Ringkasan statistik sistem RPLearn hari ini.</p>
+        <h1>Selamat Datang, <span>Admin!</span></h1>
+        <p>Ringkasan statistik sistem RPLearn hari ini.</p>
     </div>
 
     <div class="admin-grid">

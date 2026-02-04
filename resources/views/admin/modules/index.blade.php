@@ -15,7 +15,7 @@
     {{-- Header: Rapi & Sejajar --}}
     <div class="page-header d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">
         <div>
-            <h2 class="fw-bold text-dark mb-1">Kelola Fitur Modul</h2>
+            <h2 class="fw-bold text-dark mb-1">Kelola Fitur Modul</h2><br>
             <p class="text-secondary m-0">
                 Total: <span class="text-orange fw-bold">{{ $modules->count() }} Modul</span>
             </p>
@@ -43,15 +43,15 @@
                     @forelse ($modules as $module)
                     <tr class="module-row border-bottom">
                         {{-- Judul & Track --}}
-                        <td class="ps-4 py-3">
+                        <td class="ps-4 py-3" style="text-align: left;">
                             <div class="module-title-text fw-bold text-dark">{{ $module->title }}</div>
-                            <small class="text-muted text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.5px;">
+                            <small class="text-muted text-uppercase fw-bold" style="font-size: 12px; letter-spacing: 0.5px;">
                                 Track: {{ $module->track ?? 'Umum' }}
                             </small>
                         </td>
 
                         {{-- Mata Pelajaran--}}
-                        <td class="py-3 small fw-600 text-dark">
+                        <td class="py-3 small fw-600 text-dark" style="text-align: left;">
                             {{ $module->subjectCategory->subject ?? 'Mapel Belum Set' }}
                         </td>
 
