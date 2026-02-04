@@ -440,22 +440,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// --- C. MODULE DETAIL MODAL ---
+// MODULE DETAIL MODAL
 function showDetail(id) {
     const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = '<p>Loading...</p>';
+    modalBody.innerHTML = '<p class="text-center p-5">Memuat materi...</p>';
     document.getElementById('moduleModal').style.display = "block";
+
     fetch(`/student/modules/${id}/json`)
         .then(res => res.json())
         .then(data => {
             let content = data.contents[0] || {};
-            let vId = content.video_url ? content.video_url.split('v=')[1]?.split('&')[0] : null;
-            let video = vId ? `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>` : `<div style="height:280px; background:#eee; border-radius:10px; display:flex; align-items:center; justify-content:center;">No Video</div>`;
-            modalBody.innerHTML = `<div class="modal-split">
+            let videoElement = '';
+
+            // Cek untuk memeriksa link YouTube atau file Video asli
+            if (content.video_url) {
+                let vId = content.video_url.split('v=')[1]?.split('&')[0];
+                videoElement = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+            } else if (content.file_path && content.file_path.endsWith('.mp4')) {
+                videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
+                                    <source src="/storage/${content.file_path}" type="video/mp4">
+                                    Browser kamu tidak mendukung video player.
+                                </video>`;
+            } else {
+                videoElement = `<div class="no-video-placeholder">No Video Available</div>`;
+            }
+
+            modalBody.innerHTML = `
+            <div class="modal-split">
                 <div class="modal-side-media">
-                    <div class="video-container">${video}</div>
-                    ${content.file_path ? `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">Download PDF</a>` : ''}
-                    <div class="modal-tags-row"><span class="m-tag">${data.grade_category?.grade || 'Kelas'}</span><span class="m-tag">${data.subject_category?.subject || 'Materi'}</span></div>
+                    <div class="video-container">${videoElement}</div>
+                    ${content.file_path && content.file_path.endsWith('.pdf') ?
+                        `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
+                            <i class="ri-file-pdf-line"></i> Download PDF Materi
+                        </a>` : ''}
+                    <div class="modal-tags-row">
+                        <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
+                        <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
+                    </div>
                 </div>
                 <div class="modal-side-text">
                     <h2 class="modal-title-text">${data.title}</h2>
@@ -465,4 +486,31 @@ function showDetail(id) {
         });
 }
 function closeModal() { document.getElementById('moduleModal').style.display = "none"; }
+
+function openModule(moduleId) {
+    fetch(`/student/modules/${moduleId}/json`)
+        .then(response => response.json())
+        .then(data => {
+            // 1. Isi Judul & Deskripsi di Modal
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalDesc').innerText = data.desc;
+
+            // 2. Cari konten Video & PDF dari relasi contents
+            const video = data.contents.find(c => c.type === 'video');
+            const pdf = data.contents.find(c => c.type === 'pdf');
+
+            // 3. Update Video Player
+            const videoIframe = document.getElementById('videoPlayer');
+            videoIframe.src = video ? `/storage/${video.file_path}` : '';
+
+            // 4. Update Tombol Download PDF
+            const pdfBtn = document.getElementById('downloadPdfBtn');
+            if (pdf) {
+                pdfBtn.href = `/storage/${pdf.file_path}`;
+                pdfBtn.style.display = 'block';
+            } else {
+                pdfBtn.style.display = 'none';
+            }
+        });
+}
 </script>

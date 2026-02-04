@@ -5,13 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model
-    {
+{
+    protected $fillable = ['question_id', 'teacher_id', 'answer'];
 
-        protected $fillable = ['question_id', 'answer'];
-
-        public function question()
-        {
-            return $this->belongsTo(Question::class);
-        }
-    }
-
+    public function question() { return $this->belongsTo(Question::class); }
+}

@@ -34,8 +34,11 @@ class AuthenticatedSessionController extends Controller
                 ->with('success', 'Login berhasil, selamat datang Guru');
         }
 
-        return redirect()->route('dashboard.student')
+        return redirect()->route('student.dashboard')
             ->with('success', 'Login berhasil, selamat datang');
+
+        return redirect()->route('admin.dashboard')
+            ->with('success', 'login berhasil, selamat datang di admin dashboard');
     }
 
 

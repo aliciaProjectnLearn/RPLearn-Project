@@ -3,99 +3,82 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\FAQController;
-use App\Http\Controllers\Student\ModuleController;
-use App\Models\Dictionary;
+use App\Http\Controllers\Student\ModuleController as StudentModuleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
+use App\Http\Controllers\Admin\DictionaryController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| ROOT
+| Root Redirect Logic
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    if (Auth::check()) {
-        return Auth::user()->role === 'guru'
-            ? redirect()->route('dashboard.teacher')
-            : redirect()->route('dashboard.student');
+    if (auth()->check()) {
+        $role = auth()->user()->role;
+        return match($role) {
+            'admin' => redirect()->route('admin.dashboard'),
+            'guru'  => redirect()->route('dashboard.teacher'),
+            default => redirect()->route('student.dashboard'),
+        };
     }
-
     return redirect()->route('login');
 });
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTICATED ROUTES
+| Admin Routes (Trello Task #15)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
+    // 1. RUTE KHUSUS ISI MATERI (WAJIB ADA)
+    Route::get('modules/{id}/add-content', [App\Http\Controllers\Admin\ModuleController::class, 'addContent'])
+        ->name('modules.addContent');
+    Route::post('modules/{id}/store-content', [App\Http\Controllers\Admin\ModuleController::class, 'storeContent'])
+        ->name('modules.storeContent');
 
-    // DASHBOARD SISWA
-    Route::get('/dashboard/student', function () {
-        $dictionaries = Dictionary::orderBy('term')->limit(6)->get();
-        $grades = \App\Models\GradeCategory::all();
-        $subjects = \App\Models\SubjectCategory::all();
-        $faqs = \App\Models\Question::latest()->limit(5)->get();
-        $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory'])->get();
-        $teachers = \App\Models\User::where('role', 'guru')->limit(6)->get();
+    // 2. RESOURCE UTAMA
+    Route::resource('modules', App\Http\Controllers\Admin\ModuleController::class);
+    Route::resource('dictionaries', App\Http\Controllers\Admin\DictionaryController::class);
+    Route::resource('users', UserController::class);
 
-        return view('dashboard.student', compact(
-            'dictionaries',
-            'grades',
-            'subjects',
-            'modules',
-            'faqs',
-            'teachers'
-        ));
-    })->name('dashboard.student');
-
-    // DASHBOARD GURU
-    Route::get('/dashboard/teacher', function () {
-        return view('dashboard.teacher');
-    })->name('dashboard.teacher');
-
-    // PROFILE
-    Route::get('/dashboard/profile', [ProfileController::class, 'index'])
-        ->name('profile');
+    // 3. FITUR FAQ
+    Route::get('faq', [App\Http\Controllers\Admin\FAQController::class, 'index'])->name('faq.index');
+    Route::post('faq/{id}/answer', [App\Http\Controllers\Admin\FAQController::class, 'answer'])->name('faq.answer');
 });
 
 /*
 |--------------------------------------------------------------------------
-| STUDENT MODULE
+| Student Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', 'role:siswa'])
-    ->prefix('student')
-    ->name('student.')
-    ->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
+    Route::get('/modules/{id}', [StudentModuleController::class, 'show'])->name('modules.show');
 
-        Route::get('/modules', [ModuleController::class, 'index'])
-            ->name('modules.index');
-
-        Route::get('/modules/{id}', [ModuleController::class, 'show'])
-            ->name('modules.show');
-
-        Route::get('/modules/{id}/json', function ($id) {
-            return \App\Models\Module::with([
-                'contents',
-                'gradeCategory',
-                'subjectCategory',
-                'teacher'
-            ])->findOrFail($id);
-        })->name('modules.json');
+    // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
+    Route::get('/modules/{id}/json', function($id) {
+        return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
     });
+});
 
 /*
 |--------------------------------------------------------------------------
-| FAQ
+| Shared Routes (Teacher & Profile)
 |--------------------------------------------------------------------------
 */
-Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
-Route::get('/faq/search', [FAQController::class, 'index']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard/teacher', function () {
+        return view('dashboard.teacher');
+    })->name('dashboard.teacher');
 
-/*
-|--------------------------------------------------------------------------
-| AUTH ROUTES (BREEZE)
-|--------------------------------------------------------------------------
-*/
-require __DIR__.'/auth.php';
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';
