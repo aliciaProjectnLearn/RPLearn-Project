@@ -29,17 +29,18 @@ class AuthenticatedSessionController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role === 'guru') {
-            return redirect()->route('dashboard.teacher')
-                ->with('success', 'Login berhasil, selamat datang Guru');
-        }
+        return match ($user->role) {
+            'admin' => redirect()->route('admin.dashboard')
+                ->with('success', 'Login Admin berhasil!'),
 
-        return redirect()->route('student.dashboard')
-            ->with('success', 'Login berhasil, selamat datang');
+            'guru'  => redirect()->route('dashboard.teacher')
+                ->with('success', 'Login Guru berhasil!'),
 
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'login berhasil, selamat datang di admin dashboard');
+            'siswa' => redirect()->route('student.dashboard')
+                ->with('success', 'Login Siswa berhasil!'),
+        };
     }
+
 
 
     /**
@@ -55,5 +56,4 @@ class AuthenticatedSessionController extends Controller
         return redirect('/login')
             ->with('success', 'Logout berhasil');
     }
-
 }
