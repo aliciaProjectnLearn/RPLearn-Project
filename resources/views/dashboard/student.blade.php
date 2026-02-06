@@ -2,308 +2,292 @@
 
 @section('content')
 
-    {{-- 🔔 LOGIN SUCCESS ALERT --}}
-    @if (session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: "{{ session('success') }}",
-            showConfirmButton: false,
-            timer: 1800,
-            timerProgressBar: true,
-            background: '#393E46',
-            color: '#ffffff',
-            backdrop: `
-                rgba(0,0,0,0.4)
-                url("{{ asset('images/nyan-cat.gif') }}")
-                left top
-                no-repeat
-            `
-        });
-    </script>
-    @endif
+    <section class="hero">
+        <h1>Start <span>Learning.</span> Keep Growing.</h1>
+        <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
+            guided learning.</p>
 
-<section class="hero">
-    <h1>Start <span>Learning.</span> Keep Growing.</h1>
-    <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and guided learning.</p>
-
-    <div class="features-card">
-        <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
-        <div class="feat-card"><i class="ri-bookmark-line"></i><span>Dictionary</span></div>
-        <div class="feat-card"><i class="ri-question-line"></i><span>FAQ</span></div>
-    </div>
-</section>
-
-<section class="module-section" id="module-section">
-    <h1>Cari <span>Modul</span> Belajarmu!</h1>
-
-    {{-- SEARCH & FILTER UPGRADED --}}
-    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
-        <div class="search-wrapper">
-            <div class="module-search">
-                <i class="ri-search-line"></i>
-                <input type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
-            </div>
-        </div>
-
-        <div class="filter-group-modern">
-            {{-- Dropdown Kelas --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-government-line select-icon"></i>
-                <select name="grade_id" onchange="this.form.submit()">
-                    <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
-                    @foreach($grades as $grade)
-                        <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
-                            {{ $grade->grade }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
-            </div>
-
-            {{-- Dropdown Materi --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-book-3-line select-icon"></i>
-                <select name="subject_id" onchange="this.form.submit()">
-                    <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
-                    @foreach($subjects as $subject)
-                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                            {{ $subject->subject }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
-            </div>
-        </div>
-    </form>
-
-    {{-- MODULE CARDS --}}
-    <div class="module-cards">
-        @forelse($modules as $module)
-            <div class="module-card">
-                <div class="card-header-row">
-                    {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
-                    <span class="module-meta-text">
-                        {{ $module->gradeCategory->grade ?? 'Kelas' }} | {{ $module->subjectCategory->subject ?? 'Materi' }}
-                    </span>
-
-                    {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
-                    <div class="media-icons-row">
-                        @php
-                            $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
-                            $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
-                        @endphp
-                        @if($hasVideo) <i class="ri-youtube-fill" style="color: #FF0000;"></i> @endif
-                        @if($hasPdf) <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i> @endif
-                    </div>
-                </div>
-
-                <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
-
-                <div class="author-label">
-                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
-                </div>
-
-                <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
-
-                {{-- TOMBOL ORANYE DENGAN HOVER --}}
-                <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
-                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
-                </button>
-            </div>
-        @empty
-            <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
-        @endforelse
-    </div>
-</section>
-
-<section class="dictionary-section reveal" id="dictionary-section">
-    <h2>Dict<span>io</span>nary</h2>
-    <p class="dictionary-desc">
-        Learn common technical terms used in vocational learning.
-    </p>
-
-    <div class="dictionary-search">
-        <i class="ri-search-line"></i>
-        <input type="text" id="dictionarySearch" placeholder="Search terms..." />
-    </div>
-
-<div class="dictionary-table-wrapper reveal">
-
-    @php
-        $grouped = $dictionaries->groupBy(function ($item) {
-            return strtoupper(substr($item->term, 0, 1));
-        });
-    @endphp
-
-    <div class="dictionary-horizontal-wrapper">
-
-        @forelse ($grouped as $letter => $items)
-
-            <div class="dictionary-column dictionary-letter-column">
-                <h3 class="dictionary-letter">{{ $letter }}</h3>
-
-                <table class="dictionary-table">
-                    <tbody>
-                        @foreach ($items as $dictionary)
-                            <tr class="dictionary-row">
-                                <td>
-                                    <span
-                                        class="dictionary-term clickable-term"
-                                        data-term="{{ $dictionary->term }}"
-                                        data-definition="{{ $dictionary->definition }}"
-                                    >
-                                        {{ $dictionary->term }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-        @empty
-            <p>Data tidak ditemukan.</p>
-        @endforelse
-
-    </div>
-</div>
-
-
-    {{-- ================= FAQ ================= --}}
-    <section class="faq-section reveal" id="faq-section">
-        <h2>F <span>A</span> Q</h2>
-        <div class="question-search">
-            <i class="ri-search-line"></i>
-            <input type="text" id="faq-search" placeholder="Search question...">
-        </div>
-
-        <div class="faq-wrapper">
-            {{-- KIRI: FAQ --}}
-            <div class="faq-left">
-                <div class="faq-list" id="faq-list">
-                    @forelse ($faqs ?? [] as $faq)
-                        <div class="faq-item">
-                            <button type="button" class="faq-question">
-                                {{ $faq->question }}
-                                <i class="ri-arrow-right-s-line icon"></i>
-                            </button>
-                            <div class="faq-answer">
-                                @if ($faq->answer)
-                                    {{ $faq->answer->answer }}
-                                @else
-                                    <em>Belum ada jawaban dari guru.</em>
-                                @endif
-                            </div>
-                        </div>
-                    @empty
-                        <p style="text-align:center;color:#888;">
-                            FAQ belum tersedia
-                        </p>
-                    @endforelse
-                </div>
-            </div>
-
-            {{-- KANAN: FORM TANYA --}}
-            <div class="faq-right">
-                <div class="faq-form-card">
-                    <h3>Tanya Guru</h3>
-                    <p class="form-desc">
-                        Punya pertanyaan tapi belum ada di FAQ? Kirim langsung ke guru.
-                    </p>
-
-                    <form action="/faq" method="POST">
-                        @csrf
-
-                        {{-- Nama Siswa --}}
-                        <div class="form-group">
-                            <label>Nama Siswa</label>
-                            <input type="text" value="{{ auth()->user()->username }}" readonly>
-                        </div>
-
-                        {{-- Guru --}}
-                        <div class="form-group">
-                            <label>Guru Tertuju</label>
-                            <select name="teacher_id" required>
-                                <option value="">Pilih Guru</option>
-                                @foreach ($teachers ?? [] as $teacher)
-                                    <option value="{{ $teacher->id }}">
-                                        {{ $teacher->username }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        {{-- Judul --}}
-                        <div class="form-group">
-                            <label>Judul Pertanyaan</label>
-                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
-                        </div>
-
-                        {{-- Pertanyaan --}}
-                        <div class="form-group">
-                            <label>Pertanyaan</label>
-                            <textarea name="question" rows="4" placeholder="Tuliskan pertanyaanmu secara jelas..." required></textarea>
-                        </div>
-
-                        <button type="submit" class="btn-submit">
-                            Kirim Pertanyaan
-                        </button>
-                    </form>
-                </div>
-
-            </div>
+        <div class="features-card">
+            <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
+            <div class="feat-card"><i class="ri-bookmark-line"></i><span>Dictionary</span></div>
+            <div class="feat-card"><i class="ri-question-line"></i><span>FAQ</span></div>
         </div>
     </section>
 
+    <section class="module-section" id="module-section">
+        <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-    {{-- ================= SCRIPT ================= --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        {{-- SEARCH & FILTER UPGRADED --}}
+        <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
+            <div class="search-wrapper">
+                <div class="module-search">
+                    <i class="ri-search-line"></i>
+                    <input type="text" name="search" placeholder="Mau belajar apa hari ini?"
+                        value="{{ request('search') }}">
+                </div>
+            </div>
 
-            const faqList = document.getElementById('faq-list');
-            const searchInput = document.getElementById('faq-search');
+            <div class="filter-group-modern">
+                {{-- Dropdown Kelas --}}
+                <div class="custom-select-wrapper">
+                    <i class="ri-government-line select-icon"></i>
+                    <select name="grade_id" onchange="this.form.submit()">
+                        <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
+                        @foreach ($grades as $grade)
+                            <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
+                                {{ $grade->grade }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="ri-arrow-down-s-line arrow-icon"></i>
+                </div>
 
-            // Accordion logic
-            function bindAccordion() {
-                document.querySelectorAll('.faq-question').forEach(btn => {
-                    btn.onclick = function() {
-                        const item = this.parentElement;
+                {{-- Dropdown Materi --}}
+                <div class="custom-select-wrapper">
+                    <i class="ri-book-3-line select-icon"></i>
+                    <select name="subject_id" onchange="this.form.submit()">
+                        <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
+                        @foreach ($subjects as $subject)
+                            <option value="{{ $subject->id }}"
+                                {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                                {{ $subject->subject }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="ri-arrow-down-s-line arrow-icon"></i>
+                </div>
+            </div>
+        </form>
 
-                        document.querySelectorAll('.faq-item').forEach(i => {
-                            if (i !== item) i.classList.remove('active');
-                        });
+        {{-- MODULE CARDS --}}
+        <div class="module-cards">
+            @forelse($modules as $module)
+                <div class="module-card">
+                    <div class="card-header-row">
+                        {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
+                        <span class="module-meta-text">
+                            {{ $module->gradeCategory->grade ?? 'Kelas' }} |
+                            {{ $module->subjectCategory->subject ?? 'Materi' }}
+                        </span>
 
-                        item.classList.toggle('active');
-                    };
+                        {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
+                        <div class="media-icons-row">
+                            @php
+                                $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
+                                $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
+                            @endphp
+                            @if ($hasVideo)
+                                <i class="ri-youtube-fill" style="color: #FF0000;"></i>
+                            @endif
+                            @if ($hasPdf)
+                                <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i>
+                            @endif
+                        </div>
+                    </div>
+
+                    <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
+
+                    <div class="author-label">
+                        <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
+                    </div>
+
+                    <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
+
+                    {{-- TOMBOL ORANYE DENGAN HOVER --}}
+                    <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
+                        Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                    </button>
+                </div>
+            @empty
+                <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
+            @endforelse
+        </div>
+    </section>
+
+    <section class="dictionary-section reveal" id="dictionary-section">
+        <h2>Dict<span>io</span>nary</h2>
+        <p class="dictionary-desc">
+            Learn common technical terms used in vocational learning.
+        </p>
+
+        <div class="dictionary-search">
+            <i class="ri-search-line"></i>
+            <input type="text" id="dictionarySearch" placeholder="Search terms..." />
+        </div>
+
+        <div class="dictionary-table-wrapper reveal">
+
+            @php
+                $grouped = $dictionaries->groupBy(function ($item) {
+                    return strtoupper(substr($item->term, 0, 1));
                 });
-            }
+            @endphp
 
-            bindAccordion();
+            <div class="dictionary-horizontal-wrapper">
 
-            // Search logic
-            let delay = null;
+                @forelse ($grouped as $letter => $items)
+                    <div class="dictionary-column dictionary-letter-column">
+                        <h3 class="dictionary-letter">{{ $letter }}</h3>
 
-            searchInput.addEventListener('keyup', function() {
-                clearTimeout(delay);
+                        <table class="dictionary-table">
+                            <tbody>
+                                @foreach ($items as $dictionary)
+                                    <tr class="dictionary-row">
+                                        <td>
+                                            <span class="dictionary-term clickable-term"
+                                                data-term="{{ $dictionary->term }}"
+                                                data-definition="{{ $dictionary->definition }}">
+                                                {{ $dictionary->term }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
-                delay = setTimeout(() => {
-                    fetch(`/faq/search?search=${this.value}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            faqList.innerHTML = '';
+                @empty
+                    <p>Data tidak ditemukan.</p>
+                @endforelse
 
-                            if (data.length === 0) {
-                                faqList.innerHTML = `
+            </div>
+        </div>
+
+
+        {{-- ================= FAQ ================= --}}
+        <section class="faq-section reveal" id="faq-section">
+            <h2>F <span>A</span> Q</h2>
+            <div class="question-search">
+                <i class="ri-search-line"></i>
+                <input type="text" id="faq-search" placeholder="Search question...">
+            </div>
+
+            <div class="faq-wrapper">
+                {{-- KIRI: FAQ --}}
+                <div class="faq-left">
+                    <div class="faq-list" id="faq-list">
+                        @forelse ($faqs ?? [] as $faq)
+                            <div class="faq-item">
+                                <button type="button" class="faq-question">
+                                    {{ $faq->question }}
+                                    <i class="ri-arrow-right-s-line icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    @if ($faq->answer)
+                                        {{ $faq->answer->answer }}
+                                    @else
+                                        <em>Belum ada jawaban dari guru.</em>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <p style="text-align:center;color:#888;">
+                                FAQ belum tersedia
+                            </p>
+                        @endforelse
+                    </div>
+                </div>
+
+                {{-- KANAN: FORM TANYA --}}
+                <div class="faq-right">
+                    <div class="faq-form-card">
+                        <h3>Tanya Guru</h3>
+                        <p class="form-desc">
+                            Punya pertanyaan tapi belum ada di FAQ? Kirim langsung ke guru.
+                        </p>
+
+                        <form action="/faq" method="POST" id="ask-form">
+                            @csrf
+
+                            {{-- Nama Siswa --}}
+                            <div class="form-group">
+                                <label>Nama Siswa</label>
+                                <input type="text" value="{{ auth()->user()->username }}" readonly>
+                            </div>
+
+                            {{-- Guru --}}
+                            <div class="form-group">
+                                <label>Guru Tertuju</label>
+                                <select name="teacher_id" required>
+                                    <option value="">Pilih Guru</option>
+                                    @foreach ($teachers ?? [] as $teacher)
+                                        <option value="{{ $teacher->id }}">
+                                            {{ $teacher->username }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            {{-- Judul --}}
+                            <div class="form-group">
+                                <label>Judul Pertanyaan</label>
+                                <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
+                            </div>
+
+                            {{-- Pertanyaan --}}
+                            <div class="form-group">
+                                <label>Pertanyaan</label>
+                                <textarea name="question" rows="4" placeholder="Tuliskan pertanyaanmu secara jelas..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                Kirim Pertanyaan
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        {{-- ================= SCRIPT ================= --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                const faqList = document.getElementById('faq-list');
+                const searchInput = document.getElementById('faq-search');
+
+                // Accordion logic
+                function bindAccordion() {
+                    document.querySelectorAll('.faq-question').forEach(btn => {
+                        btn.onclick = function() {
+                            const item = this.parentElement;
+
+                            document.querySelectorAll('.faq-item').forEach(i => {
+                                if (i !== item) i.classList.remove('active');
+                            });
+
+                            item.classList.toggle('active');
+                        };
+                    });
+                }
+
+                bindAccordion();
+
+                // Search logic
+                let delay = null;
+
+                searchInput.addEventListener('keyup', function() {
+                    clearTimeout(delay);
+
+                    delay = setTimeout(() => {
+                        fetch(`/faq/search?search=${this.value}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                faqList.innerHTML = '';
+
+                                if (data.length === 0) {
+                                    faqList.innerHTML = `
                                     <p style="text-align:center;color:#888;">
                                         FAQ tidak ditemukan
                                     </p>
                                 `;
-                                return;
-                            }
+                                    return;
+                                }
 
-                            data.forEach(faq => {
-                                faqList.innerHTML += `
+                                data.forEach(faq => {
+                                    faqList.innerHTML += `
                                     <div class="faq-item">
                                         <button type="button" class="faq-question">
                                             ${faq.question}
@@ -314,158 +298,176 @@
                                         </div>
                                     </div>
                                 `;
+                                });
+
+                                bindAccordion();
                             });
-
-                            bindAccordion();
-                        });
-                }, 300);
-            });
-
-        });
-    </script>
-    <script>
-        document.getElementById('ask-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-
-            fetch('/faq', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
-                    },
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(res => {
-                    alert(res.message);
-                    this.reset();
-                })
-                .catch(() => {
-                    alert('Gagal mengirim pertanyaan');
+                    }, 300);
                 });
-        });
-    </script>
-</section>
 
-{{-- 5. MODALS --}}
-<div id="moduleModal" class="modal-overlay">
-    <div class="modal-card-box">
-        <span onclick="closeModal()" class="close-modal-btn">&times;</span>
-        <div id="modalBody"></div>
-    </div>
-</div>
+            });
+        </script>
+        <script>
+            const askForm = document.getElementById('ask-form');
 
-<div class="dictionary-modal" id="dictionaryModal" aria-hidden="true">
-    <div class="dictionary-modal-overlay"></div>
-    <div class="dictionary-modal-box">
-        <button class="dictionary-modal-close" id="dictionaryModalClose">&times;</button>
-        <h3 class="dictionary-modal-term" id="dictionaryModalTerm"></h3>
-        <p class="dictionary-modal-definition" id="dictionaryModalDefinition"></p>
+            if (askForm) {
+                askForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    fetch('/faq', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.message || 'Pertanyaan berhasil dikirim',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        this.reset();
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal mengirim pertanyaan',
+                        });
+                    });
+                });
+            }
+        </script>
+    </section>
+
+    {{-- 5. MODALS --}}
+    <div id="moduleModal" class="modal-overlay">
+        <div class="modal-card-box">
+            <span onclick="closeModal()" class="close-modal-btn">&times;</span>
+            <div id="modalBody"></div>
+        </div>
     </div>
-</div>
+
+    <div class="dictionary-modal" id="dictionaryModal" aria-hidden="true">
+        <div class="dictionary-modal-overlay"></div>
+        <div class="dictionary-modal-box">
+            <button class="dictionary-modal-close" id="dictionaryModalClose">&times;</button>
+            <h3 class="dictionary-modal-term" id="dictionaryModalTerm"></h3>
+            <p class="dictionary-modal-definition" id="dictionaryModalDefinition"></p>
+        </div>
+    </div>
 
 @endsection
 
 {{-- JAVASCRIPT MASTER --}}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // --- A. AJAX SEARCH MODUL (Instan tanpa Reload) ---
-    const filterForm = document.getElementById('moduleFilterForm');
-    const moduleContainer = document.getElementById('moduleCardsContainer');
-    const searchInput = document.getElementById('moduleSearchInput');
-    const selects = filterForm.querySelectorAll('select');
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- A. AJAX SEARCH MODUL (Instan tanpa Reload) ---
+        const filterForm = document.getElementById('moduleFilterForm');
+        const moduleContainer = document.getElementById('moduleCardsContainer');
+        const searchInput = document.getElementById('moduleSearchInput');
+        const selects = filterForm.querySelectorAll('select');
 
-    function fetchModules() {
-        const params = new URLSearchParams(new FormData(filterForm)).toString();
-        moduleContainer.style.opacity = '0.5';
+        function fetchModules() {
+            const params = new URLSearchParams(new FormData(filterForm)).toString();
+            moduleContainer.style.opacity = '0.5';
 
-        fetch(`${window.location.pathname}?${params}&ajax=1`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.text())
-        .then(html => {
-            moduleContainer.innerHTML = html;
-            moduleContainer.style.opacity = '1';
+            fetch(`${window.location.pathname}?${params}&ajax=1`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.text())
+                .then(html => {
+                    moduleContainer.innerHTML = html;
+                    moduleContainer.style.opacity = '1';
+                });
+        }
+
+        searchInput.addEventListener('input', debounce(fetchModules, 300));
+        selects.forEach(select => select.addEventListener('change', fetchModules));
+        filterForm.addEventListener('submit', (e) => e.preventDefault());
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    func.apply(this, args);
+                }, timeout);
+            };
+        }
+
+        // --- B. DICTIONARY MODAL & SEARCH (Kodingan Asli Lo) ---
+        const dictModal = document.getElementById('dictionaryModal');
+        const modalTerm = document.getElementById('dictionaryModalTerm');
+        const modalDefinition = document.getElementById('dictionaryModalDefinition');
+        const dictSearchInput = document.getElementById('dictionarySearch');
+
+        document.querySelectorAll('.clickable-term').forEach(item => {
+            item.addEventListener('click', function() {
+                modalTerm.textContent = this.dataset.term;
+                modalDefinition.textContent = this.dataset.definition;
+                dictModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
         });
-    }
 
-    searchInput.addEventListener('input', debounce(fetchModules, 300));
-    selects.forEach(select => select.addEventListener('change', fetchModules));
-    filterForm.addEventListener('submit', (e) => e.preventDefault());
-
-    function debounce(func, timeout = 300){
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        window.closeDictModal = function() {
+            dictModal.classList.remove('active');
+            document.body.style.overflow = '';
         };
-    }
 
-    // --- B. DICTIONARY MODAL & SEARCH (Kodingan Asli Lo) ---
-    const dictModal = document.getElementById('dictionaryModal');
-    const modalTerm = document.getElementById('dictionaryModalTerm');
-    const modalDefinition = document.getElementById('dictionaryModalDefinition');
-    const dictSearchInput = document.getElementById('dictionarySearch');
+        document.getElementById('dictionaryModalClose').addEventListener('click', closeDictModal);
+        document.querySelector('.dictionary-modal-overlay').addEventListener('click', closeDictModal);
 
-    document.querySelectorAll('.clickable-term').forEach(item => {
-        item.addEventListener('click', function () {
-            modalTerm.textContent = this.dataset.term;
-            modalDefinition.textContent = this.dataset.definition;
-            dictModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+        // Dictionary Real-time Filtering
+        dictSearchInput.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase();
+            document.querySelectorAll('.dictionary-row').forEach(row => {
+                const term = row.querySelector('.dictionary-term').textContent.toLowerCase();
+                row.style.display = term.includes(keyword) ? '' : 'none';
+            });
+
+            document.querySelectorAll('.dictionary-letter-column').forEach(column => {
+                const visibleRows = column.querySelectorAll(
+                    '.dictionary-row:not([style*="display: none"])');
+                column.style.display = visibleRows.length === 0 ? 'none' : '';
+            });
         });
     });
 
-    window.closeDictModal = function() {
-        dictModal.classList.remove('active');
-        document.body.style.overflow = '';
-    };
+    // MODULE DETAIL MODAL
+    function showDetail(id) {
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = '<p class="text-center p-5">Memuat materi...</p>';
+        document.getElementById('moduleModal').style.display = "block";
 
-    document.getElementById('dictionaryModalClose').addEventListener('click', closeDictModal);
-    document.querySelector('.dictionary-modal-overlay').addEventListener('click', closeDictModal);
+        fetch(`/student/modules/${id}/json`)
+            .then(res => res.json())
+            .then(data => {
+                let content = data.contents[0] || {};
+                let videoElement = '';
 
-    // Dictionary Real-time Filtering
-    dictSearchInput.addEventListener('input', function () {
-        const keyword = this.value.toLowerCase();
-        document.querySelectorAll('.dictionary-row').forEach(row => {
-            const term = row.querySelector('.dictionary-term').textContent.toLowerCase();
-            row.style.display = term.includes(keyword) ? '' : 'none';
-        });
-
-        document.querySelectorAll('.dictionary-letter-column').forEach(column => {
-            const visibleRows = column.querySelectorAll('.dictionary-row:not([style*="display: none"])');
-            column.style.display = visibleRows.length === 0 ? 'none' : '';
-        });
-    });
-});
-
-// MODULE DETAIL MODAL
-function showDetail(id) {
-    const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = '<p class="text-center p-5">Memuat materi...</p>';
-    document.getElementById('moduleModal').style.display = "block";
-
-    fetch(`/student/modules/${id}/json`)
-        .then(res => res.json())
-        .then(data => {
-            let content = data.contents[0] || {};
-            let videoElement = '';
-
-            // Cek untuk memeriksa link YouTube atau file Video asli
-            if (content.video_url) {
-                let vId = content.video_url.split('v=')[1]?.split('&')[0];
-                videoElement = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
-            } else if (content.file_path && content.file_path.endsWith('.mp4')) {
-                videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
+                // Cek untuk memeriksa link YouTube atau file Video asli
+                if (content.video_url) {
+                    let vId = content.video_url.split('v=')[1]?.split('&')[0];
+                    videoElement =
+                        `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                } else if (content.file_path && content.file_path.endsWith('.mp4')) {
+                    videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
                                     Browser kamu tidak mendukung video player.
                                 </video>`;
-            } else {
-                videoElement = `<div class="no-video-placeholder">No Video Available</div>`;
-            }
+                } else {
+                    videoElement = `<div class="no-video-placeholder">No Video Available</div>`;
+                }
 
-            modalBody.innerHTML = `
+                modalBody.innerHTML = `
             <div class="modal-split">
                 <div class="modal-side-media">
                     <div class="video-container">${videoElement}</div>
@@ -483,34 +485,37 @@ function showDetail(id) {
                     <div class="modal-scroll"><p>${data.desc}</p></div>
                 </div>
             </div>`;
-        });
-}
-function closeModal() { document.getElementById('moduleModal').style.display = "none"; }
+            });
+    }
 
-function openModule(moduleId) {
-    fetch(`/student/modules/${moduleId}/json`)
-        .then(response => response.json())
-        .then(data => {
-            // 1. Isi Judul & Deskripsi di Modal
-            document.getElementById('modalTitle').innerText = data.title;
-            document.getElementById('modalDesc').innerText = data.desc;
+    function closeModal() {
+        document.getElementById('moduleModal').style.display = "none";
+    }
 
-            // 2. Cari konten Video & PDF dari relasi contents
-            const video = data.contents.find(c => c.type === 'video');
-            const pdf = data.contents.find(c => c.type === 'pdf');
+    function openModule(moduleId) {
+        fetch(`/student/modules/${moduleId}/json`)
+            .then(response => response.json())
+            .then(data => {
+                // 1. Isi Judul & Deskripsi di Modal
+                document.getElementById('modalTitle').innerText = data.title;
+                document.getElementById('modalDesc').innerText = data.desc;
 
-            // 3. Update Video Player
-            const videoIframe = document.getElementById('videoPlayer');
-            videoIframe.src = video ? `/storage/${video.file_path}` : '';
+                // 2. Cari konten Video & PDF dari relasi contents
+                const video = data.contents.find(c => c.type === 'video');
+                const pdf = data.contents.find(c => c.type === 'pdf');
 
-            // 4. Update Tombol Download PDF
-            const pdfBtn = document.getElementById('downloadPdfBtn');
-            if (pdf) {
-                pdfBtn.href = `/storage/${pdf.file_path}`;
-                pdfBtn.style.display = 'block';
-            } else {
-                pdfBtn.style.display = 'none';
-            }
-        });
-}
+                // 3. Update Video Player
+                const videoIframe = document.getElementById('videoPlayer');
+                videoIframe.src = video ? `/storage/${video.file_path}` : '';
+
+                // 4. Update Tombol Download PDF
+                const pdfBtn = document.getElementById('downloadPdfBtn');
+                if (pdf) {
+                    pdfBtn.href = `/storage/${pdf.file_path}`;
+                    pdfBtn.style.display = 'block';
+                } else {
+                    pdfBtn.style.display = 'none';
+                }
+            });
+    }
 </script>

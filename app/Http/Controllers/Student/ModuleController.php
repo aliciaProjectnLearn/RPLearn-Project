@@ -18,13 +18,13 @@ public function index(Request $request)
     $grades = GradeCategory::all();
     $subjects = SubjectCategory::all();
 
-    $faq = Question::with('answer')
+    $faqs = Question::with('answer')
         ->where('status', 'answered')
         ->whereHas('answer')
         ->latest()
         ->get();
 
-    $teacher = User::where('role', 'guru')->get();
+    $teachers = User::where('role', 'guru')->get();
 
     // LOGIKA DICTIONARY YANG TADI DI WEB.PHP PINDAH KE SINI:
     $dictionaries = \App\Models\Dictionary::orderBy('term', 'asc')->limit(6)->get();
@@ -42,7 +42,7 @@ public function index(Request $request)
         return view('partials._module_list', compact('modules'))->render();
     }
 
-    return view('dashboard.student', compact('modules', 'grades', 'subjects', 'dictionaries', 'faq', 'teacher'));
+    return view('dashboard.student', compact('modules', 'grades', 'subjects', 'dictionaries', 'faqs', 'teachers'));
 }
 
     public function show($id)
