@@ -6,7 +6,7 @@
     <div class="page-header d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark mb-1">Kelola Kamus IT</h2>
-            <p class="text-secondary small">Total: <span class="text-orange fw-bold">{{ $dictionaries->count() }} Istilah</span></p>
+            <p class="text-secondary">Total: <span class="text-orange fw-bold">{{ $dictionaries->count() }} Istilah</span></p>
         </div>
         <br>
         <a href="{{ route('admin.dictionaries.create') }}" class="btn-orange">Tambah Istilah</a>
@@ -17,27 +17,35 @@
             <table class="rplearn-table align-middle">
                 <thead>
                     <tr>
-                        <th class="ps-4">Istilah</th>
-                        <th>Modul Terkait</th>
-                        <th class="text-end pe-4">Aksi</th>
+                        <th class="ps-4"  style="font-size: 0.8rem">Istilah</th>
+                        <th class="text-end pe-4" style="font-size: 0.8rem">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($dictionaries as $item)
                     <tr class="module-row">
-                        <td class="ps-4">
-                            <div class="fw-bold text-dark">{{ $item->term }}</div>
+                        <td class="ps-4" style="text-align: left">
+                            <div class="fw-bold text-dark" style="font-weight: bold">{{ $item->term }}</div>
                             <small class="text-muted">{{ Str::limit($item->definition, 50) }}</small>
                         </td>
-                        <td>
-                            <span class="badge bg-light text-secondary">{{ $item->module->title ?? 'Umum' }}</span>
-                        </td>
-                        <td class="text-end pe-4">
-                            <div class="d-flex justify-content-end gap-3">
-                                <a href="{{ route('admin.dictionaries.edit', $item->id) }}" class="text-primary fw-bold text-decoration-none small">Edit</a>
-                                <form action="{{ route('admin.dictionaries.destroy', $item->id) }}" method="POST" class="d-inline">
+                        {{-- Aksi --}}
+                        <td class="text-end pe-4 action-cell">
+                            <div class="action-bar">
+                                <a href="{{ route('admin.dictionaries.show', $item->id) }}" title="Detail">
+                                    <i class="fa-solid fa-book"></i>
+                                </a>
+
+
+                                <a href="{{ route('admin.dictionaries.edit', $item->id) }}" title="Edit">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <form action="{{ route('admin.dictionaries.destroy', $item->id) }}" method="POST">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-danger fw-bold border-0 bg-transparent p-0 small" onclick="return confirm('Hapus istilah ini?')">Hapus</button>
+                                    <button type="submit" title="Hapus"
+                                            onclick="return confirm('Hapus istilah ini?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
                                 </form>
                             </div>
                         </td>

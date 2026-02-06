@@ -42,14 +42,14 @@ class DictionaryController extends Controller
         ]);
 
         Dictionary::create($request->all());
-        return redirect()->route('admin.dictionaries.index')->with('success', 'Istilah IT berhasil ditambahkan!');
+        return redirect()->route('admin.dictionaries.index')->with('success', 'Istilah baru berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
         $dictionary = Dictionary::findOrFail($id);
         $modules = Module::all();
-        return view('admin.dictionaries.edit', compact('dictionary', 'modules'));
+        return view('admin.dictionaries.create', compact('dictionary', 'modules'));
     }
 
     public function update(Request $request, $id)
@@ -65,9 +65,16 @@ class DictionaryController extends Controller
         return redirect()->route('admin.dictionaries.index')->with('success', 'Istilah berhasil diperbarui!');
     }
 
+    public function show($id)
+    {
+        $dictionary = Dictionary::findOrFail($id);
+        return view('admin.dictionaries.show', compact('dictionary'));
+    }
+ 
     public function destroy($id)
     {
-        Dictionary::findOrFail($id)->delete();
-        return back()->with('success', 'Istilah berhasil dihapus!');
+        $dictionary = Dictionary::findOrFail($id);
+        $dictionary->delete();
+        return redirect()->route('admin.dictionaries.index')->with('success', 'Istilah berhasil dihapus dari sistem!');
     }
 }

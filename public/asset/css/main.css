@@ -623,7 +623,6 @@
 /* FOOTER */
 /* DASHBOARD FOOTER */
 .dashboard-footer {
-    margin-top: 80px;
     padding: 40px 60px;
     background-color: var(--dark);
     color: var(--light);
@@ -1415,6 +1414,7 @@
         border: 1px solid #eef0f2;
         border-radius: 20px;
         padding: 40px;
+        width: 70rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
     }
 
