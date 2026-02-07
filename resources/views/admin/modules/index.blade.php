@@ -1,16 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="admin-spacer" style="height: 60px;"></div>
+<div class="admin-spacer" style="height: 30px;"></div>
 
 <div class="content-body pt-5 px-4">
-
-    {{-- Notifikasi Sukses --}}
-    @if(session('success'))
-        <div class="alert-rplearn mb-4">
-            <i class="fa-solid fa-check-circle me-2"></i> {{ session('success') }}
-        </div>
-    @endif
 
     {{-- Header: Rapi & Sejajar --}}
     <div class="page-header d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">

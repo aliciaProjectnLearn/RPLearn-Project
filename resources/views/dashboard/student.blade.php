@@ -38,11 +38,11 @@
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
     {{-- SEARCH & FILTER UPGRADED --}}
-    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
+    <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
         <div class="search-wrapper">
             <div class="module-search">
                 <i class="ri-search-line"></i>
-                <input type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
+                <input id="moduleSearchInput" type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
             </div>
         </div>
 
@@ -78,7 +78,7 @@
     </form>
 
     {{-- MODULE CARDS --}}
-    <div class="module-cards">
+    <div class="module-cards" id="moduleCardsContainer">
         @forelse($modules as $module)
             <div class="module-card">
                 <div class="card-header-row">
@@ -125,7 +125,7 @@
 
     <div class="dictionary-search">
         <i class="ri-search-line"></i>
-        <input type="text" id="dictionarySearch" placeholder="Search terms..." />
+        <input type="text" id="dictionarySearch" name="dictionary_search" placeholder="Search terms..." />
     </div>
 
 <div class="dictionary-table-wrapper reveal">
@@ -349,27 +349,37 @@
 </section>
 
 {{-- 5. MODALS --}}
+@push('modals')
 <div id="moduleModal" class="modal-overlay">
     <div class="modal-card-box">
         <span onclick="closeModal()" class="close-modal-btn">&times;</span>
         <div id="modalBody"></div>
     </div>
 </div>
+@endpush
+
+@push('modals')
 
 <div class="dictionary-modal" id="dictionaryModal" aria-hidden="true">
     <div class="dictionary-modal-overlay"></div>
+
     <div class="dictionary-modal-box">
-        <button class="dictionary-modal-close" id="dictionaryModalClose">&times;</button>
+        <button class="dictionary-modal-close" id="dictionaryModalClose">
+            &times;
+        </button>
+
         <h3 class="dictionary-modal-term" id="dictionaryModalTerm"></h3>
         <p class="dictionary-modal-definition" id="dictionaryModalDefinition"></p>
     </div>
 </div>
 
-@endsection
+@endpush
+
+@push('scripts')
 
 {{-- JAVASCRIPT MASTER --}}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // --- A. AJAX SEARCH MODUL (Instan tanpa Reload) ---
     const filterForm = document.getElementById('moduleFilterForm');
     const moduleContainer = document.getElementById('moduleCardsContainer');
@@ -444,10 +454,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function showDetail(id) {
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = '<p class="text-center p-5">Memuat materi...</p>';
-    document.getElementById('moduleModal').style.display = "block";
+    document.getElementById('moduleModal').style.display = "flex";
 
     fetch(`/student/modules/${id}/json`)
-        .then(res => res.json())
+    .then(res => res.json())
         .then(data => {
             let content = data.contents[0] || {};
             let videoElement = '';
@@ -459,7 +469,7 @@ function showDetail(id) {
             } else if (content.file_path && content.file_path.endsWith('.mp4')) {
                 videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
-                                    Browser kamu tidak mendukung video player.
+                                        Browser kamu tidak mendukung video player.
                                 </video>`;
             } else {
                 videoElement = `<div class="no-video-placeholder">No Video Available</div>`;
@@ -472,25 +482,25 @@ function showDetail(id) {
                     ${content.file_path && content.file_path.endsWith('.pdf') ?
                         `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
                             <i class="ri-file-pdf-line"></i> Download PDF Materi
-                        </a>` : ''}
-                    <div class="modal-tags-row">
+                            </a>` : ''}
+                            <div class="modal-tags-row">
                         <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
                         <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
                     </div>
-                </div>
-                <div class="modal-side-text">
+                    </div>
+                    <div class="modal-side-text">
                     <h2 class="modal-title-text">${data.title}</h2>
                     <div class="modal-scroll"><p>${data.desc}</p></div>
-                </div>
-            </div>`;
-        });
-}
+                    </div>
+                    </div>`;
+                });
+            }
 function closeModal() { document.getElementById('moduleModal').style.display = "none"; }
 
 function openModule(moduleId) {
     fetch(`/student/modules/${moduleId}/json`)
-        .then(response => response.json())
-        .then(data => {
+    .then(response => response.json())
+    .then(data => {
             // 1. Isi Judul & Deskripsi di Modal
             document.getElementById('modalTitle').innerText = data.title;
             document.getElementById('modalDesc').innerText = data.desc;
@@ -514,3 +524,6 @@ function openModule(moduleId) {
         });
 }
 </script>
+@endpush
+
+@endsection
