@@ -47,6 +47,7 @@ public function store(LoginRequest $request): RedirectResponse
 }
 
 
+
     /**
      * Destroy an authenticated session.
      */
@@ -60,5 +61,4 @@ public function store(LoginRequest $request): RedirectResponse
         return redirect('/login')
             ->with('success', 'Logout berhasil');
     }
-
 }

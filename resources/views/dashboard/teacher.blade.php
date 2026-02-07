@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Dashboard Guru</title>
 </head>
-<body> 
+
+<body>
     <h1>Dashboard Guru</h1>
 
     <p>Halo, {{ auth()->user()->username }}</p>
@@ -14,11 +16,6 @@
         <button type="submit">Logout</button>
     </form>
 
-    {{-- Flash success popup --}}
-    @if (session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
-    @endif
 </body>
+
 </html>

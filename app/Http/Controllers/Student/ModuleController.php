@@ -54,7 +54,7 @@ public function index(Request $request)
         return view('partials._module_list', compact('modules'))->render();
     }
 
-    return view('dashboard.student', compact('modules', 'grades', 'subjects', 'dictionaries', 'faq', 'teacher'));
+    return view('dashboard.student', compact('modules', 'grades', 'subjects', 'dictionaries', 'faqs', 'teachers'));
 }
 
     public function show($id)

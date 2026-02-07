@@ -1490,6 +1490,7 @@ body {
         border: 1px solid #eef0f2;
         border-radius: 20px;
         padding: 40px;
+        width: 70rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
     }
 
