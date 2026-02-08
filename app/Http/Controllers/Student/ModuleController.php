@@ -18,20 +18,17 @@ public function index(Request $request)
     $grades = GradeCategory::all();
     $subjects = SubjectCategory::all();
 
-    // FAQ
-    $faq = Question::with('answer')
+    $faqs = Question::with('answer')
         ->where('status', 'answered')
         ->whereHas('answer')
         ->latest()
         ->get();
 
-    // Guru
-    $teacher = User::where('role', 'guru')->get();
+    $teachers = User::where('role', 'guru')->get();
 
     // LOGIKA DICTIONARY YANG TADI DI WEB.PHP PINDAH KE SINI:
     $dictionaries = \App\Models\Dictionary::orderBy('term', 'asc')->limit(6)->get();
 
-    // Query Modul
     $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher']);
 
     // Logika Filter Module
@@ -39,15 +36,6 @@ public function index(Request $request)
         $query->where('title', 'like', '%' . $request->search . '%');
     }
 
-    // Filter Kelas
-    if ($request->filled('grade_id')) {
-        $query->where('grade_category_id', $request->grade_id);
-    }
-
-    // Filter Materi
-    if ($request->filled('subject_id')) {
-        $query->where('subject_category_id', $request->subject_id);
-    }
     $modules = $query->get();
 
     if ($request->ajax() || $request->has('ajax')) {

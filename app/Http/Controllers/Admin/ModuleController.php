@@ -28,7 +28,7 @@ class ModuleController extends Controller
         $grades = \App\Models\GradeCategory::all();
         $subjects = \App\Models\SubjectCategory::all();
         $teachers = \App\Models\User::where('role', 'guru')->get();
-
+    
         // Pastikan variabel ini di-compact ke view
         return view('admin.modules.create', compact('grades', 'subjects', 'teachers'));
     }
