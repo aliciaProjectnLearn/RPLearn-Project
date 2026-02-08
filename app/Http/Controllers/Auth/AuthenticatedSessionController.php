@@ -22,24 +22,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-        $request->session()->regenerate();
+public function store(LoginRequest $request): RedirectResponse
+{
+    $request->authenticate();
+    $request->session()->regenerate();
 
-        $user = auth()->user();
+    $user = auth()->user();
 
-        return match ($user->role) {
-            'admin' => redirect()->route('admin.dashboard')
-                ->with('success', 'Login Admin berhasil!'),
-
-            'guru'  => redirect()->route('dashboard.teacher')
-                ->with('success', 'Login Guru berhasil!'),
-
-            'siswa' => redirect()->route('student.dashboard')
-                ->with('success', 'Login Siswa berhasil!'),
-        };
+    // Cek Role Guru
+    if ($user->role === 'guru') {
+        return redirect()->route('dashboard.teacher')
+            ->with('success', 'Login berhasil, selamat datang Guru');
     }
+
+    // Cek Role Admin (TAMBAHKAN ELSEIF DI SINI)
+    elseif ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard')
+            ->with('success', 'Login berhasil, selamat datang di Admin Dashboard');
+    }
+
+    // Default: Jika bukan Guru dan bukan Admin, lempar ke Student
+    return redirect()->route('student.dashboard')
+        ->with('success', 'Login berhasil, selamat datang');
+}
 
 
 
