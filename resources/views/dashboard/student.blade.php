@@ -42,12 +42,20 @@
                     <i class="ri-arrow-down-s-line arrow-icon"></i>
                 </div>
 
-    {{-- SEARCH & FILTER UPGRADED --}}
-    <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
-        <div class="search-wrapper">
-            <div class="module-search">
-                <i class="ri-search-line"></i>
-                <input id="moduleSearchInput" type="text" name="search" placeholder="Mau belajar apa hari ini?" value="{{ request('search') }}">
+                {{-- Dropdown Materi --}}
+                <div class="custom-select-wrapper">
+                    <i class="ri-book-3-line select-icon"></i>
+                    <select name="subject_id" onchange="this.form.submit()">
+                        <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
+                        @foreach ($subjects as $subject)
+                            <option value="{{ $subject->id }}"
+                                {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                                {{ $subject->subject }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="ri-arrow-down-s-line arrow-icon"></i>
+                </div>
             </div>
         </form>
 
@@ -79,40 +87,8 @@
 
                     <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
 
-            {{-- Dropdown Materi --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-book-3-line select-icon"></i>
-                <select name="subject_id" onchange="this.form.submit()">
-                    <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
-                    @foreach($subjects as $subject)
-                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                            {{ $subject->subject }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
-            </div>
-        </div>
-    </form>
-
-    {{-- MODULE CARDS --}}
-    <div class="module-cards" id="moduleCardsContainer">
-        @forelse($modules as $module)
-            <div class="module-card">
-                <div class="card-header-row">
-                    {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
-                    <span class="module-meta-text">
-                        {{ $module->gradeCategory->grade ?? 'Kelas' }} | {{ $module->subjectCategory->subject ?? 'Materi' }}
-                    </span>
-
-                    {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
-                    <div class="media-icons-row">
-                        @php
-                            $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
-                            $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
-                        @endphp
-                        @if($hasVideo) <i class="ri-youtube-fill" style="color: #FF0000;"></i> @endif
-                        @if($hasPdf) <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i> @endif
+                    <div class="author-label">
+                        <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
                     </div>
 
                     <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
@@ -141,10 +117,34 @@
 
         <div class="dictionary-table-wrapper reveal">
 
-    <div class="dictionary-search">
-        <i class="ri-search-line"></i>
-        <input type="text" id="dictionarySearch" name="dictionary_search" placeholder="Search terms..." />
-    </div>
+            @php
+                $grouped = $dictionaries->groupBy(function ($item) {
+                    return strtoupper(substr($item->term, 0, 1));
+                });
+            @endphp
+
+            <div class="dictionary-horizontal-wrapper">
+
+                @forelse ($grouped as $letter => $items)
+                    <div class="dictionary-column dictionary-letter-column">
+                        <h3 class="dictionary-letter">{{ $letter }}</h3>
+
+                        <table class="dictionary-table">
+                            <tbody>
+                                @foreach ($items as $dictionary)
+                                    <tr class="dictionary-row">
+                                        <td>
+                                            <span class="dictionary-term clickable-term"
+                                                data-term="{{ $dictionary->term }}"
+                                                data-definition="{{ $dictionary->definition }}">
+                                                {{ $dictionary->term }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
                 @empty
                     <p>Data tidak ditemukan.</p>
@@ -340,58 +340,81 @@
                         });
                     });
                 });
-        });
-    </script>
-</section>
+            }
+        </script>
+    </section>
 
-{{-- 5. MODALS --}}
-@push('modals')
-<div id="moduleModal" class="modal-overlay">
-    <div class="modal-card-box">
-        <span onclick="closeModal()" class="close-modal-btn">&times;</span>
-        <div id="modalBody"></div>
-    </div>
-</div>
-@endpush
-
-@push('modals')
-
-<div class="dictionary-modal" id="dictionaryModal" aria-hidden="true">
-    <div class="dictionary-modal-overlay"></div>
-
-    <div class="dictionary-modal-box">
-        <button class="dictionary-modal-close" id="dictionaryModalClose">
-            &times;
-        </button>
-
-        <h3 class="dictionary-modal-term" id="dictionaryModalTerm"></h3>
-        <p class="dictionary-modal-definition" id="dictionaryModalDefinition"></p>
+    {{-- 5. MODALS --}}
+    <div id="moduleModal" class="modal-overlay">
+        <div class="modal-card-box">
+            <span onclick="closeModal()" class="close-modal-btn">&times;</span>
+            <div id="modalBody"></div>
+        </div>
     </div>
 
-@endpush
+    <div class="dictionary-modal" id="dictionaryModal" aria-hidden="true">
+        <div class="dictionary-modal-overlay"></div>
+        <div class="dictionary-modal-box">
+            <button class="dictionary-modal-close" id="dictionaryModalClose">&times;</button>
+            <h3 class="dictionary-modal-term" id="dictionaryModalTerm"></h3>
+            <p class="dictionary-modal-definition" id="dictionaryModalDefinition"></p>
+        </div>
+    </div>
 
-@push('scripts')
+@endsection
 
 {{-- JAVASCRIPT MASTER --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    // --- A. AJAX SEARCH MODUL (Instan tanpa Reload) ---
-    const filterForm = document.getElementById('moduleFilterForm');
-    const moduleContainer = document.getElementById('moduleCardsContainer');
-    const searchInput = document.getElementById('moduleSearchInput');
-    const selects = filterForm.querySelectorAll('select');
+        // --- A. AJAX SEARCH MODUL (Instan tanpa Reload) ---
+        const filterForm = document.getElementById('moduleFilterForm');
+        const moduleContainer = document.getElementById('moduleCardsContainer');
+        const searchInput = document.getElementById('moduleSearchInput');
+        const selects = filterForm.querySelectorAll('select');
 
-    function fetchModules() {
-        const params = new URLSearchParams(new FormData(filterForm)).toString();
-        moduleContainer.style.opacity = '0.5';
+        function fetchModules() {
+            const params = new URLSearchParams(new FormData(filterForm)).toString();
+            moduleContainer.style.opacity = '0.5';
 
-        fetch(`${window.location.pathname}?${params}&ajax=1`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.text())
-        .then(html => {
-            moduleContainer.innerHTML = html;
-            moduleContainer.style.opacity = '1';
+            fetch(`${window.location.pathname}?${params}&ajax=1`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.text())
+                .then(html => {
+                    moduleContainer.innerHTML = html;
+                    moduleContainer.style.opacity = '1';
+                });
+        }
+
+        searchInput.addEventListener('input', debounce(fetchModules, 300));
+        selects.forEach(select => select.addEventListener('change', fetchModules));
+        filterForm.addEventListener('submit', (e) => e.preventDefault());
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    func.apply(this, args);
+                }, timeout);
+            };
+        }
+
+        // --- B. DICTIONARY MODAL & SEARCH (Kodingan Asli Lo) ---
+        const dictModal = document.getElementById('dictionaryModal');
+        const modalTerm = document.getElementById('dictionaryModalTerm');
+        const modalDefinition = document.getElementById('dictionaryModalDefinition');
+        const dictSearchInput = document.getElementById('dictionarySearch');
+
+        document.querySelectorAll('.clickable-term').forEach(item => {
+            item.addEventListener('click', function() {
+                modalTerm.textContent = this.dataset.term;
+                modalDefinition.textContent = this.dataset.definition;
+                dictModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
         });
 
         window.closeDictModal = function() {
@@ -417,28 +440,28 @@
             });
         });
     });
-});
 
-// MODULE DETAIL MODAL
-function showDetail(id) {
-    const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = '<p class="text-center p-5">Memuat materi...</p>';
-    document.getElementById('moduleModal').style.display = "flex";
+    // MODULE DETAIL MODAL
+    function showDetail(id) {
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = '<p class="text-center p-5">Memuat materi...</p>';
+        document.getElementById('moduleModal').style.display = "block";
 
-    fetch(`/student/modules/${id}/json`)
-    .then(res => res.json())
-        .then(data => {
-            let content = data.contents[0] || {};
-            let videoElement = '';
+        fetch(`/student/modules/${id}/json`)
+            .then(res => res.json())
+            .then(data => {
+                let content = data.contents[0] || {};
+                let videoElement = '';
 
-            // Cek untuk memeriksa link YouTube atau file Video asli
-            if (content.video_url) {
-                let vId = content.video_url.split('v=')[1]?.split('&')[0];
-                videoElement = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
-            } else if (content.file_path && content.file_path.endsWith('.mp4')) {
-                videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
+                // Cek untuk memeriksa link YouTube atau file Video asli
+                if (content.video_url) {
+                    let vId = content.video_url.split('v=')[1]?.split('&')[0];
+                    videoElement =
+                        `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                } else if (content.file_path && content.file_path.endsWith('.mp4')) {
+                    videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
-                                        Browser kamu tidak mendukung video player.
+                                    Browser kamu tidak mendukung video player.
                                 </video>`;
                 } else {
                     videoElement = `<div class="no-video-placeholder">No Video Available</div>`;
@@ -451,48 +474,48 @@ function showDetail(id) {
                     ${content.file_path && content.file_path.endsWith('.pdf') ?
                         `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
                             <i class="ri-file-pdf-line"></i> Download PDF Materi
-                            </a>` : ''}
-                            <div class="modal-tags-row">
+                        </a>` : ''}
+                    <div class="modal-tags-row">
                         <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
                         <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
                     </div>
-                    </div>
-                    <div class="modal-side-text">
+                </div>
+                <div class="modal-side-text">
                     <h2 class="modal-title-text">${data.title}</h2>
                     <div class="modal-scroll"><p>${data.desc}</p></div>
-                    </div>
-                    </div>`;
-                });
-            }
-function closeModal() { document.getElementById('moduleModal').style.display = "none"; }
+                </div>
+            </div>`;
+            });
+    }
 
-function openModule(moduleId) {
-    fetch(`/student/modules/${moduleId}/json`)
-    .then(response => response.json())
-    .then(data => {
-            // 1. Isi Judul & Deskripsi di Modal
-            document.getElementById('modalTitle').innerText = data.title;
-            document.getElementById('modalDesc').innerText = data.desc;
+    function closeModal() {
+        document.getElementById('moduleModal').style.display = "none";
+    }
 
-            // 2. Cari konten Video & PDF dari relasi contents
-            const video = data.contents.find(c => c.type === 'video');
-            const pdf = data.contents.find(c => c.type === 'pdf');
+    function openModule(moduleId) {
+        fetch(`/student/modules/${moduleId}/json`)
+            .then(response => response.json())
+            .then(data => {
+                // 1. Isi Judul & Deskripsi di Modal
+                document.getElementById('modalTitle').innerText = data.title;
+                document.getElementById('modalDesc').innerText = data.desc;
 
-            // 3. Update Video Player
-            const videoIframe = document.getElementById('videoPlayer');
-            videoIframe.src = video ? `/storage/${video.file_path}` : '';
+                // 2. Cari konten Video & PDF dari relasi contents
+                const video = data.contents.find(c => c.type === 'video');
+                const pdf = data.contents.find(c => c.type === 'pdf');
 
-            // 4. Update Tombol Download PDF
-            const pdfBtn = document.getElementById('downloadPdfBtn');
-            if (pdf) {
-                pdfBtn.href = `/storage/${pdf.file_path}`;
-                pdfBtn.style.display = 'block';
-            } else {
-                pdfBtn.style.display = 'none';
-            }
-        });
-}
+                // 3. Update Video Player
+                const videoIframe = document.getElementById('videoPlayer');
+                videoIframe.src = video ? `/storage/${video.file_path}` : '';
+
+                // 4. Update Tombol Download PDF
+                const pdfBtn = document.getElementById('downloadPdfBtn');
+                if (pdf) {
+                    pdfBtn.href = `/storage/${pdf.file_path}`;
+                    pdfBtn.style.display = 'block';
+                } else {
+                    pdfBtn.style.display = 'none';
+                }
+            });
+    }
 </script>
-@endpush
-
-@endsection

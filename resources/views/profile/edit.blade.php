@@ -12,6 +12,9 @@
                 <h3 class="fw-800 text-dark m-0">Pengaturan Profil</h3>
                 <p class="text-muted small m-0">Kelola informasi keamanan dan akun <span class="text-orange fw-bold">RPLearn</span> Anda</p>
             </div>
+            <span class="badge bg-soft-blue text-white px-4 py-2 rounded-pill fw-bold" style="font-size: 11px;">
+                ADMIN MODE
+            </span>
         </div>
 
         {{-- Notifikasi Sukses --}}
@@ -24,7 +27,7 @@
         {{-- Section 1: Informasi Akun (Padding p-5 biar lega) --}}
         <div class="main-form-card shadow-sm border-0 bg-white rounded-4 p-5 mb-5">
             <div class="d-flex align-items-center mb-4">
-                <div class="icon-indicator me-3" style="width: 10px; height: 30px; border-radius: 5px;"></div>
+                <div class="icon-indicator bg-soft-orange me-3" style="width: 10px; height: 30px; border-radius: 5px;"></div>
                 <h6 class="fw-800 text-dark m-0" style="letter-spacing: 1px;">INFORMASI AKUN</h6>
             </div>
 
@@ -33,10 +36,10 @@
                 @method('patch')
 
                 <div class="mb-5"> {{-- Jarak input ke tombol simpan --}}
-                    <label class="fw-bold text-secondary small d-block mb-3" style="letter-spacing: 1px;">USERNAME</label>
-                    <br>
-                    <br>
-                    <input type="text" name="username" class="input-modern-premium w-100" value="{{ old('username', $user->username) }}" required style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 20px;">
+                    <label class="fw-bold text-secondary small d-block mb-3" style="letter-spacing: 0.5px;">USERNAME</label>
+                    <input type="text" name="username" class="input-modern-premium w-100"
+                           value="{{ old('username', $user->username) }}" required
+                           style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 20px;">
                     @error('username')
                         <span class="text-danger small mt-2 d-block fw-bold">{{ $message }}</span>
                     @enderror
@@ -53,12 +56,10 @@
             </form>
         </div>
 
-        <br>
-
         {{-- Section 2: Keamanan (Jarak antar kartu mb-5) --}}
-    <div class="main-form-card shadow-sm border-0 bg-white rounded-4 p-5">
-        <div class="d-flex align-items-center mb-4">
-            <div class="icon-indicator bg-dark me-3" style="width: 4px; height: 24px; border-radius: 10px;"></div>
+<div class="main-form-card shadow-sm border-0 bg-white rounded-4 p-5">
+    <div class="d-flex align-items-center mb-4">
+        <div class="icon-indicator bg-dark me-3" style="width: 4px; height: 24px; border-radius: 10px;"></div>
         <h6 class="fw-800 text-dark m-0" style="letter-spacing: 1px;">KEAMANAN & AKSES</h6>
     </div>
 
@@ -100,7 +101,7 @@
         padding: 12px 30px;
         border-radius: 10px;
         font-weight: 700;
-        font-size: 15px;
+        font-size: 13px;
         transition: 0.3s;
         box-shadow: 0 4px 15px rgba(243, 112, 33, 0.2);
         display: inline-block;
@@ -112,64 +113,5 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(243, 112, 33, 0.3);
     }
-
-    /* ============================= */
-/* FIX FONT PROFIL BIAR GAK MINI */
-/* ============================= */
-
-/* Header utama */
-.page-header h3 {
-    font-size: 28px !important;
-    font-weight: 800 !important;
-}
-
-.page-header p {
-    font-size: 15px !important;
-}
-
-/* Judul Section */
-.main-form-card h6 {
-    font-size: 18px !important;
-    font-weight: 800 !important;
-}
-
-/* Label Username */
-label {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-}
-
-/* Input Username */
-.input-modern-premium {
-    font-size: 16px !important;
-    padding: 16px 20px !important;
-}
-
-/* Tombol Simpan */
-.btn-save-modern {
-    font-size: 15px !important;
-    padding: 14px 40px !important;
-    border-radius: 14px !important;
-}
-
-/* Bagian Keamanan */
-.security-wrapper p:first-child {
-    font-size: 17px !important;
-    font-weight: 800 !important;
-}
-
-/* Deskripsi keamanan jangan kecil banget */
-.security-wrapper p.text-muted {
-    font-size: 16px !important;
-    line-height: 1.8 !important;
-}
-
-/* Tombol Ganti Password lebih gede */
-.btn-security-action {
-    font-size: 15px !important;
-    padding: 15px 35px !important;
-    border-radius: 14px !important;
-}
-
 </style>
 @endsection
