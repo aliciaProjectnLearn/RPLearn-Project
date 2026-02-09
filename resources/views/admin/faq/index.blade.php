@@ -1,85 +1,187 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Gunakan spacer khusus biar gak "nyelam" di ThinkPad T460s lo --}}
-<div class="admin-spacer"></div>
+    <div class="admin-spacer" style="height: 60px;"></div>
 
-<div class="page-content px-4">
-    <div class="admin-card-box">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="content-body pt-5 px-4">
+
+        {{-- Header --}}
+        <div class="page-header d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">
             <div>
-                <h2 class="fw-800 text-dark m-0">Fitur FAQ & Tanya Jawab</h2>
-                <p class="text-muted small">Kelola pertanyaan dari siswa mengenai materi <span class="text-orange fw-700">RPLearn</span></p>
-            </div>
-            {{-- Statistik mini biar admin tahu beban kerja --}}
-            <div class="d-flex gap-2">
-                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill fw-700">
-                    {{ $questions->where('status', 'pending')->count() }} PENDING
-                </span>
-                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-700">
-                    {{ $questions->where('status', 'answered')->count() }} TERJAWAB
-                </span>
+                <h2 class="fw-bold text-dark mb-1">Monitoring FAQ</h2><br>
+                <p class="text-secondary m-0">
+                    Total: <span class="text-orange fw-bold">{{ $questions->count() }} Pertanyaan</span>
+                </p>
             </div>
         </div>
 
-        @foreach($questions as $q)
-        {{-- Class faq-item-modern otomatis kasih border status di samping --}}
-        <div class="faq-item-modern {{ $q->status == 'answered' ? 'faq-status-answered' : 'faq-status-pending' }}">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="bg-orange-subtle rounded-circle p-2 text-center" style="width: 45px; height: 45px;">
-                        <i class="fa-solid fa-circle-question fa-lg"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-800 m-0 text-dark">{{ $q->title }}</h5>
-                        <small class="text-muted">
-                            Oleh: <b class="text-dark">{{ $q->student->name ?? 'Siswa' }}</b>
-                            <span class="mx-1">|</span>
-                            Modul: <span class="text-orange fw-600">{{ $q->module->title ?? 'Umum' }}</span>
-                        </small>
-                    </div>
-                </div>
-                <div class="text-end">
-                    <small class="text-muted d-block">{{ $q->created_at?->diffForHumans() ?? 'Baru saja' }}</small>
-                </div>
-            </div>
+        {{-- Filter & Search --}}
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <form method="GET" class="d-flex gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pertanyaan..."
+                    class="form-control shadow-sm" style="max-width: 260px;">
 
-            <div class="bg-light p-3 rounded-3 mb-4" style="border: 1px dashed #ddd;">
-                <p class="text-dark m-0 italic" style="font-size: 0.95rem;">"{{ $q->question }}"</p>
-            </div>
+                <select name="status" class="form-select shadow-sm" style="max-width: 200px;">
+                    <option value="">Semua Status</option>
+                    <option value="answered" {{ request('status') === 'answered' ? 'selected' : '' }}>
+                        Terjawab
+                    </option>
+                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>
+                        Belum Terjawab
+                    </option>
+                </select>
 
-            @if($q->status == 'pending')
-                {{-- Form Balas Sejajar dengan style input modern --}}
-                <form action="{{ route('admin.faq.answer', $q->id) }}" method="POST">
-                    @csrf
-                    <div class="row g-2 align-items-center">
-                        <div class="col-md-10">
-                            <textarea name="answer" class="input-modern w-100" rows="2" placeholder="Tulis jawaban resmi admin di sini..." required></textarea>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-save-modern w-100 py-3">Balas</button>
-                        </div>
-                    </div>
-                </form>
-            @else
-                {{-- Tampilan Jawaban Terpasang dengan aksen oranye RPLearn --}}
-                <div class="pt-3 border-top mt-2">
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        <i class="fa-solid fa-reply text-orange"></i>
-                        <label class="small fw-800 text-orange uppercase ls-1">JAWABAN ADMIN</label>
-                    </div>
-                    <p class="text-secondary m-0 ps-4" style="line-height: 1.6;">{{ $q->answer->answer }}</p>
-                </div>
-            @endif
+                <button class="btn-orange shadow-sm px-4"
+                    style="background:#f37021;color:white;border-radius:10px;font-weight:700;">
+                    Filter
+                </button>
+            </form>
         </div>
-        @endforeach
 
-        @if($questions->isEmpty())
-            <div class="text-center py-5">
-                <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
-                <p class="text-muted">Belum ada pertanyaan masuk hari ini.</p>
+        <br><br>
+
+        {{-- Tabel FAQ --}}
+        <div class="module-card shadow-sm border-0 bg-white rounded-3 overflow-hidden">
+            <div class="table-responsive">
+                <table class="rplearn-table align-middle w-100">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th class="ps-4 py-3 text-uppercase small fw-bold text-muted">
+                                Pertanyaan
+                            </th>
+                            <th class="py-3 text-uppercase small fw-bold text-muted text-center">
+                                Penanya
+                            </th>
+                            <th class="py-3 text-uppercase small fw-bold text-muted text-center">
+                                Status
+                            </th>
+                            <th class="py-3 text-uppercase small fw-bold text-muted text-center">
+                                Penjawab
+                            </th>
+                            <th class="text-end pe-4 py-3 text-uppercase small fw-bold text-muted">
+                                Detail
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse ($questions as $question)
+                            <tr class="module-row border-bottom">
+
+                                {{-- Pertanyaan --}}
+                                <td class="ps-4 py-3">
+                                    <div class="fw-bold text-dark">
+                                        {{ $question->title }}
+                                    </div>
+                                    <small class="text-muted">
+                                        {{ Str::limit($question->question, 90) }}
+                                    </small>
+                                </td>
+
+                                {{-- Penanya --}}
+                                <td class="text-center py-3 small fw-600 text-dark">
+                                    {{ $question->student->name ?? 'Siswa' }}
+                                </td>
+
+                                {{-- Status --}}
+                                <td class="text-center py-3">
+                                    @if ($question->status === 'answered')
+                                        <span class="badge-grade px-3 py-1 rounded-pill bg-success text-white small fw-bold"
+                                            style="font-size:11px;">
+                                            Terjawab
+                                        </span>
+                                    @else
+                                        <span class="badge-grade px-3 py-1 rounded-pill bg-warning text-dark small fw-bold"
+                                            style="font-size:11px;">
+                                            Pending
+                                        </span>
+                                    @endif
+                                </td>
+
+                                {{-- Penjawab --}}
+                                <td class="text-center text-muted small fw-600 py-3">
+                                    {{ $question->answer?->teacher?->username ?? 'Belum dijawab' }}
+                                </td>
+
+                                {{-- Detail (INI YANG TADI SALAH) --}}
+                                <td class="text-end pe-4 py-3">
+                                    <a href="javascript:void(0)" class="faq-detail-btn" title="Lihat Detail"
+                                        data-title="{{ $question->title }}" data-question="{{ $question->question }}"
+                                        data-answer="{{ $question->answer->answer ?? 'Belum ada jawaban.' }}"
+                                        data-teacher="{{ $question->answer->teacher->username ?? '-' }}">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted italic small">
+                                    Belum ada data FAQ.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+
+                </table>
             </div>
-        @endif
+        </div>
+
+        {{-- MODAL FAQ --}}
+        @push('modals')
+            <div class="faq-modal" id="faqModal" aria-hidden="true">
+                <div class="faq-modal-overlay"></div>
+
+                <div class="faq-modal-box">
+                    <button class="faq-modal-close" id="faqModalClose">&times;</button>
+
+                    <h3 class="faq-modal-title" id="faqModalTitle"></h3>
+                    <p class="faq-modal-question" id="faqModalQuestion"></p>
+
+                    <div class="faq-modal-divider"></div>
+
+                    <p class="faq-modal-answer" id="faqModalAnswer"></p>
+
+                    <small class="faq-modal-meta">
+                        Dijawab oleh <strong id="faqModalTeacher"></strong>
+                    </small>
+                </div>
+            </div>
+        @endpush
+
     </div>
-</div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                const modal = document.getElementById('faqModal');
+                const modalTitle = document.getElementById('faqModalTitle');
+                const modalQuestion = document.getElementById('faqModalQuestion');
+                const modalAnswer = document.getElementById('faqModalAnswer');
+                const modalTeacher = document.getElementById('faqModalTeacher');
+
+                document.querySelectorAll('.faq-detail-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+
+                        modalTitle.textContent = this.dataset.title;
+                        modalQuestion.textContent = this.dataset.question;
+                        modalAnswer.textContent = this.dataset.answer;
+                        modalTeacher.textContent = this.dataset.teacher;
+
+                        modal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    });
+                });
+
+                function closeModal() {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+
+                document.getElementById('faqModalClose').addEventListener('click', closeModal);
+                document.querySelector('.faq-modal-overlay').addEventListener('click', closeModal);
+            });
+        </script>
+    @endpush
 @endsection

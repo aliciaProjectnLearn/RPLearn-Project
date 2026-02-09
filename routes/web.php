@@ -48,8 +48,10 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::resource('users', UserController::class);
 
     // 3. FITUR FAQ
-    Route::get('faq', [App\Http\Controllers\Admin\FAQController::class, 'index'])->name('faq.index');
-    Route::post('faq/{id}/answer', [App\Http\Controllers\Admin\FAQController::class, 'answer'])->name('faq.answer');
+    Route::get('faq', [App\Http\Controllers\Admin\FaqController::class, 'index'])->name('faq.index');
+    Route::get('faq/{id}', [App\Http\Controllers\Admin\FaqController::class, 'show'])->name('faq.show');
+    
+
 });
 
 /*

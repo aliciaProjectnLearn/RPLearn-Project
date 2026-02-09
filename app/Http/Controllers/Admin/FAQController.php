@@ -4,33 +4,46 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Question;
-use App\Models\Answer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class FAQController extends Controller
+class FaqController extends Controller
 {
-    public function index()
+    /**
+     * Halaman utama FAQ (TABLE)
+     */
+    public function index(Request $request)
     {
-        // Ambil semua pertanyaan, prioritaskan yang 'pending'
-        $questions = Question::with(['student', 'answer'])->latest()->get();
+        $questions = Question::with([
+                'student',
+                'teacher',
+                'answer.teacher'
+            ])
+            ->when($request->status, function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->search, function ($query) use ($request) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('title', 'like', "%{$request->search}%")
+                      ->orWhere('question', 'like', "%{$request->search}%");
+                });
+            })
+            ->latest()
+            ->get();
+
         return view('admin.faq.index', compact('questions'));
     }
 
-    public function answer(Request $request, $id)
+    /**
+     * Detail FAQ (JSON → buat popup/modal)
+     */
+    public function show($id)
     {
-        $request->validate(['answer' => 'required|string']);
+        $question = Question::with([
+                'student',
+                'teacher',
+                'answer.teacher'
+            ])->findOrFail($id);
 
-        // 1. Simpan Jawaban
-        Answer::create([
-            'question_id' => $id,
-            'teacher_id' => Auth::id(), // Admin yang sedang login
-            'answer' => $request->answer,
-        ]);
-
-        // 2. Update Status Pertanyaan
-        Question::where('id', $id)->update(['status' => 'answered']);
-
-        return back()->with('success', 'Jawaban berhasil dikirim ke siswa!');
+        return response()->json($question);
     }
 }
