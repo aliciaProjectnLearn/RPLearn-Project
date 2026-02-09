@@ -290,7 +290,6 @@
 
 /* ================= FAQ ================= */
 
-
 .faq-section {
     margin-top: 80px;
     padding-top: 7.5rem;
@@ -463,6 +462,52 @@
     color: var(--orange);
 }
 
+/* FAQ ADMIN */
+.faq-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 15px 0 25px;
+}
+
+.faq-actions select {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+}
+
+.faq-search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    overflow: hidden;
+    background: white;
+}
+
+.faq-search-box input {
+    border: none;
+    padding: 10px 14px;
+    outline: none;
+    width: 250px;
+    font-size: 14px;
+}
+
+.faq-btn-search {
+    border: none;
+    background: var(--orange);
+    color: white;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.faq-btn-search:hover {
+    opacity: 0.85;
+}
+
 
 /* ANSWER */
 .faq-answer {
@@ -490,6 +535,99 @@
 /* ICON: > jadi V */
 .faq-item.active .icon {
     transform: rotate(90deg);
+}
+
+/* ===== FAQ MODAL ===== */
+.faq-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-modal.active {
+    display: flex;
+}
+
+.faq-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(34, 40, 49, 0.55);
+}
+
+.faq-modal-box {
+    position: relative;
+    z-index: 2;
+
+    max-width: 520px;
+    width: 90%;
+
+    background: #eeeeee;
+    color: #222831;
+    padding: 28px;
+    border-radius: 18px;
+
+    box-shadow: 0 25px 60px rgba(0,0,0,.35);
+
+    opacity: 0;
+    animation: modalFade .25s ease forwards;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        scale: .95;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+.faq-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.faq-modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #d6a531;
+}
+
+.faq-modal-question {
+    font-size: 14px;
+    color: #393e46;
+}
+
+.faq-modal-divider {
+    height: 1px;
+    background: #eeeeee;
+    margin: 18px 0;
+}
+
+.faq-modal-answer {
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: #222831;
+
+}
+
+.faq-modal-meta {
+    display: block;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #aaaaaa;
 }
 
 /* DICTIONARY SECTION */
