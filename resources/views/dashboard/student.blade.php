@@ -101,7 +101,7 @@
                 <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
 
                 <div class="author-label">
-                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
+                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->username ?? '' }}</strong>
                 </div>
 
                 <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
