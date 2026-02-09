@@ -1428,11 +1428,11 @@ body {
     min-height: 100vh;
 }
 .page-header {
-    background: #e2e8f0;
+    /* background: #e2e8f0; */
     border-radius: 12px;
     padding: 20px 24px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,.06);
+    /* box-shadow: 0 4px 12px rgba(0,0,0,.06); */
 }
 
 .page-title {

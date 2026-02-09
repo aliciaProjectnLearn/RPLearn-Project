@@ -42,8 +42,8 @@
                     <a href="{{ route('admin.users.create') }}" class="btn-add">
                         <i class="fas fa-plus"></i> Tambah
                     </a>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
 
 
