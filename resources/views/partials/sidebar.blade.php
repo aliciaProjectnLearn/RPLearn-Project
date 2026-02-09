@@ -9,16 +9,16 @@
             <li class="{{ Route::is('admin.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}">Dashboard Admin</a>
             </li>
-            <li class="{{ Route::is('admin.modules') ? 'active' : '' }}">
+            <li class="{{ Route::is('admin.modules*') ? 'active' : '' }}">
                 <a href="{{ route('admin.modules.index') }}">Fitur Modul</a>
             </li>
-            <li class="{{ Route::is('admin.dictionaries') ? 'active' : '' }}">
+            <li class="{{ Route::is('admin.dictionaries*') ? 'active' : '' }}">
                 <a href="{{ route('admin.dictionaries.index') }}">Fitur Kamus</a>
             </li>
-            <li class="{{ Route::is('admin.faq') ? 'active' : '' }}">
+            <li class="{{ Route::is('admin.faq*') ? 'active' : '' }}">
                 <a href="{{ route('admin.faq.index') }}">Fitur FAQ</a>
             </li>
-            <li class="{{ Route::is('admin.users') ? 'active' : '' }}">
+            <li class="{{ Route::is('admin.users*') ? 'active' : '' }}">
                 <a href="{{ route('admin.users.index') }}">Kelola User</a>
             </li>
 
@@ -57,3 +57,52 @@
         </li>
     </ul>
 </aside>
+
+<style>
+    /* ===============================
+   SIDEBAR ACTIVE + HOVER EFFECT
+   =============================== */
+
+.sidebar .sidebar-menu li a {
+    display: block;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #cbd5e1;
+    transition: 0.25s ease;
+}
+
+/* Hover nyala */
+.sidebar .sidebar-menu li a:hover {
+    background: rgba(243, 112, 33, 0.15);
+    color: #f37021;
+    transform: translateX(4px);
+}
+
+/* Active menu nyala terus */
+.sidebar .sidebar-menu li.active a {
+    background: rgba(243, 112, 33, 0.22);
+    color: #f37021 !important;
+    font-weight: 700;
+    position: relative;
+}
+
+/* Garis indikator kiri */
+.sidebar .sidebar-menu li.active a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    border-radius: 10px;
+    background: #f37021;
+}
+
+.sidebar .sidebar-menu li.active a {
+    position: relative;
+}
+
+
+</style>
