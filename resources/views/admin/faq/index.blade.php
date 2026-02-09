@@ -16,29 +16,29 @@
         </div>
 
         {{-- Filter & Search --}}
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <form method="GET" class="d-flex gap-2">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pertanyaan..."
-                    class="form-control shadow-sm" style="max-width: 260px;">
-
-                <select name="status" class="form-select shadow-sm" style="max-width: 200px;">
+        <form method="GET" class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="faq-actions">
+                {{-- Filter Status --}}
+                <select name="status" onchange="this.form.submit()" class="form-select faq-select shadow-sm">
                     <option value="">Semua Status</option>
-                    <option value="answered" {{ request('status') === 'answered' ? 'selected' : '' }}>
+                    <option value="answered" {{ request('status') == 'answered' ? 'selected' : '' }}>
                         Terjawab
                     </option>
-                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>
-                        Belum Terjawab
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+                        Pending
                     </option>
                 </select>
 
-                <button class="btn-orange shadow-sm px-4"
-                    style="background:#f37021;color:white;border-radius:10px;font-weight:700;">
-                    Filter
-                </button>
-            </form>
-        </div>
-
-        <br><br>
+                {{-- Search --}}
+                <div class="faq-search-box shadow-sm">
+                    <input type="text" name="search" placeholder="Cari judul / pertanyaan..."
+                        value="{{ request('search') }}">
+                    <button type="submit" class="faq-btn-search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
 
         {{-- Tabel FAQ --}}
         <div class="module-card shadow-sm border-0 bg-white rounded-3 overflow-hidden">
@@ -69,8 +69,8 @@
                             <tr class="module-row border-bottom">
 
                                 {{-- Pertanyaan --}}
-                                <td class="ps-4 py-3">
-                                    <div class="fw-bold text-dark">
+                                <td class="ps-4 py-3" style="text-align: left; ">
+                                    <div class="fw-bold text-dark" style="font-weight: bold">
                                         {{ $question->title }}
                                     </div>
                                     <small class="text-muted">
@@ -86,13 +86,13 @@
                                 {{-- Status --}}
                                 <td class="text-center py-3">
                                     @if ($question->status === 'answered')
-                                        <span class="badge-grade px-3 py-1 rounded-pill bg-success text-white small fw-bold"
-                                            style="font-size:11px;">
+                                        <span class="badge-grade px-3 py-1 rounded-pill small fw-bold"
+                                            style="font-size:11px; background-color:rgb(22, 218, 22); color: black">
                                             Terjawab
                                         </span>
                                     @else
-                                        <span class="badge-grade px-3 py-1 rounded-pill bg-warning text-dark small fw-bold"
-                                            style="font-size:11px;">
+                                        <span class="badge-grade px-3 py-1 rounded-pill small fw-bold"
+                                            style="font-size:11px; background-color:red; color: white">
                                             Pending
                                         </span>
                                     @endif
