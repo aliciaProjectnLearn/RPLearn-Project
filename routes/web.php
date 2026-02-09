@@ -50,6 +50,17 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     // 3. FITUR FAQ
     Route::get('faq', [App\Http\Controllers\Admin\FAQController::class, 'index'])->name('faq.index');
     Route::post('faq/{id}/answer', [App\Http\Controllers\Admin\FAQController::class, 'answer'])->name('faq.answer');
+
+    // 4. FITUR DETAIL BUAT DI SUB-MATERI.
+    Route::get('modules/content/{content}', [App\Http\Controllers\Admin\ModuleController::class, 'showContent'])->name('modules.content.show');
+
+    // 5. FITUR DELETE BUAT DI SUB-MATERI
+    Route::delete('modules/content/{content}', [App\Http\Controllers\Admin\ModuleController::class, 'destroyContent'])->name('modules.content.destroy');
+
+    // 6. FITUR EDIT BUAT DI SUB-MATERI
+    Route::get('modules/content/{content}/edit', [App\Http\Controllers\Admin\ModuleController::class, 'editContent'])->name('modules.content.edit');
+
+    Route::put('modules/content/{content}', [App\Http\Controllers\Admin\ModuleController::class, 'updateContent'])->name('modules.content.update');
 });
 
 /*
