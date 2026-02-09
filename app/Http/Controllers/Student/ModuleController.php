@@ -19,14 +19,14 @@ public function index(Request $request)
     $subjects = SubjectCategory::all();
 
     // FAQ
-    $faq = Question::with('answer')
+    $faqs = Question::with('answer')
         ->where('status', 'answered')
         ->whereHas('answer')
         ->latest()
         ->get();
 
     // Guru
-    $teacher = User::where('role', 'guru')->get();
+    $teachers = User::where('role', 'guru')->get();
 
     // LOGIKA DICTIONARY YANG TADI DI WEB.PHP PINDAH KE SINI:
     $dictionaries = \App\Models\Dictionary::orderBy('term', 'asc')->limit(6)->get();

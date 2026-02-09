@@ -27,11 +27,11 @@
                 @yield('content')
             </div>
 
-            @include('partials.footer')
-
+            
         </div>
+ 
     </div>
-
+       @include('partials.footer')
     {{-- MODAL GLOBAL TARUH SINI --}}
     @stack('modals')
 
