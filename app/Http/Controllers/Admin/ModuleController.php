@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Module;
+use App\Models\ModuleContent;
 use Illuminate\Http\Request;
 
 class ModuleController extends Controller
@@ -58,9 +59,27 @@ class ModuleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Module $module)
+    public function showContent(ModuleContent $content)
     {
-        //
+        $playlist = ModuleContent::where('module_id', $content->module_id)
+            ->orderBy('id')
+            ->get();
+
+        // Cari index materi sekarang
+        $currentIndex = $playlist->search(function ($item) use ($content) {
+            return $item->id === $content->id;
+        });
+
+        // Prev & Next
+        $prev = $playlist[$currentIndex - 1] ?? null;
+        $next = $playlist[$currentIndex + 1] ?? null;
+
+        return view('admin.modules.content_detail', compact(
+            'content',
+            'playlist',
+            'prev',
+            'next'
+        ));
     }
 
     /**
@@ -120,7 +139,7 @@ class ModuleController extends Controller
             'file_path' => 'nullable|file|mimes:pdf|max:20000', // Max 20MB
         ]);
 
-        $data = $request->only(['title', 'content', 'video_url']);
+        $data = $request->only(['title', 'content']);
         $data['module_id'] = $id;
 
         if ($request->hasFile('file_path')) {
@@ -128,8 +147,41 @@ class ModuleController extends Controller
             $data['file_path'] = $request->file('file_path')->store('modules/pdf', 'public');
         }
 
+        if ($request->video_url) {
+            $data['video_url'] = str_replace("watch?v=", "embed/", $request->video_url);
+        }
+
         \App\Models\ModuleContent::create($data);
 
         return back()->with('success', 'Konten materi "' . $request->title . '" berhasil ditambahkan!');
+    }
+
+    public function destroyContent(ModuleContent $content)
+    {
+        $content->delete();
+
+        return redirect()
+            ->route('admin.modules.index')
+            ->with('success', 'Sub materi berhasil dihapus bro 🔥');
+    }
+
+    public function editContent(ModuleContent $content)
+    {
+        return view('admin.modules.content_edit', compact('content'));
+    }
+
+    public function updateContent(Request $request, ModuleContent $content)
+    {
+        $request->validate([
+            'title'     => 'required|string|max:255',
+            'content'   => 'nullable|string',
+            'video_url' => 'nullable|url',
+        ]);
+
+        $content->update($request->only('title','content','video_url'));
+
+        return redirect()
+            ->route('admin.modules.content.show', $content->id)
+            ->with('success', 'Sub-Materi berhasil diupdate bro 🔥');
     }
 }

@@ -118,6 +118,8 @@
                     <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
                         Pelajari Sekarang <i class="ri-arrow-right-line"></i>
                     </button>
+                <div class="author-label">
+                    <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->username ?? '' }}</strong>
                 </div>
             @empty
                 <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>

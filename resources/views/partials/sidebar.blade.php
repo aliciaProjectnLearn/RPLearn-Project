@@ -19,7 +19,7 @@
                 <a href="{{ route('admin.faq.index') }}">Fitur FAQ</a>
             </li>
             <li class="{{ Route::is('admin.users*') ? 'active' : '' }}">
-                <a href="{{ route('admin.users.index') }}">Kelola User</a>
+                <a href="{{ route('admin.users.index', ['role'=>'siswa']) }}">Kelola User</a>
             </li>
 
         {{-- MENU KHUSUS SISWA --}}
