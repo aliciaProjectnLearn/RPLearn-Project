@@ -5,11 +5,12 @@
 
 <div class="content-body px-4">
     <div class="max-w-900 mx-auto">
-        <h3 class="fw-800 text-dark mb-4">Tambah User Baru</h3>
+        <h3 class="fw-800 text-dark mb-4">Edit User</h3>
 
         <div class="main-form-card">
-            <form action="{{ route('admin.users.store') }}" method="POST">
+            <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
                 @csrf
+                @method('PUT')
 
                 {{-- ===================== --}}
                 {{-- SECTION: AKUN LOGIN --}}
@@ -22,22 +23,20 @@
                     <div class="col-sm-9">
                         <input type="text"
                                name="username"
-                               value="{{ old('username') }}"
                                class="input-modern"
-                               placeholder="Contoh: rpl_user123"
+                               value="{{ old('username', $user->username) }}"
                                required>
                     </div>
                 </div>
 
-                {{-- Password --}}
+                {{-- Password Optional --}}
                 <div class="row mb-4 align-items-center">
                     <label class="col-sm-3 label-modern">Password</label>
                     <div class="col-sm-9">
                         <input type="password"
                                name="password"
                                class="input-modern"
-                               placeholder="Minimal 6 karakter"
-                               required>
+                               placeholder="Kosongkan jika tidak ingin diubah">
                     </div>
                 </div>
 
@@ -50,15 +49,17 @@
                                 class="input-modern"
                                 onchange="toggleFields()"
                                 required>
-                            <option value="siswa" {{ old('role')=='siswa'?'selected':'' }}>Siswa</option>
-                            <option value="guru"  {{ old('role')=='guru'?'selected':'' }}>Guru</option>
-                            <option value="admin" {{ old('role')=='admin'?'selected':'' }}>Admin</option>
+
+                            <option value="siswa" {{ $user->role=='siswa' ? 'selected' : '' }}>Siswa</option>
+                            <option value="guru"  {{ $user->role=='guru' ? 'selected' : '' }}>Guru</option>
+                            <option value="admin" {{ $user->role=='admin' ? 'selected' : '' }}>Admin</option>
+
                         </select>
                     </div>
                 </div>
 
                 {{-- ===================== --}}
-                {{-- FIELD NAME (Siswa + Guru) --}}
+                {{-- FIELD NAME (SISWA + GURU) --}}
                 {{-- ===================== --}}
                 <div id="nameField">
                     <div class="row mb-4 align-items-center">
@@ -66,9 +67,13 @@
                         <div class="col-sm-9">
                             <input type="text"
                                    name="name"
-                                   value="{{ old('name') }}"
                                    class="input-modern"
-                                   placeholder="Masukkan nama lengkap">
+                                   value="{{ old('name',
+                                        $user->role=='siswa'
+                                            ? ($user->student->name ?? '')
+                                            : ($user->teacher->name ?? '')
+                                   ) }}"
+                                   placeholder="Nama lengkap">
                         </div>
                     </div>
                 </div>
@@ -85,9 +90,8 @@
                         <div class="col-sm-6">
                             <input type="text"
                                    name="nis"
-                                   value="{{ old('nis') }}"
                                    class="input-modern"
-                                   placeholder="Nomor Induk Siswa">
+                                   value="{{ old('nis', $user->student->nis ?? '') }}">
                         </div>
                     </div>
 
@@ -97,9 +101,8 @@
                         <div class="col-sm-6">
                             <input type="text"
                                    name="kelas"
-                                   value="{{ old('kelas') }}"
                                    class="input-modern"
-                                   placeholder="Contoh: XII RPL 1">
+                                   value="{{ old('kelas', $user->student->kelas ?? '') }}">
                         </div>
                     </div>
                 </div>
@@ -116,25 +119,25 @@
                         <div class="col-sm-6">
                             <input type="text"
                                    name="nip"
-                                   value="{{ old('nip') }}"
                                    class="input-modern"
-                                   placeholder="Nomor Induk Pegawai">
+                                   value="{{ old('nip', $user->teacher->nip ?? '') }}">
                         </div>
                     </div>
                 </div>
 
                 {{-- ===================== --}}
-                {{-- FOOTER BUTTON --}}
+                {{-- FOOTER --}}
                 {{-- ===================== --}}
                 <div class="form-footer mt-4">
                     <button type="submit" class="btn-save-modern">
-                        Simpan User
+                        Update User
                     </button>
 
                     <a href="{{ route('admin.users.index') }}" class="btn-cancel-modern">
                         Batal
                     </a>
                 </div>
+
             </form>
         </div>
     </div>
@@ -162,7 +165,6 @@ function toggleFields() {
         teacherDiv.style.display = "block";
     }
     else {
-        // Admin
         nameDiv.style.display    = "none";
         studentDiv.style.display = "none";
         teacherDiv.style.display = "none";

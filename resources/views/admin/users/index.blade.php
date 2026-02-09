@@ -1,90 +1,374 @@
 @extends('layouts.app')
 
 @section('content')
-<br><br><br> {{-- Jarak sakti lo --}}
+<br><br><br>
 
 <div class="content-body px-4">
     <div class="container-fluid">
 
-        {{-- Header & Tombol Tambah --}}
-        <div class="d-flex align-items-center justify-content-between mb-4">
+        {{-- Header --}}
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+
             <div>
-                <br>
                 <h3 class="fw-800 text-dark m-0">Manajemen User</h3>
-                <br>
-                <p class="text-muted small">Total: <span class="text-orange fw-bold">{{ $users->count() }} Akun Terdaftar</span></p>
+                <p class="text-muted small mb-0">
+                    Total:
+                    <span class="fw-bold text-orange">
+                        {{ $users->count() }} Akun Terdaftar
+                    </span>
+                </p>
             </div>
-            <a href="{{ route('admin.users.create') }}" class="btn-save-modern text-decoration-none">
-                <br>
-                <hr>
-                <i class="fa-solid fa-user-plus me-2"></i> Tambah User
-            </a>
+
+            {{-- Filter + Search --}}
+            <form method="GET" class="d-flex align-items-center gap-2 flex-wrap">
+
+                {{-- Filter Role --}}
+                <div class="user-actions">
+                    <select name="role" onchange="this.form.submit()" class="form-select rounded-pill px-4 shadow-sm" style="min-width: 160px;">
+                        <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                        <option value="guru"  {{ request('role') == 'guru' ? 'selected' : '' }}>Guru</option>
+                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    </select>
+
+                    {{-- Search --}}
+                    <div class="search-box">
+                        <input type="text" name="search" placeholder="Cari username / nama..." value="{{ request('search') }}">
+                        <button type="submit" class="btn-search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+
+                    {{-- Tambah --}}
+                    <a href="{{ route('admin.users.create') }}" class="btn-add">
+                        <i class="fas fa-plus"></i> Tambah
+                    </a>
+                </form>
+            </div>
         </div>
 
-        {{-- Tabel User Modern --}}
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        {{-- Card Table --}}
+        <div class="card border-0 shadow-lg rounded-4 bg-white p-4">
+
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light">
+
+                    {{-- Head --}}
+                    <thead class="bg-light text-uppercase small text-secondary">
                         <tr>
-                            <th class="ps-4 py-3 text-uppercase small fw-800 text-secondary">User & Role</th>
-                            <th class="py-3 text-uppercase small fw-800 text-secondary">Detail Profil</th>
-                            <th class="py-3 text-uppercase small fw-800 text-secondary">Tanggal Join</th>
-                            <th class="text-end pe-4 py-3 text-uppercase small fw-800 text-secondary">Aksi</th>
+                            <th style="min-width:180px;">Username</th>
+                            <th style="min-width:110px;">Role</th>
+                            <th style="min-width:200px;">Nama</th>
+
+                            {{-- Kolom Dinamis --}}
+                            @if(request('role') == 'siswa')
+                                <th style="min-width:140px;">NIS</th>
+                                <th style="min-width:140px;">Kelas</th>
+                            @elseif(request('role') == 'guru')
+                                <th style="min-width:160px;">NIP</th>
+                            @endif
+
+                            <th style="min-width:150px;">Tanggal Join</th>
+                            <th class="text-end" style="min-width:120px;">Aksi</th>
                         </tr>
                     </thead>
+
+
+                    {{-- Body --}}
                     <tbody>
-                        @foreach($users as $user)
-                        <tr style="border-bottom: 1px solid #f1f4f8;">
-                            <td class="ps-4 py-4">
-                                <div class="d-flex align-items-center gap-3">
+                    @forelse($users as $user)
+
+                        <tr>
+
+                            {{-- Username --}}
+                            <td>
+                                <div class="user-cell">
                                     <div class="avatar-circle">
                                         {{ strtoupper(substr($user->username, 0, 1)) }}
                                     </div>
-                                    <div>
-                                        <div class="fw-bold text-dark">{{ $user->username }}</div>
-                                        <span class="badge {{ $user->role == 'admin' ? 'bg-danger-subtle text-danger' : ($user->role == 'guru' ? 'bg-primary-subtle text-primary' : 'bg-success-subtle text-success') }} rounded-pill small">
-                                            {{ strtoupper($user->role) }}
-                                        </span>
+
+                                    <div class="user-name">
+                                        {{ $user->username }}
                                     </div>
                                 </div>
                             </td>
+
+                            {{-- Role --}}
                             <td>
-                                @if($user->role == 'siswa' && $user->student)
-                                    <div class="small">
-                                        <div class="fw-bold text-dark">{{ $user->student->name }}</div>
-                                        <div class="text-muted">NIS: {{ $user->student->nis }} | Kelas: {{ $user->student->kelas }}</div>
-                                    </div>
+                                <span class="badge rounded-pill px-3 py-2
+                                    {{ $user->role=='admin' ? 'bg-danger' :
+                                    ($user->role=='guru' ? 'bg-primary' : 'bg-success') }}">
+                                    {{ strtoupper($user->role) }}
+                                </span>
+                            </td>
+
+                            {{-- Nama --}}
+                            <td>
+                                @if($user->role == 'siswa')
+                                    {{ $user->student->name ?? '-' }}
+
+                                @elseif($user->role == 'guru')
+                                    {{ $user->teacher->name ?? '-' }}
+
                                 @else
-                                    <span class="text-muted small italic">N/A (Bukan Siswa)</span>
+                                    ADMIN
                                 @endif
                             </td>
+
+
+                            {{-- Kolom Dinamis --}}
+                            @if(request('role') == 'siswa')
+                                <td>{{ $user->student->nis ?? '-' }}</td>
+                                <td>{{ $user->student->kelas ?? '-' }}</td>
+
+                            @elseif(request('role') == 'guru')
+                                <td>{{ $user->teacher->nip ?? '-' }}</td>
+                            @endif
+
+
+                            {{-- Join --}}
                             <td class="text-muted small">
                                 {{ $user->created_at->format('d M Y') }}
                             </td>
-                            <td class="text-end pe-4">
+
+                            {{-- Aksi --}}
+                            <td class="text-end">
                                 <div class="d-flex justify-content-end gap-2">
-                                    {{-- Tombol Edit (Bisa lo tambahin routenya nanti) --}}
-                                    <a href="#" class="btn-action text-primary" title="Edit User">
+
+                                    {{-- Edit --}}
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-action text-primary" title="Edit">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
 
-                                    {{-- Tombol Hapus --}}
+                                    {{-- Delete --}}
                                     <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-action text-danger border-0 bg-transparent">
+                                        <button class="btn-action text-danger border-0 bg-transparent"
+                                                title="Hapus">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                                Data user tidak ditemukan.
+                            </td>
+                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+
+{{-- Styling --}}
+<style>
+.card {
+    background: rgb(255, 255, 255) !important;
+}
+
+.avatar-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff8a00, #ff5e00);
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    margin-left: 25px;
+    justify-content: center;
+    font-size: 15px;
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    transition: 0.25s ease;
+}
+
+.btn-action:hover {
+    background: #ffe8d2;
+    border-color: var(--orange);
+    transform: translateY(-2px);
+}
+
+table th, table td {
+    padding: 14px 18px;
+    white-space: nowrap;
+}
+.user-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 15px 0 25px;
+}
+
+.user-actions select {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    overflow: hidden;
+    background: white;
+}
+
+.search-box input {
+    border: none;
+    padding: 10px 14px;
+    outline: none;
+    width: 220px;
+    font-size: 14px;
+}
+
+.btn-search {
+    border: none;
+    background: var(--orange);
+    color: white;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-search:hover {
+    opacity: 0.85;
+}
+
+.btn-add {
+    background: #ff7a00; /* orange */
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.btn-add:hover {
+    background: #e96c00;
+}
+
+
+.user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 14px;
+}
+
+.user-table thead th {
+    text-align: left;
+    font-size: 13px;
+    color: #777;
+    padding: 10px;
+}
+
+.user-table tbody tr {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.user-table tbody td {
+    padding: 16px 12px;
+    vertical-align: middle;
+}
+
+.user-table tbody tr:hover {
+    background: #fff7f0;
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap; /* 🔥 ini yang bikin gak turun */
+}
+
+.user-name {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* =============================== */
+/* TABLE MANAGEMEN USER (FIX) */
+/* =============================== */
+
+.table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+/* HEADER WARNA ORANGE */
+.table thead {
+    background: linear-gradient(90deg, #ff8a00, #ff5e00);
+}
+
+.table thead th {
+    color: white !important;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 16px;
+    border-right: 1px solid rgba(249, 4, 4, 0.25);
+}
+
+.table thead th:last-child {
+    border-right: none;
+}
+
+/* BODY TD GARIS PEMISAH */
+.table tbody td {
+    border-bottom: 1.5px solid #000000;
+    border-right: 1.5px solid #000000;
+    padding: 16px;
+    font-size: 14px;
+}
+
+.table tbody td:last-child {
+    border-right: none;
+}
+
+/* ZEBRA ROW */
+.table tbody tr:nth-child(even) {
+    background: rgba(255, 140, 0, 0.04);
+}
+
+/* HOVER */
+.table tbody tr:hover {
+    background: rgba(255, 140, 0, 0.12) !important;
+    transition: 0.2s;
+}
+
+.card,
+.table-responsive {
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+</style>
 @endsection
