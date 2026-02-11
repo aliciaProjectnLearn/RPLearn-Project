@@ -71,4 +71,25 @@ public function index(Request $request)
 
         return response()->json($module);
     }
+
+   public function toggleLike(Request $request, $id)
+{
+    $module = Module::findOrFail($id);
+
+    // liked = true  -> tambah like
+    // liked = false -> kurang like
+    if ($request->liked === true) {
+        $module->like += 1;
+    } else {
+        $module->like = max(0, $module->like - 1);
+    }
+
+    $module->save();
+
+    return response()->json([
+        'success' => true,
+        'like' => $module->like
+    ]);
+}
+
 }

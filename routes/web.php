@@ -94,4 +94,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::post('/modules/{id}/like', [StudentModuleController::class, 'toggleLike'])
+    ->name('modules.like');
+
+
 require __DIR__ . '/auth.php';
