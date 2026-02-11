@@ -285,8 +285,19 @@
     color: var(--light);
     padding: 30px;
     border-radius: 8px;
-    text-align: center;
+    text-align: left;
 }
+
+.love-btn {
+    color: #ffffff;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.love-btn.liked {
+    color: #F6973F;
+}
+
 
 /* ================= FAQ ================= */
 
@@ -1088,9 +1099,9 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
-.module-title { color: #333 !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
-.author-label { font-size: 0.8rem; color: #777; margin-bottom: 10px; }
-.module-desc-text { font-size: 0.9rem; color: #666 !important; line-height: 1.5; margin-bottom: 15px; }
+.module-title { color: #fff !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
+.author-label { font-size: 0.8rem; color: #fff; margin-bottom: 10px; }
+.module-desc-text { font-size: 0.9rem; color: #fff !important; line-height: 1.5; margin-bottom: 15px; }
 
 /* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
 .btn-pelajari-orange, .pdf-btn {
@@ -1103,7 +1114,7 @@
 
 /* --- LAYOUT ELEMEN --- */
 .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.media-icons-row { display: flex; gap: 8px; font-size: 1.1rem; }
+.media-icons-row { display: flex; gap: 8px; font-size: 1.3rem; }
 .filter-container-simple { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
 .filter-container-simple select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
 

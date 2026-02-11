@@ -35,97 +35,106 @@
         </div>
     </section>
 
-    <section class="module-section" id="module-section">
-        <h1>Cari <span>Modul</span> Belajarmu!</h1>
+<section class="module-section" id="module-section">
+    <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-        {{-- SEARCH & FILTER UPGRADED --}}
-        <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
-            <div class="search-wrapper">
-                <div class="module-search">
-                    <i class="ri-search-line"></i>
-                    <input id="moduleSearchInput" type="text" name="search" placeholder="Mau belajar apa hari ini?"
-                        value="{{ request('search') }}">
-                </div>
-            </div>
+    {{-- SEARCH & FILTER --}}
+    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
 
-            <div class="filter-group-modern">
-                {{-- Dropdown Kelas --}}
-                <div class="custom-select-wrapper">
-                    <i class="ri-government-line select-icon"></i>
-                    <select name="grade_id" onchange="this.form.submit()">
-                        <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
-                        @foreach ($grades as $grade)
-                            <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
-                                {{ $grade->grade }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line arrow-icon"></i>
-                </div>
-
-                {{-- Dropdown Materi --}}
-                <div class="custom-select-wrapper">
-                    <i class="ri-book-3-line select-icon"></i>
-                    <select name="subject_id" onchange="this.form.submit()">
-                        <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
-                        @foreach ($subjects as $subject)
-                            <option value="{{ $subject->id }}"
-                                {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                                {{ $subject->subject }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line arrow-icon"></i>
-                </div>
-            </div>
-        </form>
-
-        {{-- MODULE CARDS --}}
-        <div class="module-cards" id="moduleCardsContainer">
-            @forelse($modules as $module)
-                <div class="module-card">
-                    <div class="card-header-row">
-                        <span class="module-meta-text">
-                            {{ $module->gradeCategory->grade ?? 'Kelas' }} |
-                            {{ $module->subjectCategory->subject ?? 'Materi' }}
-                        </span>
-
-                        {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
-                        <div class="media-icons-row">
-                            @php
-                                $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
-                                $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
-                            @endphp
-                            @if ($hasVideo)
-                                <i class="ri-youtube-fill" style="color: #FF0000;"></i>
-                            @endif
-                            @if ($hasPdf)
-                                <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i>
-                            @endif
-                        </div>
-                    </div>
-
-                    <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
-
-                    <div class="author-label">
-                        <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
-                    </div>
-
-                    <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
-
-                    {{-- TOMBOL ORANYE DENGAN HOVER --}}
-                    <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
-                        Pelajari Sekarang <i class="ri-arrow-right-line"></i>
-                    </button>
-                    <div class="author-label">
-                        <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->username ?? '' }}</strong>
-                    </div>
-                @empty
-                    <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
-                    @endforelse
-                </div>
+        <div class="module-search">
+            <i class="ri-search-line"></i>
+            <input type="text" name="search"
+                placeholder="Mau belajar apa hari ini?"
+                value="{{ request('search') }}">
         </div>
-    </section>
+
+        <div class="filter-group-modern">
+            {{-- Kelas --}}
+            <div class="custom-select-wrapper">
+                <i class="ri-government-line select-icon"></i>
+                <select name="grade_id" onchange="this.form.submit()">
+                    <option value="">Semua Kelas</option>
+                    @foreach ($grades as $grade)
+                        <option value="{{ $grade->id }}"
+                            {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
+                            {{ $grade->grade }}
+                        </option>
+                    @endforeach
+                </select>
+                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            </div>
+
+            {{-- Materi --}}
+            <div class="custom-select-wrapper">
+                <i class="ri-book-3-line select-icon"></i>
+                <select name="subject_id" onchange="this.form.submit()">
+                    <option value="">Semua Materi</option>
+                    @foreach ($subjects as $subject)
+                        <option value="{{ $subject->id }}"
+                            {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                            {{ $subject->subject }}
+                        </option>
+                    @endforeach
+                </select>
+                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            </div>
+        </div>
+    </form>
+
+    {{-- MODULE CARDS --}}
+    <div class="module-cards" id="moduleCardsContainer">
+        @forelse ($modules as $module)
+            <div class="module-card">
+
+                <div class="card-header-row">
+                    <span class="module-meta-text" >
+                        {{ $module->gradeCategory->grade ?? '-' }} |
+                        {{ $module->subjectCategory->subject ?? '-' }}
+                    </span>
+
+                    <div class="media-icons-row">
+                        @if ($module->contents->whereNotNull('video_url')->count())
+                            <i class="ri-youtube-fill text-red"></i>
+                        @endif
+                        @if ($module->contents->whereNotNull('file_path')->count())
+                            <i class="ri-file-pdf-2-fill"></i>
+                        @endif
+                        <i 
+                            class="ri-heart-fill love-btn" 
+                            data-module-id="{{ $module->id }}">
+                            </i>
+
+                    </div>
+                </div><br>
+
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="text-align: center;">
+                    {{ $module->title }}
+                </h3><br>
+
+                
+                <p class="module-desc-text">
+                    {{ Str::limit($module->desc, 80) }}
+                </p>
+                
+                <div class="author-label">
+                    <i class="ri-user-3-line"></i>
+                    {{ $module->teacher->username ?? 'Admin' }}
+                </div>
+
+                <button class="btn-pelajari-orange"
+                    onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
+                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                </button>
+
+            </div>
+        @empty
+            <p style="grid-column: 1 / -1; text-align:center;">
+                Modul tidak ditemukan
+            </p>
+        @endforelse
+    </div>
+</section>
+
 
     {{-- DICTIONARY --}}
 
@@ -540,5 +549,51 @@
             }
         </script>
     @endpush
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.love-btn').forEach(button => {
+
+        let isProcessing = false;
+
+        button.addEventListener('click', function () {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            const moduleId = this.dataset.moduleId;
+            const isLiked = this.classList.contains('liked');
+
+            // toggle UI dulu (biar responsif)
+            this.classList.toggle('liked');
+
+            fetch(`/modules/${moduleId}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    liked: !isLiked
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                isProcessing = false;
+            })
+            .catch(error => {
+                console.error(error);
+                // kalau gagal, balikin UI
+                this.classList.toggle('liked');
+                isProcessing = false;
+            });
+
+        });
+
+    });
+
+});
+</script>
+
 
 @endsection
