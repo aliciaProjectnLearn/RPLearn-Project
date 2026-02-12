@@ -289,14 +289,18 @@
 }
 
 .love-btn {
-    color: #ffffff;
+    color: #ffffff;                 /* isi putih */
+    -webkit-text-stroke: 1.5px #F6973F; /* outline oren */
+    font-size: 20px;
     cursor: pointer;
     transition: 0.3s ease;
 }
 
 .love-btn.liked {
-    color: #F6973F;
+    color: #F6973F;                 /* isi oren */
+    -webkit-text-stroke: 0px;       /* hilangkan outline */
 }
+
 
 
 /* ================= FAQ ================= */

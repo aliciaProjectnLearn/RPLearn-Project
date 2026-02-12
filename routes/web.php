@@ -95,7 +95,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::post('/modules/{id}/like', [StudentModuleController::class, 'toggleLike'])
+    ->middleware('auth')
     ->name('modules.like');
+
 
 
 require __DIR__ . '/auth.php';

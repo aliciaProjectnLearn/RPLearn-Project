@@ -99,11 +99,6 @@
                         @if ($module->contents->whereNotNull('file_path')->count())
                             <i class="ri-file-pdf-2-fill"></i>
                         @endif
-                        <i 
-                            class="ri-heart-fill love-btn" 
-                            data-module-id="{{ $module->id }}">
-                            </i>
-
                     </div>
                 </div><br>
 
@@ -507,6 +502,12 @@
                             <div class="modal-tags-row">
                         <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
                         <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
+
+                        <i class="fa-solid fa-heart love-btn ${data.isLiked ? 'liked' : ''}" 
+                            data-id="${data.id}">
+                        </i>
+
+
                     </div>
                     </div>
                     <div class="modal-side-text">
@@ -551,47 +552,34 @@
     @endpush
 
     <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('click', function (e) {
 
-    document.querySelectorAll('.love-btn').forEach(button => {
+    if (!e.target.classList.contains('love-btn')) return;
 
-        let isProcessing = false;
+    const button = e.target;
+    const moduleId = button.dataset.id;
+    const isLiked = button.classList.contains('liked');
 
-        button.addEventListener('click', function () {
-            if (isProcessing) return;
-            isProcessing = true;
+    button.classList.toggle('liked');
 
-            const moduleId = this.dataset.moduleId;
-            const isLiked = this.classList.contains('liked');
-
-            // toggle UI dulu (biar responsif)
-            this.classList.toggle('liked');
-
-            fetch(`/modules/${moduleId}/like`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    liked: !isLiked
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                isProcessing = false;
-            })
-            .catch(error => {
-                console.error(error);
-                // kalau gagal, balikin UI
-                this.classList.toggle('liked');
-                isProcessing = false;
-            });
-
-        });
-
+    fetch(`/modules/${moduleId}/like`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.liked) {
+            button.classList.add('liked');
+        } else {
+            button.classList.remove('liked');
+        }
+    })
+    .catch(() => {
+        button.classList.toggle('liked');
     });
-
 });
 </script>
 
