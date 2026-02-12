@@ -7,6 +7,7 @@ use App\Http\Controllers\FAQController;
 use App\Http\Controllers\Student\ModuleController as StudentModuleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
 use App\Http\Controllers\Admin\DictionaryController;
 
@@ -21,7 +22,7 @@ Route::get('/', function () {
         $role = auth()->user()->role;
         return match($role) {
             'admin' => redirect()->route('admin.dashboard'),
-            'guru'  => redirect()->route('dashboard.teacher'),
+            'guru'  => redirect()->route('teacher.dashboard'),
             default => redirect()->route('student.dashboard'),
         };
     }
@@ -50,7 +51,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     // 3. FITUR FAQ
     Route::get('faq', [App\Http\Controllers\Admin\FaqController::class, 'index'])->name('faq.index');
     Route::get('faq/{id}', [App\Http\Controllers\Admin\FaqController::class, 'show'])->name('faq.show');
-    
+
 
 });
 
@@ -75,14 +76,28 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 | Shared Routes (Teacher & Profile)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/teacher', function () {
-        return view('dashboard.teacher');
-    })->name('dashboard.teacher');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::get('/dashboard', [TeacherController::class, 'index'])->name('dashboard');
+
+    Route::get('/modules', function () {return view('teacher.modules.index');})->name('modules.index');
+    Route::get('/dictionaries', function () {return view('teacher.dictionaries.index');})->name('dictionaries.index');
+    Route::get('faq', [App\Http\Controllers\Teacher\FAQController::class, 'index'])->name('faq.index');
+      Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
+
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+
 });
 
 require __DIR__ . '/auth.php';
