@@ -35,95 +35,101 @@
         </div>
     </section>
 
-    <section class="module-section" id="module-section">
-        <h1>Cari <span>Modul</span> Belajarmu!</h1>
+<section class="module-section" id="module-section">
+    <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-        {{-- SEARCH & FILTER UPGRADED --}}
-        <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
-            <div class="search-wrapper">
-                <div class="module-search">
-                    <i class="ri-search-line"></i>
-                    <input id="moduleSearchInput" type="text" name="search" placeholder="Mau belajar apa hari ini?"
-                        value="{{ request('search') }}">
-                </div>
-            </div>
+    {{-- SEARCH & FILTER --}}
+    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
 
-            <div class="filter-group-modern">
-                {{-- Dropdown Kelas --}}
-                <div class="custom-select-wrapper">
-                    <i class="ri-government-line select-icon"></i>
-                    <select name="grade_id" onchange="this.form.submit()">
-                        <option value="" {{ !request('grade_id') ? 'selected' : '' }}>Semua Kelas</option>
-                        @foreach ($grades as $grade)
-                            <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
-                                {{ $grade->grade }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line arrow-icon"></i>
-                </div>
-
-                {{-- Dropdown Materi --}}
-                <div class="custom-select-wrapper">
-                    <i class="ri-book-3-line select-icon"></i>
-                    <select name="subject_id" onchange="this.form.submit()">
-                        <option value="" {{ !request('subject_id') ? 'selected' : '' }}>Semua Materi</option>
-                        @foreach ($subjects as $subject)
-                            <option value="{{ $subject->id }}"
-                                {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                                {{ $subject->subject }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line arrow-icon"></i>
-                </div>
-            </div>
-        </form>
-
-        {{-- MODULE CARDS --}}
-        <div class="module-cards" id="moduleCardsContainer">
-            @forelse($modules as $module)
-                <div class="module-card">
-                    <div class="card-header-row">
-                        {{-- TEKS KELAS | MATERI WARNA ORANYE --}}
-                        <span class="module-meta-text">
-                            {{ $module->gradeCategory->grade ?? 'Kelas' }} |
-                            {{ $module->subjectCategory->subject ?? 'Materi' }}
-                        </span>
-
-                        {{-- IKON MEDIA SEJAJAR HORIZONTAL --}}
-                        <div class="media-icons-row">
-                            @php
-                                $hasVideo = $module->contents->whereNotNull('video_url')->count() > 0;
-                                $hasPdf = $module->contents->whereNotNull('file_path')->count() > 0;
-                            @endphp
-                            @if ($hasVideo)
-                                <i class="ri-youtube-fill" style="color: #FF0000;"></i>
-                            @endif
-                            @if ($hasPdf)
-                                <i class="ri-file-pdf-2-fill" style="color: #f15a24;"></i>
-                            @endif
-                        </div>
-                    </div>
-
-                    <h3 class="module-title" onclick="showDetail({{ $module->id }})">{{ $module->title }}</h3>
-
-                    <div class="author-label">
-                        <i class="ri-user-3-line"></i> Oleh: <strong>{{ $module->teacher->name ?? 'Admin' }}</strong>
-                    </div>
-
-                    <p class="module-desc-text">{{ Str::limit($module->desc, 80) }}</p>
-
-                    {{-- TOMBOL ORANYE DENGAN HOVER --}}
-                    <button onclick="showDetail({{ $module->id }})" class="btn-pelajari-orange">
-                        Pelajari Sekarang <i class="ri-arrow-right-line"></i>
-                    </button>
-                </div>
-            @empty
-                <p style="grid-column: 1/-1; text-align: center; color: #333; padding: 20px;">Modul tidak ditemukan.</p>
-            @endforelse
+        <div class="module-search">
+            <i class="ri-search-line"></i>
+            <input type="text" name="search"
+                placeholder="Mau belajar apa hari ini?"
+                value="{{ request('search') }}">
         </div>
-    </section>
+
+        <div class="filter-group-modern">
+            {{-- Kelas --}}
+            <div class="custom-select-wrapper">
+                <i class="ri-government-line select-icon"></i>
+                <select name="grade_id" onchange="this.form.submit()">
+                    <option value="">Semua Kelas</option>
+                    @foreach ($grades as $grade)
+                        <option value="{{ $grade->id }}"
+                            {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
+                            {{ $grade->grade }}
+                        </option>
+                    @endforeach
+                </select>
+                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            </div>
+
+            {{-- Materi --}}
+            <div class="custom-select-wrapper">
+                <i class="ri-book-3-line select-icon"></i>
+                <select name="subject_id" onchange="this.form.submit()">
+                    <option value="">Semua Materi</option>
+                    @foreach ($subjects as $subject)
+                        <option value="{{ $subject->id }}"
+                            {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                            {{ $subject->subject }}
+                        </option>
+                    @endforeach
+                </select>
+                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            </div>
+        </div>
+    </form>
+
+    {{-- MODULE CARDS --}}
+    <div class="module-cards" id="moduleCardsContainer">
+        @forelse ($modules as $module)
+            <div class="module-card">
+
+                <div class="card-header-row">
+                    <span class="module-meta-text" >
+                        {{ $module->gradeCategory->grade ?? '-' }} |
+                        {{ $module->subjectCategory->subject ?? '-' }}
+                    </span>
+
+                    <div class="media-icons-row">
+                        @if ($module->contents->whereNotNull('video_url')->count())
+                            <i class="ri-youtube-fill text-red"></i>
+                        @endif
+                        @if ($module->contents->whereNotNull('file_path')->count())
+                            <i class="ri-file-pdf-2-fill"></i>
+                        @endif
+                    </div>
+                </div><br>
+
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="text-align: center;">
+                    {{ $module->title }}
+                </h3><br>
+
+                
+                <p class="module-desc-text">
+                    {{ Str::limit($module->desc, 80) }}
+                </p>
+                
+                <div class="author-label">
+                    <i class="ri-user-3-line"></i>
+                    {{ $module->teacher->username ?? 'Admin' }}
+                </div>
+
+                <button class="btn-pelajari-orange"
+                    onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
+                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                </button>
+
+            </div>
+        @empty
+            <p style="grid-column: 1 / -1; text-align:center;">
+                Modul tidak ditemukan
+            </p>
+        @endforelse
+    </div>
+</section>
+
 
     {{-- DICTIONARY --}}
 
@@ -175,142 +181,142 @@
 
             </div>
         </div>
+    </section>
 
+    {{-- ================= FAQ ================= --}}
+    <section class="faq-section reveal" id="faq-section">
+        <h2>F <span>A</span> Q</h2>
+        <div class="question-search">
+            <i class="ri-search-line"></i>
+            <input type="text" id="faq-search" placeholder="Search question...">
+        </div>
 
-        {{-- ================= FAQ ================= --}}
-        <section class="faq-section reveal" id="faq-section">
-            <h2>F <span>A</span> Q</h2>
-            <div class="question-search">
-                <i class="ri-search-line"></i>
-                <input type="text" id="faq-search" placeholder="Search question...">
-            </div>
-
-            <div class="faq-wrapper">
-                {{-- KIRI: FAQ --}}
-                <div class="faq-left">
-                    <div class="faq-list" id="faq-list">
-                        @forelse ($faqs ?? [] as $faq)
-                            <div class="faq-item">
-                                <button type="button" class="faq-question">
-                                    {{ $faq->question }}
-                                    <i class="ri-arrow-right-s-line icon"></i>
-                                </button>
-                                <div class="faq-answer">
-                                    @if ($faq->answer)
-                                        {{ $faq->answer->answer }}
-                                    @else
-                                        <em>Belum ada jawaban dari guru.</em>
-                                    @endif
-                                </div>
-                            </div>
-                        @empty
-                            <p style="text-align:center;color:#888;">
-                                FAQ belum tersedia
-                            </p>
-                        @endforelse
-                    </div>
-                </div>
-
-                {{-- KANAN: FORM TANYA --}}
-                <div class="faq-right">
-                    <div class="faq-form-card">
-                        <h3>Tanya Guru</h3>
-                        <p class="form-desc">
-                            Punya pertanyaan tapi belum ada di FAQ? Kirim langsung ke guru.
-                        </p>
-
-                        <form action="/faq" method="POST">
-                            @csrf
-
-                            {{-- Nama Siswa --}}
-                            <div class="form-group">
-                                <label>Nama Siswa</label>
-                                <input type="text" value="{{ auth()->user()->username }}" readonly>
-                            </div>
-
-                            {{-- Guru --}}
-                            <div class="form-group">
-                                <label>Guru Tertuju</label>
-                                <select name="teacher_id" required>
-                                    <option value="">Pilih Guru</option>
-                                    @foreach ($teachers ?? [] as $teacher)
-                                        <option value="{{ $teacher->id }}">
-                                            {{ $teacher->username }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- Judul --}}
-                            <div class="form-group">
-                                <label>Judul Pertanyaan</label>
-                                <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
-                            </div>
-
-                            {{-- Pertanyaan --}}
-                            <div class="form-group">
-                                <label>Pertanyaan</label>
-                                <textarea name="question" rows="4" placeholder="Tuliskan pertanyaanmu secara jelas..." required></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-submit">
-                                Kirim Pertanyaan
+        <div class="faq-wrapper">
+            {{-- KIRI: FAQ --}}
+            <div class="faq-left">
+                <div class="faq-list" id="faq-list">
+                    @forelse ($faqs ?? [] as $faq)
+                        <div class="faq-item">
+                            <button type="button" class="faq-question">
+                                {{ $faq->question }}
+                                <i class="ri-arrow-right-s-line icon"></i>
                             </button>
-                        </form>
-                    </div>
-
+                            <div class="faq-answer">
+                                @if ($faq->answer)
+                                    {{ $faq->answer->answer }}
+                                @else
+                                    <em>Belum ada jawaban dari guru.</em>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <p style="text-align:center;color:#888;">
+                            FAQ belum tersedia
+                        </p>
+                    @endforelse
                 </div>
             </div>
-        </section>
+
+            {{-- KANAN: FORM TANYA --}}
+            <div class="faq-right">
+                <div class="faq-form-card">
+                    <h3>Tanya Guru</h3>
+                    <p class="form-desc">
+                        Punya pertanyaan tapi belum ada di FAQ? Kirim langsung ke guru.
+                    </p>
+
+                    <form action="/faq" method="POST">
+                        @csrf
+
+                        {{-- Nama Siswa --}}
+                        <div class="form-group">
+                            <label>Nama Siswa</label>
+                            <input type="text" value="{{ auth()->user()->username }}" readonly>
+                        </div>
+
+                        {{-- Guru --}}
+                        <div class="form-group">
+                            <label>Guru Tertuju</label>
+                            <select name="teacher_id" required>
+                                <option value="">Pilih Guru</option>
+                                @foreach ($teachers ?? [] as $teacher)
+                                    <option value="{{ $teacher->id }}">
+                                        {{ $teacher->username }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Judul --}}
+                        <div class="form-group">
+                            <label>Judul Pertanyaan</label>
+                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
+                        </div>
+
+                        {{-- Pertanyaan --}}
+                        <div class="form-group">
+                            <label>Pertanyaan</label>
+                            <textarea name="question" rows="4" placeholder="Tuliskan pertanyaanmu secara jelas..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Kirim Pertanyaan
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
 
 
-        {{-- ================= SCRIPT ================= --}}
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+    {{-- ================= SCRIPT ================= --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-                const faqList = document.getElementById('faq-list');
-                const searchInput = document.getElementById('faq-search');
+            const faqList = document.getElementById('faq-list');
+            const searchInput = document.getElementById('faq-search');
 
-                // Accordion logic
-                function bindAccordion() {
-                    document.querySelectorAll('.faq-question').forEach(btn => {
-                        btn.onclick = function() {
-                            const item = this.parentElement;
+            // Accordion logic
+            function bindAccordion() {
+                document.querySelectorAll('.faq-question').forEach(btn => {
+                    btn.onclick = function() {
+                        const item = this.parentElement;
 
-                            document.querySelectorAll('.faq-item').forEach(i => {
-                                if (i !== item) i.classList.remove('active');
-                            });
+                        document.querySelectorAll('.faq-item').forEach(i => {
+                            if (i !== item) i.classList.remove('active');
+                        });
 
-                            item.classList.toggle('active');
-                        };
-                    });
-                }
+                        item.classList.toggle('active');
+                    };
+                });
+            }
 
-                bindAccordion();
+            bindAccordion();
 
-                // Search logic
-                let delay = null;
+            // Search logic
+            let delay = null;
 
-                searchInput.addEventListener('keyup', function() {
-                    clearTimeout(delay);
+            searchInput.addEventListener('keyup', function() {
+                clearTimeout(delay);
 
-                    delay = setTimeout(() => {
-                        fetch(`/faq/search?search=${this.value}`)
-                            .then(res => res.json())
-                            .then(data => {
-                                faqList.innerHTML = '';
+                delay = setTimeout(() => {
+                    fetch(`/faq/search?search=${this.value}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            faqList.innerHTML = '';
 
-                                if (data.length === 0) {
-                                    faqList.innerHTML = `
+                            if (data.length === 0) {
+                                faqList.innerHTML = `
                                     <p style="text-align:center;color:#888;">
                                         FAQ tidak ditemukan
                                     </p>
                                 `;
-                                    return;
-                                }
+                                return;
+                            }
 
-                                data.forEach(faq => {
-                                    faqList.innerHTML += `
+                            data.forEach(faq => {
+                                faqList.innerHTML += `
                                     <div class="faq-item">
                                         <button type="button" class="faq-question">
                                             ${faq.question}
@@ -321,38 +327,38 @@
                                         </div>
                                     </div>
                                 `;
-                                });
-
-                                bindAccordion();
                             });
-                    }, 300);
+
+                            bindAccordion();
+                        });
+                }, 300);
+            });
+
+        });
+    </script>
+    <script>
+        document.getElementById('ask-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('/faq', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(res => {
+                    alert(res.message);
+                    this.reset();
+                })
+                .catch(() => {
+                    alert('Gagal mengirim pertanyaan');
                 });
-
-            });
-        </script>
-        <script>
-            document.getElementById('ask-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                fetch('/faq', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
-                        },
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        alert(res.message);
-                        this.reset();
-                    })
-                    .catch(() => {
-                        alert('Gagal mengirim pertanyaan');
-                    });
-            });
-        </script>
+        });
+    </script>
     </section>
 
     {{-- 5. MODALS --}}
@@ -491,11 +497,17 @@
                     <div class="video-container">${videoElement}</div>
                     ${content.file_path && content.file_path.endsWith('.pdf') ?
                         `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
-                                    <i class="ri-file-pdf-line"></i> Download PDF Materi
-                                    </a>` : ''}
+                                                    <i class="ri-file-pdf-line"></i> Download PDF Materi
+                                                    </a>` : ''}
                             <div class="modal-tags-row">
                         <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
                         <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
+
+                        <i class="fa-solid fa-heart love-btn ${data.isLiked ? 'liked' : ''}" 
+                            data-id="${data.id}">
+                        </i>
+
+
                     </div>
                     </div>
                     <div class="modal-side-text">
@@ -538,5 +550,38 @@
             }
         </script>
     @endpush
+
+    <script>
+document.addEventListener('click', function (e) {
+
+    if (!e.target.classList.contains('love-btn')) return;
+
+    const button = e.target;
+    const moduleId = button.dataset.id;
+    const isLiked = button.classList.contains('liked');
+
+    button.classList.toggle('liked');
+
+    fetch(`/modules/${moduleId}/like`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.liked) {
+            button.classList.add('liked');
+        } else {
+            button.classList.remove('liked');
+        }
+    })
+    .catch(() => {
+        button.classList.toggle('liked');
+    });
+});
+</script>
+
 
 @endsection

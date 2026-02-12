@@ -285,14 +285,31 @@
     color: var(--light);
     padding: 30px;
     border-radius: 8px;
-    text-align: center;
+    text-align: left;
 }
+
+.love-btn {
+    color: #ffffff;                 /* isi putih */
+    -webkit-text-stroke: 1.5px #F6973F; /* outline oren */
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.love-btn.liked {
+    color: #F6973F;                 /* isi oren */
+    -webkit-text-stroke: 0px;       /* hilangkan outline */
+}
+
+
 
 /* ================= FAQ ================= */
 
 .faq-section {
     margin-top: 80px;
     padding-top: 7.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .faq-list {
@@ -340,15 +357,16 @@
 .faq-wrapper {
     display: grid;
     grid-template-columns: 1.8fr 2fr;
-    gap: 2rem;
+    gap: 3.5rem;
 }
 
 .faq-form-card {
-    background: var(--light);
+    margin: 40px auto 0;
+    background: var(--dark-soft);
     padding: 24px;
     border-radius: 16px;
     color: #393e46;
-    max-width: 420px;
+    max-width: 530px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
@@ -650,24 +668,28 @@
     font-size: 1.1rem;
     margin-bottom: 30px;
 }
+
 .dictionary-horizontal-wrapper {
-    display: flex;
-    gap: 24px;
-    overflow-x: auto;
-    padding-bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
 }
 
 .dictionary-column {
-    min-width: 220px;
-    flex-shrink: 0;
+    background: var(--dark-soft);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
 .dictionary-letter {
-    text-align: center;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    color: #f97316;
+    margin-bottom: 0.8rem;
 }
+
 
 .dictionary-table {
     width: 100%;
@@ -1081,9 +1103,9 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
-.module-title { color: #333 !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
-.author-label { font-size: 0.8rem; color: #777; margin-bottom: 10px; }
-.module-desc-text { font-size: 0.9rem; color: #666 !important; line-height: 1.5; margin-bottom: 15px; }
+.module-title { color: #fff !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
+.author-label { font-size: 0.8rem; color: #fff; margin-bottom: 10px; }
+.module-desc-text { font-size: 0.9rem; color: #fff !important; line-height: 1.5; margin-bottom: 15px; }
 
 /* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
 .btn-pelajari-orange, .pdf-btn {
@@ -1096,7 +1118,7 @@
 
 /* --- LAYOUT ELEMEN --- */
 .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.media-icons-row { display: flex; gap: 8px; font-size: 1.1rem; }
+.media-icons-row { display: flex; gap: 8px; font-size: 1.3rem; }
 .filter-container-simple { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
 .filter-container-simple select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
 
@@ -1418,21 +1440,29 @@ body {
 }
 
 .page-content > * {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.content-body {
+/* .content-body {
     background: #f1f5f9;
     padding: 32px;
     min-height: 100vh;
+} */
+
+.content-body {
+    display: block;
+    width: 100%;
 }
+
+
 .page-header {
-    background: #e2e8f0;
+    /* background: #e2e8f0; */
     border-radius: 12px;
     padding: 20px 24px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,.06);
+    /* box-shadow: 0 4px 12px rgba(0,0,0,.06); */
 }
 
 .page-title {
@@ -1441,7 +1471,7 @@ body {
     color: #0f172a;
 }
 .module-card {
-    background: #e5e7eb;
+    background: var(--dark-soft);
     border-radius: 16px;
     padding: 16px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
@@ -2434,4 +2464,9 @@ select.input-modern option {
     padding: 15px;
     color: #9ca3af;
     font-style: italic;
+#moduleCardsContainer {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 24px !important;
+    width: 100% !important;
 }

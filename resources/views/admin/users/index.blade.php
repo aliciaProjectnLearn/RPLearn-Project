@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br><br><br>
+
 
 <div class="content-body px-4">
     <div class="container-fluid">
@@ -25,15 +25,15 @@
                 {{-- Filter Role --}}
                 <div class="user-actions">
                     <select name="role" onchange="this.form.submit()" class="form-select rounded-pill px-4 shadow-sm" style="min-width: 160px;">
-                        <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
-                        <option value="guru"  {{ request('role') == 'guru' ? 'selected' : '' }}>Guru</option>
-                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="siswa" {{ (request('role') ?? 'siswa') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                        <option value="guru"  {{ (request('role') ?? 'siswa') == 'guru' ? 'selected' : '' }}>Guru</option>
+                        <option value="admin" {{ (request('role') ?? 'siswa') == 'admin' ? 'selected' : '' }}>Admin</option>
                     </select>
 
                     {{-- Search --}}
                     <div class="search-box">
-                        <input type="text" name="search" placeholder="Cari username / nama..." value="{{ request('search') }}">
-                        <button type="submit" class="btn-search">
+                        <input type="text" id="searchInput" name="search" placeholder="Cari username / nama..." value="{{ request('search') }}" required>
+                        <button type="submit" id="searchBtn" class="btn-search" disabled>
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -42,8 +42,8 @@
                     <a href="{{ route('admin.users.create') }}" class="btn-add">
                         <i class="fas fa-plus"></i> Tambah
                     </a>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
 
 
@@ -61,10 +61,10 @@
                             <th style="min-width:200px;">Nama</th>
 
                             {{-- Kolom Dinamis --}}
-                            @if(request('role') == 'siswa')
+                                @if(request('role', 'siswa') == 'siswa')
                                 <th style="min-width:140px;">NIS</th>
                                 <th style="min-width:140px;">Kelas</th>
-                            @elseif(request('role') == 'guru')
+                                @elseif(request('role', 'siswa') == 'guru')
                                 <th style="min-width:160px;">NIP</th>
                             @endif
 
@@ -139,8 +139,12 @@
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-action text-primary" title="Edit">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
+                                    <br>
+
+                                    <hr>
 
                                     {{-- Delete --}}
+                                    <br>
                                     <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?')">
                                         @csrf
                                         @method('DELETE')
@@ -165,6 +169,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+
+    function toggleButton() {
+        searchBtn.disabled = searchInput.value.trim() === "";
+    }
+
+    searchInput.addEventListener("input", toggleButton);
+
+    toggleButton();
+</script>
+
 
 
 {{-- Styling --}}

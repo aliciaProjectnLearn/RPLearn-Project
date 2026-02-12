@@ -20,12 +20,7 @@
                 <div class="row mb-4 align-items-center">
                     <label class="col-sm-3 label-modern">Username</label>
                     <div class="col-sm-9">
-                        <input type="text"
-                               name="username"
-                               value="{{ old('username') }}"
-                               class="input-modern"
-                               placeholder="Contoh: rpl_user123"
-                               required>
+                        <input type="text" name="username" value="{{ old('username') }}" class="input-modern" placeholder="Contoh: rpl_user123" required>
                     </div>
                 </div>
 
@@ -33,11 +28,7 @@
                 <div class="row mb-4 align-items-center">
                     <label class="col-sm-3 label-modern">Password</label>
                     <div class="col-sm-9">
-                        <input type="password"
-                               name="password"
-                               class="input-modern"
-                               placeholder="Minimal 6 karakter"
-                               required>
+                        <input type="password" name="password" class="input-modern" placeholder="Minimal 6 karakter" required>
                     </div>
                 </div>
 
@@ -64,11 +55,7 @@
                     <div class="row mb-4 align-items-center">
                         <label class="col-sm-3 label-modern">Nama Lengkap</label>
                         <div class="col-sm-9">
-                            <input type="text"
-                                   name="name"
-                                   value="{{ old('name') }}"
-                                   class="input-modern"
-                                   placeholder="Masukkan nama lengkap">
+                            <input type="text" name="name" value="{{ old('name') }}" class="input-modern" placeholder="Masukkan nama lengkap">
                         </div>
                     </div>
                 </div>
@@ -83,11 +70,7 @@
                     <div class="row mb-4 align-items-center">
                         <label class="col-sm-3 label-modern">NIS</label>
                         <div class="col-sm-6">
-                            <input type="text"
-                                   name="nis"
-                                   value="{{ old('nis') }}"
-                                   class="input-modern"
-                                   placeholder="Nomor Induk Siswa">
+                            <input type="text" name="nis" value="{{ old('nis') }}" class="input-modern" placeholder="Nomor Induk Siswa">
                         </div>
                     </div>
 
@@ -95,11 +78,7 @@
                     <div class="row mb-4 align-items-center">
                         <label class="col-sm-3 label-modern">Kelas</label>
                         <div class="col-sm-6">
-                            <input type="text"
-                                   name="kelas"
-                                   value="{{ old('kelas') }}"
-                                   class="input-modern"
-                                   placeholder="Contoh: XII RPL 1">
+                            <input type="text" name="kelas" value="{{ old('kelas') }}" class="input-modern" placeholder="Contoh: XII RPL 1">
                         </div>
                     </div>
                 </div>
@@ -114,11 +93,7 @@
                     <div class="row mb-4 align-items-center">
                         <label class="col-sm-3 label-modern">NIP</label>
                         <div class="col-sm-6">
-                            <input type="text"
-                                   name="nip"
-                                   value="{{ old('nip') }}"
-                                   class="input-modern"
-                                   placeholder="Nomor Induk Pegawai">
+                            <input type="text" name="nip" value="{{ old('nip') }}" class="input-modern" placeholder="Nomor Induk Pegawai">
                         </div>
                     </div>
                 </div>
@@ -131,7 +106,7 @@
                         Simpan User
                     </button>
 
-                    <a href="{{ route('admin.users.index') }}" class="btn-cancel-modern">
+                    <a href="{{ route('admin.users.index', ['role' => request('role', 'siswa')]) }}" class="btn-cancel-modern">
                         Batal
                     </a>
                 </div>

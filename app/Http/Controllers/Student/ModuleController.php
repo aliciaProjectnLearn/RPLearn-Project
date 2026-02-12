@@ -9,6 +9,7 @@ use App\Models\SubjectCategory;
 use App\Models\Question;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
@@ -69,6 +70,50 @@ public function index(Request $request)
         // Mengambil modul beserta relasi konten (video/pdf) dan kategorinya
         $module = \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory'])->findOrFail($id);
 
-        return response()->json($module);
+       $module->load('likes');
+
+$isLiked = auth()->check() && 
+    $module->likes->contains('user_id', auth()->id());
+
+return response()->json([
+    'id' => $module->id,
+    'title' => $module->title,
+    'desc' => $module->desc,
+    'contents' => $module->contents,
+    'grade_category' => $module->gradeCategory,
+    'subject_category' => $module->subjectCategory,
+    'isLiked' => $module->likes()
+        ->where('user_id', auth()->id())
+        ->exists()
+]);
     }
+
+public function toggleLike($id)
+{
+    $module = Module::findOrFail($id);
+    $user = auth()->user();
+
+    $like = $module->likes()->where('user_id', $user->id)->first();
+
+    if ($like) {
+        $like->delete();
+
+        // ⬇️ TARUH DI SINI
+        $module->decrement('like');
+
+        return response()->json(['liked' => false]);
+    } else {
+        $module->likes()->create([
+            'user_id' => $user->id
+        ]);
+
+        // ⬇️ TARUH DI SINI
+        $module->increment('like');
+
+        return response()->json(['liked' => true]);
+    }
+}
+
+
+
 }
