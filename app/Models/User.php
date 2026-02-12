@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Termwind\Question;
+use App\Models\Module;
 
 class User extends Authenticatable
 {
@@ -62,4 +63,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Question::class, 'teacher_id');
     }
+
+    public function savedModuls()
+{
+    return $this->belongsToMany(Modul::class, 'save_modul')
+                ->withTimestamps();
+}
+
 }

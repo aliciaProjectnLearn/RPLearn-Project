@@ -92,4 +92,27 @@ public function index(Request $request)
     ]);
 }
 
+public function save($id)
+{
+    $modul = Module::findOrFail($id);
+
+    auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
+
+    return response()->json([
+        'status' => 'saved'
+    ]);
+}
+
+public function unsave($id)
+{
+    $modul = Module::findOrFail($id);
+
+    auth()->user()->savedModuls()->detach($modul->id);
+
+    return response()->json([
+        'status' => 'unsaved'
+    ]);
+}
+
+
 }

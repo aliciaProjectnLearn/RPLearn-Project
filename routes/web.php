@@ -97,5 +97,11 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/modules/{id}/like', [StudentModuleController::class, 'toggleLike'])
     ->name('modules.like');
 
+    Route::middleware('auth')->group(function () {
+        Route::post('/modules/{id}/save', [StudentModuleController::class, 'save'])
+            ->name('modules.save');
+        Route::delete('/modules/{id}/unsave', [StudentModuleController::class, 'unsave'])
+            ->name('modules.unsave');
+    });
 
 require __DIR__ . '/auth.php';
