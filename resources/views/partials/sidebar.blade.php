@@ -22,6 +22,21 @@
                 <a href="{{ route('admin.users.index', ['role'=>'siswa']) }}">Kelola User</a>
             </li>
 
+        {{-- MENU KHUSUS GURU --}}
+        @elseif(auth()->user()->role === 'guru')
+            <li class="{{ Route::is('teacher.dashboard') ? 'active' : '' }}">
+                <a href="{{ route('teacher.dashboard') }}">Dashboard Admin</a>
+            </li>
+            <li class="{{ Route::is('teacher.modules*') ? 'active' : '' }}">
+                <a href="{{ route('teacher.modules.index') }}">Fitur Modul</a>
+            </li>
+            <li class="{{ Route::is('teacher.dictionaries*') ? 'active' : '' }}">
+                <a href="{{ route('teacher.dictionaries.index') }}">Fitur Kamus</a>
+            </li>
+            <li class="{{ Route::is('teacher.faq*') ? 'active' : '' }}">
+                <a href="{{ route('teacher.faq.index') }}">Fitur FAQ</a>
+            </li>
+
         {{-- MENU KHUSUS SISWA --}}
         @else
             <li class="{{ Route::is('student.dashboard') ? 'active' : '' }}">
