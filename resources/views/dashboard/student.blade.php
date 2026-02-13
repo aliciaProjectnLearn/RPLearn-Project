@@ -39,11 +39,16 @@
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
     {{-- SEARCH & FILTER --}}
-    <form action="{{ url()->current() }}" method="GET" class="module-filter-form">
+    <form id="moduleFilterForm"
+      action="{{ url()->current() }}"
+      method="GET"
+      class="module-filter-form">
+
 
         <div class="module-search">
             <i class="ri-search-line"></i>
             <input type="text" name="search"
+                id="moduleSearchInput"
                 placeholder="Mau belajar apa hari ini?"
                 value="{{ request('search') }}">
         </div>
@@ -432,14 +437,18 @@
                 const modalDefinition = document.getElementById('dictionaryModalDefinition');
                 const dictSearchInput = document.getElementById('dictionarySearch');
 
-                document.querySelectorAll('.clickable-term').forEach(item => {
-                    item.addEventListener('click', function() {
-                        modalTerm.textContent = this.dataset.term;
-                        modalDefinition.textContent = this.dataset.definition;
-                        dictModal.classList.add('active');
-                        document.body.style.overflow = 'hidden';
-                    });
+                document.addEventListener('click', function(e) {
+
+                    const term = e.target.closest('.clickable-term');
+                    if (!term) return;
+
+                    modalTerm.textContent = term.dataset.term;
+                    modalDefinition.textContent = term.dataset.definition;
+                    dictModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+
                 });
+
 
                 window.closeDictModal = function() {
                     dictModal.classList.remove('active');
@@ -549,7 +558,6 @@
                     });
             }
         </script>
-    @endpush
 
     <script>
 document.addEventListener('click', function (e) {
@@ -583,5 +591,5 @@ document.addEventListener('click', function (e) {
 });
 </script>
 
-
+@endpush
 @endsection
