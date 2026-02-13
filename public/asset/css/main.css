@@ -2407,7 +2407,63 @@ select.input-modern option {
     animation: slideOutRight 0.35s ease forwards;
 }
 
+/* ======================
+    TEACHER DASHBOARD
+========================= */
 
+.card-box {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    border: 1px solid #eef2f7;
+}
+
+.card-header h5 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.card-header p {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 15px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 10px 0;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+    padding: 10px 0;
+    color: #4b5563;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.data-table tr:hover {
+    background: #f9fafb;
+}
+
+.empty-row {
+    padding: 15px;
+    color: #9ca3af;
+    font-style: italic;
 #moduleCardsContainer {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
