@@ -12,13 +12,13 @@ class StudentDashboardController extends Controller
     {
         // Ambil kamus (6 term)
         $dictionaries = Dictionary::orderBy('term', 'asc')
-            ->limit(6)
+            ->limit(5)
             ->get();
 
         // Ambil modul + relasi teacher
         $modules = Module::with(['teacher', 'gradeCategory', 'subjectCategory'])
             ->latest()
-            ->limit(6)
+            ->limit(5)
             ->get();
 
         return view('dashboard.student', compact('dictionaries', 'modules'));

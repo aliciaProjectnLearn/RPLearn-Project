@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
 use App\Http\Controllers\Admin\DictionaryController;
+use App\Http\Controllers\Teacher\DictionaryController as TeacherDictionaryController;
+use App\Http\Controllers\Student\DictionaryController as StudentDictionaryController;
 
 
 /*
@@ -75,6 +77,8 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
     Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
+    Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
+    
 
     // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
     Route::get('/modules/{id}/json', function($id) {

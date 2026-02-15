@@ -49,7 +49,7 @@ public function index(Request $request)
     if ($request->filled('subject_id')) {
         $query->where('subject_category_id', $request->subject_id);
     }
-    $modules = $query->get();
+    $modules = $query->limit(3)->get();
 
     if ($request->ajax() || $request->has('ajax')) {
         return view('partials._module_list', compact('modules'))->render();

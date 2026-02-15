@@ -99,32 +99,33 @@
 
                     <div class="media-icons-row">
                         @if ($module->contents->whereNotNull('video_url')->count())
-                            <i class="ri-youtube-fill text-red"></i>
+                            <i class="ri-youtube-fill text-red" style="color: var(--orange);"></i>
                         @endif
                         @if ($module->contents->whereNotNull('file_path')->count())
-                            <i class="ri-file-pdf-2-fill"></i>
+                            <i class="ri-file-pdf-2-fill" style="color: var(--orange);"></i>
                         @endif
                     </div>
-                </div><br>
+                </div>
 
-                <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="text-align: center;">
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="padding-bottom: 10px; padding-top: 10px;">
                     {{ $module->title }}
-                </h3><br>
-
-                
+                </h3>
                 <p class="module-desc-text">
                     {{ Str::limit($module->desc, 80) }}
                 </p>
-                
-                <div class="author-label">
-                    <i class="ri-user-3-line"></i>
-                    {{ $module->teacher->username ?? 'Admin' }}
+                <br>
+                <div class="foot-module-card">
+                    <button class="btn-pelajari-orange"
+                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
+                        Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                    </button>
+                    <div class="author-label" style="font-size: 0.9rem; color: var(--light);">
+                        <i class="ri-user-3-line" style="margin-right: 5px; color: var(--orange);"></i>
+                        {{ $module->teacher->username ?? 'Admin' }}
+                    </div>
                 </div>
 
-                <button class="btn-pelajari-orange"
-                    onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
-                    Pelajari Sekarang <i class="ri-arrow-right-line"></i>
-                </button>
+                
 
             </div>
         @empty
@@ -133,6 +134,11 @@
             </p>
         @endforelse
     </div>
+    <div class="button-more">
+                <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
+                    Lihat Semua →
+                </a>
+            </div>
 </section>
 
 
@@ -179,13 +185,17 @@
                             </tbody>
                         </table>
                     </div>
-
                 @empty
                     <p>Data tidak ditemukan.</p>
                 @endforelse
 
             </div>
         </div>
+            <div class="button-more">
+                <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
+                    Lihat Semua →
+                </a>
+            </div>
     </section>
 
     {{-- ================= FAQ ================= --}}

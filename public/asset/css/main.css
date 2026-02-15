@@ -10,7 +10,7 @@
     --dark: #222831;
     --dark-soft: #393E46;
     --orange: #F6973F;
-    --light: #EEEEEE;
+    --light: #fff;
 }
 
 /* LAYOUT */
@@ -280,6 +280,12 @@
     margin-bottom: 1rem;
 }
 
+.module-card {
+    background-color: var(--dark);
+    padding: 20px;
+    border-radius: 15px;
+}
+
 .love-btn {
     color: #ffffff;                 /* isi putih */
     -webkit-text-stroke: 1.5px #F6973F; /* outline oren */
@@ -293,7 +299,11 @@
     -webkit-text-stroke: 0px;       /* hilangkan outline */
 }
 
-
+.foot-module-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 /* ================= FAQ ================= */
 
@@ -354,7 +364,7 @@
 
 .faq-form-card {
     margin: 40px auto 0;
-    background: var(--dark-soft);
+    background: var(--dark);
     padding: 24px;
     border-radius: 16px;
     color: #393e46;
@@ -419,7 +429,7 @@
     width: 100%;
     margin-top: 10px;
     background: linear-gradient(135deg, #F6973F, #D65A31);
-    color: #222831;
+    color: var(--light);
     border: none;
     padding: 12px;
     border-radius: 10px;
@@ -669,7 +679,7 @@
 }
 
 .dictionary-column {
-    background: var(--dark-soft);
+    background: var(--dark);
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
@@ -769,6 +779,44 @@
         transform: translateY(0) scale(1);
         opacity: 1;
     }
+}
+
+.button-more{
+    margin-top:20px;
+    text-align: right;
+}
+
+/* tombol */
+.btn-more-dictionary{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+
+    padding:10px 22px;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.4px;
+
+    color:white;
+    text-decoration:none;
+
+    background: linear-gradient(135deg,#F6973F,#D65A31);
+    border-radius:12px;
+
+    box-shadow:0 6px 18px rgba(246,151,63,.35);
+    transition:all .25s ease;
+}
+
+/* hover */
+.btn-more-dictionary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(214,90,49,.45);
+    background: linear-gradient(135deg,#FFA94D,#E56A3A);
+}
+
+/* klik */
+.btn-more-dictionary:active{
+    transform:scale(.97);
 }
 
 
