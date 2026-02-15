@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ModuleLike;
 
 class Module extends Model
 {
@@ -49,5 +50,14 @@ class Module extends Model
     return $this->belongsToMany(User::class, 'save_modul')
                 ->withTimestamps();
 }
+    public function likes()
+    {
+        return $this->hasMany(ModuleLike::class, 'module_id');
+    }
+
+        public function isLiked()
+    {
+        return $this->likes()->where('user_id', auth()->id())->exists();
+    }
 
 }
