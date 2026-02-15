@@ -20,7 +20,7 @@ class StudentDashboardController extends Controller
             ->latest()
             ->limit(5)
             ->get();
-
+ 
         return view('dashboard.student', compact('dictionaries', 'modules'));
     }
 }

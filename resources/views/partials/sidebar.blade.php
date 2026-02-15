@@ -40,23 +40,23 @@
         {{-- MENU KHUSUS SISWA --}}
         @else
             <li class="{{ Route::is('student.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('student.dashboard') }}" class="sidebar-link">Dashboard</a>
+                <a href="{{ route('student.dashboard') }}">Dashboard</a>
             </li>
-            <li>
-                <a href="{{ Route::is('student.dashboard') ? '#module-section' : route('student.dashboard').'#module-section' }}" class="sidebar-link">
-                    Modules
-                </a>
+            <li class="{{ Route::is('student.modules*') ? 'active' : '' }}">
+                <a href="{{ route('student.modules.index') }}">Modules</a>
             </li>
-            <li>
-                <a href="{{ Route::is('student.dashboard') ? '#dictionary-section' : route('student.dashboard').'#dictionary-section' }}" class="sidebar-link">
-                    Dictionary
-                </a>
+            <li class="{{ Route::is('student.dictionary*') ? 'active' : '' }}">
+                <a href="{{ route('student.dictionary.index') }}">Dictionaries</a>
             </li>
+
             <li>
                 <a href="{{ Route::is('student.dashboard') ? '#faq-section' : route('student.dashboard').'#faq-section' }}" class="sidebar-link">
                     FAQ
                 </a>
             </li>
+            {{-- <li class="{{ Route::is('student.saveModul*') ? 'active' : '' }}">
+                <a href="{{ route('student.saveModul.index') }}">Modul Disimpan</a>
+            </li> --}}
         @endif
 
         {{-- MENU UMUM (Bisa diakses semua) --}}

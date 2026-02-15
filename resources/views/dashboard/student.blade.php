@@ -135,7 +135,7 @@
         @endforelse
     </div>
     <div class="button-more">
-                <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
+                <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
                     Lihat Semua →
                 </a>
             </div>
@@ -441,7 +441,6 @@
                     };
                 }
 
-                // --- B. DICTIONARY MODAL & SEARCH (Kodingan Asli Lo) ---
                 const dictModal = document.getElementById('dictionaryModal');
                 const modalTerm = document.getElementById('dictionaryModalTerm');
                 const modalDefinition = document.getElementById('dictionaryModalDefinition');

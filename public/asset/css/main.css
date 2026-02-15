@@ -1221,10 +1221,11 @@ body {
 /* Text kanan */
 .modal-side-text {
     flex: 1;
-    min-width: 48%;
+    min-width: 45%;
     background: #fbfbfb;
     padding: 18px;
     border-radius: 12px;
+    height: 100%;
 }
 
 @media (max-width: 900px) {
