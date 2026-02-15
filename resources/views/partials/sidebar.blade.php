@@ -25,7 +25,7 @@
         {{-- MENU KHUSUS GURU --}}
         @elseif(auth()->user()->role === 'guru')
             <li class="{{ Route::is('teacher.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('teacher.dashboard') }}">Dashboard Admin</a>
+                <a href="{{ route('teacher.dashboard') }}">Dashboard</a>
             </li>
             <li class="{{ Route::is('teacher.modules*') ? 'active' : '' }}">
                 <a href="{{ route('teacher.modules.index') }}">Fitur Modul</a>
@@ -34,7 +34,7 @@
                 <a href="{{ route('teacher.dictionaries.index') }}">Fitur Kamus</a>
             </li>
             <li class="{{ Route::is('teacher.faq*') ? 'active' : '' }}">
-                <a href="{{ route('teacher.faq.index') }}">Fitur FAQ</a>
+                <a href="{{ route('teacher.faq.index') }}">Fitur Q&A</a>
             </li>
 
         {{-- MENU KHUSUS SISWA --}}

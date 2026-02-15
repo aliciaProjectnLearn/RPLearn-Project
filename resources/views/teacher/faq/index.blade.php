@@ -1,85 +1,175 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Gunakan spacer khusus biar gak "nyelam" di ThinkPad T460s lo --}}
-<div class="admin-spacer"></div>
+    <div class="admin-spacer"></div>
 
-<div class="page-content px-4">
-    <div class="admin-card-box">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-800 text-dark m-0">Fitur FAQ & Tanya Jawab</h2>
-                <p class="text-muted small">Kelola pertanyaan dari siswa mengenai materi <span class="text-orange fw-700">RPLearn</span></p>
-            </div>
-            {{-- Statistik mini biar admin tahu beban kerja --}}
-            <div class="d-flex gap-2">
-                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill fw-700">
-                    {{ $questions->where('status', 'pending')->count() }} PENDING
-                </span>
-                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-700">
-                    {{ $questions->where('status', 'answered')->count() }} TERJAWAB
-                </span>
-            </div>
-        </div>
+    <div class="page-content px-4">
+        <div class="admin-card-box faq-dashboard-card">
 
-        @foreach($questions as $q)
-        {{-- Class faq-item-modern otomatis kasih border status di samping --}}
-        <div class="faq-item-modern {{ $q->status == 'answered' ? 'faq-status-answered' : 'faq-status-pending' }}">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="bg-orange-subtle rounded-circle p-2 text-center" style="width: 45px; height: 45px;">
-                        <i class="fa-solid fa-circle-question fa-lg"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-800 m-0 text-dark">{{ $q->title }}</h5>
-                        <small class="text-muted">
-                            Oleh: <b class="text-dark">{{ $q->student->name ?? 'Siswa' }}</b>
-                            <span class="mx-1">|</span>
-                            Modul: <span class="text-orange fw-600">{{ $q->module->title ?? 'Umum' }}</span>
-                        </small>
-                    </div>
+            {{-- Header --}}
+            <div class="faq-header-modern">
+                <div>
+                    <h2 class="faq-title">Fitur Tanya Jawab</h2>
+                    <p class="faq-subtitle">
+                        Kelola pertanyaan dari siswa mengenai materi
+                        <span class="text-orange fw-700">RPLearn</span>
+                    </p>
                 </div>
-                <div class="text-end">
-                    <small class="text-muted d-block">{{ $q->created_at?->diffForHumans() ?? 'Baru saja' }}</small>
+
+                <div class="faq-badges">
+
+                    <a href="{{ route('teacher.faq.index') }}"
+                        class="badge-modern {{ !request('filter') ? 'active-all' : '' }}">
+                        {{ $totalCount }} Semua
+                    </a>
+
+                    <a href="{{ route('teacher.faq.index', ['filter' => 'pending']) }}"
+                        class="badge-modern pending {{ request('filter') == 'pending' ? 'active' : '' }}">
+                        {{ $pendingCount }} Pending
+                    </a>
+
+                    <a href="{{ route('teacher.faq.index', ['filter' => 'answered']) }}"
+                        class="badge-modern answered {{ request('filter') == 'answered' ? 'active' : '' }}">
+                        {{ $answeredCount }} Terjawab
+                    </a>
+
                 </div>
+
+
             </div>
 
-            <div class="bg-light p-3 rounded-3 mb-4" style="border: 1px dashed #ddd;">
-                <p class="text-dark m-0 italic" style="font-size: 0.95rem;">"{{ $q->question }}"</p>
-            </div>
+            <form method="GET" action="{{ route('teacher.faq.index') }}" class="faq-search-form">
 
-            @if($q->status == 'pending')
-                {{-- Form Balas Sejajar dengan style input modern --}}
-                <form action="{{ route('teacher.faq.answer', $q->id) }}" method="POST">
-                    @csrf
-                    <div class="row g-2 align-items-center">
-                        <div class="col-md-10">
-                            <textarea name="answer" class="input-modern w-100" rows="2" placeholder="Tulis jawaban resmi admin di sini..." required></textarea>
+                {{-- Supaya filter tetap kebawa --}}
+                @if (request('filter'))
+                    <input type="hidden" name="filter" value="{{ request('filter') }}">
+                @endif
+
+                <div class="faq-search-wrapper">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="Cari judul, isi pertanyaan, atau nama siswa..." class="faq-search-input">
+
+                    <button type="submit" class="faq-search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
+
+
+            {{-- List FAQ --}}
+            @foreach ($questions as $q)
+                <div class="faq-item-modern {{ $q->status == 'answered' ? 'faq-status-answered' : 'faq-status-pending' }}">
+
+                    <div class="faq-top">
+                        <div class="faq-left">
+                            <div class="faq-icon">
+                                <i class="fa-solid fa-circle-question"></i>
+                            </div>
+
+                            <div>
+                                <h5 class="faq-question-title">{{ $q->title }}</h5>
+                                <small class="faq-meta">
+                                    Oleh: <b>{{ $q->student->name ?? 'Siswa' }}</b>
+                                    <span class="mx-1">|</span>
+                                    Modul:
+                                    <span class="text-orange fw-600">
+                                        {{ $q->module->title ?? 'Umum' }}
+                                    </span>
+                                </small>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-save-modern w-100 py-3">Balas</button>
+
+                        <div class="faq-time">
+                            {{ $q->created_at?->diffForHumans() ?? 'Baru saja' }}
                         </div>
                     </div>
-                </form>
-            @else
-                {{-- Tampilan Jawaban Terpasang dengan aksen oranye RPLearn --}}
-                <div class="pt-3 border-top mt-2">
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        <i class="fa-solid fa-reply text-orange"></i>
-                        <label class="small fw-800 text-orange uppercase ls-1">JAWABAN ADMIN</label>
+
+                    <div class="faq-question-box">
+                        "{{ $q->question }}"
                     </div>
-                    <p class="text-secondary m-0 ps-4" style="line-height: 1.6;">{{ $q->answer->answer }}</p>
+
+                    @if ($q->status == 'pending')
+                        <form action="{{ route('teacher.faq.answer', $q->id) }}" method="POST" class="faq-form-modern">
+                            @csrf
+                            <textarea name="answer" class="input-modern" rows="2" placeholder="Tulis jawaban resmi anda di sini..." required></textarea>
+
+                            <button type="submit" class="btn-save-modern">
+                                <i class="fa-solid fa-paper-plane me-1"></i> Balas
+                            </button>
+                        </form>
+                    @else
+                        {{-- ANSWER --}}
+                        <div class="faq-answer-modern position-relative">
+
+                            {{-- Tombol di kanan atas --}}
+                            <div class="faq-answer-actions">
+                                <button type="button" class="btn-edit-answer" onclick="toggleEdit({{ $q->answer->id }})">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                <form action="{{ route('teacher.faq.delete', $q->answer->id) }}" method="POST"
+                                    onsubmit="return confirm('Yakin mau hapus jawaban ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete-answer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                            {{-- Label --}}
+                            <div class="faq-answer-label mb-2">
+                                <i class="fa-solid fa-reply"></i>
+                                JAWABAN ANDA
+                            </div>
+
+                            {{-- Text --}}
+                            <p id="answer-text-{{ $q->answer->id }}"><br>
+                                {{ $q->answer->answer }}
+                            </p>
+
+                            {{-- Form Edit --}}
+                            <form action="{{ route('teacher.faq.update', $q->answer->id) }}" method="POST"
+                                class="edit-form mt-2" id="edit-form-{{ $q->answer->id }}" style="display:none;">
+                                @csrf
+                                @method('PUT')
+
+                                <textarea name="answer" class="input-modern mb-2" rows="3" required>
+                        {{ $q->answer->answer }}
+                    </textarea>
+
+                                <button type="submit" class="btn-save-modern">
+                                    Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
+                </div>
+            @endforeach
+
+            @if ($questions->isEmpty())
+                <div class="faq-empty-state">
+                    <i class="fa-solid fa-inbox"></i>
+                    <p>Belum ada pertanyaan masuk hari ini.</p>
                 </div>
             @endif
-        </div>
-        @endforeach
 
-        @if($questions->isEmpty())
-            <div class="text-center py-5">
-                <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
-                <p class="text-muted">Belum ada pertanyaan masuk hari ini.</p>
-            </div>
-        @endif
+        </div>
     </div>
-</div>
+
+    <script>
+        function toggleEdit(id) {
+            let text = document.getElementById('answer-text-' + id);
+            let form = document.getElementById('edit-form-' + id);
+
+            if (form.style.display === "none") {
+                form.style.display = "block";
+                text.style.display = "none";
+            } else {
+                form.style.display = "none";
+                text.style.display = "block";
+            }
+        }
+    </script>
 @endsection
