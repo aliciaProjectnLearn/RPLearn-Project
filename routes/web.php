@@ -74,7 +74,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 */
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
-    Route::get('/modules/{id}', [StudentModuleController::class, 'show'])->name('modules.show');
     Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
 
     // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
@@ -93,7 +92,9 @@ Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/dashboard', [TeacherController::class, 'index'])->name('dashboard');
 
     Route::get('/modules', function () {return view('teacher.modules.index');})->name('modules.index');
-    Route::get('/dictionaries', function () {return view('teacher.dictionaries.index');})->name('dictionaries.index');
+    
+    Route::resource('dictionaries', App\Http\Controllers\Teacher\DictionaryController::class);
+
     Route::get('faq', [App\Http\Controllers\Teacher\FAQController::class, 'index'])->name('faq.index');
       Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
 
