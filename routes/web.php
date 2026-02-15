@@ -94,8 +94,13 @@ Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')
 
     Route::get('/modules', function () {return view('teacher.modules.index');})->name('modules.index');
     Route::get('/dictionaries', function () {return view('teacher.dictionaries.index');})->name('dictionaries.index');
+
+    // FAQ ROUTES
     Route::get('faq', [App\Http\Controllers\Teacher\FAQController::class, 'index'])->name('faq.index');
-      Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
+    Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
+    Route::put('/teacher/faq/{answer}/update', [App\Http\Controllers\Teacher\FAQController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{answer}/delete', [App\Http\Controllers\Teacher\FAQController::class, 'destroy'])->name('faq.delete');
+
 
 });
 
