@@ -42,6 +42,12 @@
 
 </div>
 
+<div id="noResultMessage"
+     style="display:none; margin-top:10px; color:#e74c3c; font-weight:600;">
+    Tidak ada istilah yang kamu cari di huruf {{ $letter ?? 'ini' }}. Coba klik huruf lain.
+</div>
+
+
 
 <style>
 /* ===== Dictionary Layout ===== */
@@ -53,10 +59,38 @@
     align-items:start;
 }
 
-/* content */
 .dictionary-content{
-    min-width:0;
+    position: relative;
 }
+
+
+#noResultMessage{
+    position: absolute;
+    top: 285px;
+    left: 15rem;
+    right: 0;
+
+    background: var(--light);
+    color: #e74c3c;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+
+
+    text-align: center;
+    justify-content: center;
+
+    animation: fadeIn .2s ease;
+
+    width: max-content;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(-5px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+
 
 .dictionary-content h2{
     padding-top: 1.5rem;
@@ -120,4 +154,52 @@
 }
 
 </style>
+
+{{-- ================= SCRIPT ================= --}}
+
+   @push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('dictionarySearch');
+    const wordItems = document.querySelectorAll('.word-item');
+    const noResult = document.getElementById('noResultMessage');
+
+    if (!searchInput || !noResult) {
+        console.log("Search atau message tidak ditemukan");
+        return;
+    }
+
+    searchInput.addEventListener('input', function () {
+
+        const keyword = this.value.trim().toLowerCase();
+        let found = false;
+
+        wordItems.forEach(item => {
+
+            const term = item.querySelector('h4')?.textContent.toLowerCase() || '';
+            const definition = item.querySelector('p')?.textContent.toLowerCase() || '';
+
+            if (term.includes(keyword) || definition.includes(keyword)) {
+                item.style.display = '';
+                found = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        if (!found && keyword.length > 0) {
+            noResult.style.display = 'block';
+        } else {
+            noResult.style.display = 'none';
+        }
+    });
+
+});
+</script>
+@endpush
+
+
+
+
 @endsection

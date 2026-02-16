@@ -1133,10 +1133,10 @@
     font-size: 0.8rem;
 }
 
---- CARD HOVER & DESIGN --- */
+/* --- CARD HOVER & DESIGN --- */
 .module-card {
     background: white; border-radius: 15px; padding: 20px; border: 1px solid #eee;
-    transition: transform 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; */
+    transition: transform 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column;
 }
 .module-card:hover {
     transform: translateY(-8px); border-color: var(--orange);
@@ -2500,6 +2500,8 @@ select.input-modern option {
     padding: 15px;
     color: #9ca3af;
     font-style: italic;
+}
+
 #moduleCardsContainer {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
