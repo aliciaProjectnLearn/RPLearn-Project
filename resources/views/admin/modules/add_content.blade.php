@@ -6,114 +6,107 @@
     <div class="container-fluid" style="max-width: 1100px;">
 
         {{-- HEADER --}}
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="fw-900 text-dark m-0">Kelola Isi Modul</h3>
-                <p class="text-muted small">
-                    Modul: <span class="text-orange fw-bold">{{ $module->title }}</span>
-                </p>
-            </div>
+        <div class="mb-4">
+            <h3 class="fw-900 text-dark m-0">Kelola Isi Modul</h3>
+            <p class="text-muted small mb-0">
+                Modul: <span class="text-orange fw-bold">{{ $module->title }}</span>
+            </p>
         </div>
 
+        {{-- LIST SUBMATERI --}}
+        <div class="materi-list-box mb-4">
 
-        {{-- ============================= --}}
-        {{-- LIST SUBMATERI (NAIK KE ATAS) --}}
-        {{-- ============================= --}}
-        <div class="materi-list-box mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <h5 class="fw-900 m-0">
+                        <i class="fa-solid fa-layer-group text-orange me-2"></i>
+                        Struktur Materi
+                    </h5>
+                    <br>
+                    <span class="badge-count">
+                        {{ $contents->count() }} Sub-Materi
+                    </span>
+                </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-900 m-0">
-                    <i class="fa-solid fa-layer-group text-orange me-2"></i>
-                    Struktur Materi Saat Ini
-                </h5>
-
-                <br>
-
-                <span class="badge-count">
-                    {{ $module->contents->count() }} Sub-Materi
-                </span>
-
-                <br>
-                <br>
+                <button class="btn-save-modern" onclick="toggleForm()">
+                    + Tambah Sub-Materi
+                </button>
             </div>
 
-            @forelse($module->contents as $index => $content)
-                <div class="content-row">
+            <form method="GET" class="mb-3">
+                <div class="d-flex gap-2">
+                    <input type="text" name="search" value="{{ request('search') }}" class="input-modern" placeholder="Cari sub-materi...">
+                    <button type="submit" class="btn-save-modern">Cari</button>
+                </div>
+            </form>
 
-                    <div class="left-info">
-                        <div class="hover-number">{{ $index + 1 }}</div>
+            {{-- Scroll Area --}}
+            <div class="submateri-scroll">
+                @forelse($contents as $index => $content)
+                    <div class="content-row">
 
-                        <div>
-                            <h6 class="fw-800 mb-1">{{ $content->title }}</h6>
+                        <div class="left-info">
+                            <div class="hover-number">{{ $index + 1 }}</div>
 
-                            <div class="d-flex gap-2">
-                                @if($content->video_url)
-                                    <span class="badge-modern bg-soft-blue">VIDEO</span>
-                                @endif
+                            <div>
+                                <h6 class="fw-800 mb-1">{{ $content->title }}</h6>
 
-                                @if($content->file_path)
-                                    <span class="badge-modern bg-soft-red">PDF</span>
-                                @endif
+                                <div class="d-flex gap-2">
+                                    @if($content->video_url)
+                                        <span class="badge-modern bg-soft-blue">VIDEO</span>
+                                    @endif
+
+                                    @if($content->file_path)
+                                        <span class="badge-modern bg-soft-red">PDF</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
+
+                        <div class="right-action">
+                            <a href="{{ route('admin.modules.content.show', $content->id) }}" class="btn-icon-action">👁</a>
+
+                            <form action="{{ route('admin.modules.content.destroy', $content->id) }}" method="POST" onsubmit="return confirm('Hapus sub-materi ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-icon-action danger">🗑</button>
+                            </form>
+                        </div>
+
                     </div>
-
-                    <div class="right-action">
-                        <a href="{{ route('admin.modules.content.show', $content->id) }}"
-                            class="btn-icon-action">
-                            👁
-                        </a>
+                @empty
+                    <div class="empty-box">
+                        Belum ada sub-materi.
                     </div>
+                @endforelse
+            </div>
 
-
-                </div>
-
-            @empty
-                <div class="empty-box">
-                    Belum ada sub-materi. Tambahkan yang pertama!
-                </div>
-            @endforelse
         </div>
 
-        <br>
+        {{-- FORM TAMBAH (COLLAPSIBLE) --}}
+        <div class="main-form-card d-none" id="formContainer">
 
-
-
-        {{-- ============================= --}}
-        {{-- FORM TAMBAH (PINDAH KE BAWAH) --}}
-        {{-- ============================= --}}
-        <div class="main-form-card">
-
-            <h4 class="fw-900 mb-4">
-                <i class="fa-solid fa-plus text-orange me-2"></i>
+            <h4 class="fw-900 mb-4 text-orange">
                 Tambah Sub-Materi Baru
             </h4>
-
-            <br>
 
             <form action="{{ route('admin.modules.storeContent', $module->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
                     <label class="label-modern">Judul Materi</label>
-                    <input type="text" name="title" class="input-modern" placeholder="Contoh: Pengenalan Routing" required>
+                    <input type="text" name="title" class="input-modern" required>
                 </div>
-
-                <br>
 
                 <div class="mb-3">
                     <label class="label-modern">Penjelasan</label>
-                    <textarea name="content" rows="4" class="input-modern" placeholder="Tuliskan isi materi di sini..."></textarea>
+                    <textarea name="content" rows="4" class="input-modern"></textarea>
                 </div>
-
-                <br>
 
                 <div class="mb-3">
                     <label class="label-modern">Video URL</label>
-                    <input type="url" name="video_url" class="input-modern" placeholder="https://www.youtube.com/embed...">
+                    <input type="url" name="video_url" class="input-modern">
                 </div>
-
-                <br>
 
                 <div class="mb-3">
                     <label class="label-modern">File PDF</label>
@@ -121,57 +114,65 @@
                     <small class="text-muted">Max 20MB, PDF only</small>
                 </div>
 
-                <div class="form-footer mt-4">
+                <div class="mb-3">
+                    <label class="label-modern">Urutan Materi</label>
+                    <input type="number" name="order" class="input-modern" value="{{ $module->contents->count() + 1 }}" min="1">
+                </div>
+
+                <div class="mt-4">
                     <button type="submit" class="btn-save-modern">
-                        Tambahkan Materi
+                        Simpan
                     </button>
 
-                    <a href="{{ route('admin.modules.index') }}" class="btn-cancel-modern">
-                        Kembali
-                    </a>
+                    <button type="button"
+                            onclick="toggleForm()"
+                            class="btn-cancel-modern">
+                        Tutup
+                    </button>
                 </div>
+
             </form>
         </div>
 
     </div>
 </div>
 
+{{-- SCRIPT --}}
+<script>
+function toggleForm() {
+    document.getElementById('formContainer').classList.toggle('d-none');
+}
+</script>
 
-{{-- ============================= --}}
-{{-- STYLE KHUSUS PAGE INI (AMAN) --}}
-{{-- ============================= --}}
+{{-- STYLE --}}
 <style>
-.module-content-page {
-    font-family: "Inter", sans-serif;
-}
+.module-content-page { font-family: "Inter", sans-serif; }
 
-.fw-800 {
-    font-weight: 800;
-    font-size: 17px;
-}
+.fw-800 { font-weight: 800; font-size: 16px; }
 .fw-900 { font-weight: 900; }
 
-.text-orange {
-    color: #f37021 !important;
-}
+.text-orange { color: #f37021 !important; }
 
 .main-form-card {
     background: white;
-    padding: 35px;
-    border-radius: 18px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+
+    max-width: 1075px;
+    margin: 40px auto 0 auto;
 }
 
 .input-modern {
     width: 100%;
-    padding: 12px 15px;
-    border-radius: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
     border: 1px solid #e2e8f0;
-    outline: none;
 }
 
 .input-modern:focus {
     border-color: #f37021;
+    outline: none;
 }
 
 .label-modern {
@@ -183,61 +184,65 @@
 .btn-save-modern {
     background: #f37021;
     color: white;
-    padding: 10px 22px;
-    border-radius: 12px;
+    padding: 9px 20px;
+    border-radius: 10px;
     border: none;
     font-weight: 800;
 }
 
 .btn-cancel-modern {
     margin-left: 10px;
-    padding: 10px 20px;
-    border-radius: 12px;
+    padding: 9px 18px;
+    border-radius: 10px;
     background: #f1f5f9;
     font-weight: 700;
-    text-decoration: none;
-    color: black;
+    border: none;
 }
 
 .materi-list-box {
     background: #f8fafc;
-    padding: 30px;
-    border-radius: 18px;
+    padding: 25px;
+    border-radius: 16px;
 }
 
 .badge-count {
     background: white;
-    padding: 8px 18px;
+    padding: 6px 14px;
     border-radius: 999px;
     font-weight: 800;
     border: 1px solid #eee;
 }
 
+.submateri-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
 .content-row {
     background: white;
-    padding: 18px 20px;
-    border-radius: 16px;
-    margin-bottom: 15px;
-    position: relative;
+    padding: 16px 18px;
+    border-radius: 14px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: 0.25s;
+    transition: 0.2s;
 }
 
 .content-row:hover {
     border: 1px solid #f37021;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .left-info {
     display: flex;
-    gap: 15px;
+    gap: 14px;
     align-items: center;
 }
 
 .hover-number {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 900;
     color: #f37021;
 }
@@ -245,30 +250,23 @@
 .badge-modern {
     font-size: 10px;
     font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
 }
 
-.bg-soft-blue {
-    background: #e0f2fe;
-    color: #0284c7;
-}
-
-.bg-soft-red {
-    background: #fee2e2;
-    color: #dc2626;
-}
+.bg-soft-blue { background: #e0f2fe; color: #0284c7; }
+.bg-soft-red { background: #fee2e2; color: #dc2626; }
 
 .right-action {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .btn-icon-action {
     border: none;
     background: #f1f5f9;
-    padding: 8px 10px;
-    border-radius: 10px;
+    padding: 7px 9px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
@@ -277,20 +275,11 @@
     color: red;
 }
 
-.watermark-number {
-    position: absolute;
-    right: 20px;
-    bottom: 0;
-    font-size: 70px;
-    opacity: 0.07;
-    font-weight: 900;
-}
-
 .empty-box {
-    padding: 40px;
+    padding: 35px;
     text-align: center;
     border: 2px dashed #ddd;
-    border-radius: 16px;
+    border-radius: 14px;
 }
 </style>
 

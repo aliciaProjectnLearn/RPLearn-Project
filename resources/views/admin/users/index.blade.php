@@ -24,7 +24,7 @@
 
                 {{-- Filter Role --}}
                 <div class="user-actions">
-                    <select name="role" onchange="this.form.submit()" class="form-select rounded-pill px-4 shadow-sm" style="min-width: 160px;">
+                    <select name="role" onchange="this.form.submit()" class="form-select rounded-pill px-4 shadow-sm" style="min-width: 60px;">
                         <option value="siswa" {{ (request('role') ?? 'siswa') == 'siswa' ? 'selected' : '' }}>Siswa</option>
                         <option value="guru"  {{ (request('role') ?? 'siswa') == 'guru' ? 'selected' : '' }}>Guru</option>
                         <option value="admin" {{ (request('role') ?? 'siswa') == 'admin' ? 'selected' : '' }}>Admin</option>
@@ -255,7 +255,7 @@ table th, table td {
     border: none;
     padding: 10px 14px;
     outline: none;
-    width: 220px;
+    width: 490px;
     font-size: 14px;
 }
 
@@ -347,7 +347,7 @@ table th, table td {
 }
 
 .table thead th {
-    color: white !important;
+    color: rgb(0, 0, 0);
     font-weight: 800;
     font-size: 13px;
     text-transform: uppercase;

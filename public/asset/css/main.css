@@ -125,12 +125,11 @@
 
 /* MAIN */
 .main-content {
-    margin-left: 300px;
     flex: 1;
     display: flex;
     flex-direction: column;
     margin-top: 80px; /* Height navbar */
-    margin-left: 300px; /* Width sidebar */
+    margin-left: 260px; /* Width sidebar */
 }
 
 /* NAVBAR */
@@ -143,7 +142,7 @@
     align-items: center;
     position: fixed;
     top: 0;
-    left: 300px; /* sejajar sidebar */
+    left: 260px; /* sejajar sidebar */
     right: 0;
     height: 80px;
     z-index: 10;
@@ -157,8 +156,8 @@
 
 /* CONTENT */
 .page-content {
-    padding: 30px;
-    flex: 1;
+    flex: auto;
+    margin-left: 40px;
 }
 
 /* HERO */
@@ -167,7 +166,7 @@
     padding: 50px;
     border-radius: 8px;
     margin-bottom: 80px;
-    margin-top: 100px;
+    margin-top: 50px;
 }
 
 .hero h1 {
@@ -782,7 +781,7 @@
     padding: 40px 60px;
     background-color: var(--dark);
     color: var(--light);
-     margin-left: 300px;
+    margin-left: 300px;
 }
 
 .footer-content {
@@ -1586,7 +1585,11 @@ body {
 .admin-spacer { height: 30px; }
 
 /* Dashboard Stat Cards */
-.admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
 .admin-stat-card {
     background: #ffffff;
     border-radius: 15px;
@@ -1594,7 +1597,21 @@ body {
     border-left: 5px solid var(--orange);
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     transition: 0.3s;
+    position: relative;
+    overflow: hidden;
 }
+
+.admin-stat-card::after {
+    content: "";
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 100px;
+    height: 100px;
+    background: rgba(246, 151, 63, 0.08);
+    border-radius: 50%;
+}
+
 .admin-stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
 .stat-label { font-size: 0.9rem; color: #7f8c8d; font-weight: 600; text-transform: uppercase; }
 .stat-value { font-size: 2.2rem; font-weight: 800; color: var(--dark-soft); display: block; }
@@ -1602,7 +1619,7 @@ body {
 /* FAQ & User Table Refinement */
 .admin-card-box {
     background: white;
-    padding: 30px;
+    padding: 25px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.03);
     margin-bottom: 30px;
@@ -1655,7 +1672,8 @@ body {
         border: 1px solid #eef0f2;
         border-radius: 20px;
         padding: 40px;
-        width: 70rem;
+        max-width: 1075px;
+        margin: 40px auto 0 auto;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
     }
 
@@ -2410,3 +2428,14 @@ select.input-modern option {
     gap: 24px !important;
     width: 100% !important;
 }
+
+
+/* Untuk grafik pada dashboard admin */
+.chart-wrapper {
+    position: relative;
+    height: 320px;
+    width: 100%;
+    max-width: 450px;
+    margin: auto;
+}
+
