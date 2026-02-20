@@ -5,6 +5,15 @@
 <section class="module-section" id="module-section">
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
+    <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
+    <a href="{{ route('student.modules.saved') }}"
+       class="btn-pelajari-orange"
+       style="background: var(--orange);">
+        <i class="ri-bookmark-fill"></i> Modul Tersimpan
+    </a>
+</div>
+
+
     {{-- SEARCH & FILTER --}}
     <form id="moduleFilterForm"
       action="{{ url()->current() }}"
@@ -197,6 +206,10 @@
                             data-id="${data.id}">
                         </i>
 
+                        <i class="fa-solid fa-bookmark save-btn ${data.isSaved ? 'saved' : ''}" 
+                            data-id="${data.id}">
+                        </i>
+
 
                     </div>
                     </div>
@@ -270,6 +283,38 @@ document.addEventListener('click', function (e) {
         button.classList.toggle('liked');
     });
 });
+</script>
+
+<script>
+    document.addEventListener('click', function (e) {
+
+    if (!e.target.classList.contains('save-btn')) return;
+
+    const button = e.target;
+    const moduleId = button.dataset.id;
+
+    button.classList.toggle('saved');
+
+    fetch(`/modules/${moduleId}/save`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.saved) {
+            button.classList.add('saved');
+        } else {
+            button.classList.remove('saved');
+        }
+    })
+    .catch(() => {
+        button.classList.toggle('saved');
+    });
+});
+
 </script>
 
 @endpush

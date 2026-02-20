@@ -46,10 +46,10 @@ class Module extends Model
     }
 
     public function savedByUsers()
-{
-    return $this->belongsToMany(User::class, 'save_modul')
-                ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(User::class,'save_modules');
+    }
+
     public function likes()
     {
         return $this->hasMany(ModuleLike::class, 'module_id');

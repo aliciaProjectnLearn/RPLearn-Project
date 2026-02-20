@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\DictionaryController;
 use App\Http\Controllers\Teacher\DictionaryController as TeacherDictionaryController;
 use App\Http\Controllers\Student\DictionaryController as StudentDictionaryController;
 use App\Http\Controllers\Student\ModulesAllController as StudentModuleAllController;
+use App\Http\Controllers\Student\SavedModuleController;
 
 
 /*
@@ -85,6 +86,15 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     Route::get('/modules/{id}/json', function($id) {
         return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
     });
+
+    Route::get('/modules/saved',
+        [SavedModuleController::class,'index']
+    )->name('modules.saved');
+
+    Route::post('/modules/{module}/save',
+        [SavedModuleController::class,'toggleSave']
+    )->name('modules.save');
+
 });
 
 /*

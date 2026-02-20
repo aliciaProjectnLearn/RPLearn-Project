@@ -64,10 +64,10 @@ class User extends Authenticatable
         return $this->hasMany(Question::class, 'teacher_id');
     }
 
-    public function savedModuls()
-{
-    return $this->belongsToMany(Modul::class, 'save_modul')
-                ->withTimestamps();
-}
+    public function savedModules()
+    {
+        return $this->belongsToMany(Module::class,'save_modules');
+    }
+
 
 }

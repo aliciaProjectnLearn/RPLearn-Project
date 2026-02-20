@@ -12,14 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('save_modul', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('modul_id')->constrained('modules')->onDelete('cascade');
-            $table->timestamps();
+            Schema::create('save_modules', function (Blueprint $table) {
+        $table->id();
 
-            $table->unique(['user_id', 'modul_id']); // cegah duplicate
-        });
+        $table->foreignId('user_id')
+            ->constrained()
+            ->cascadeOnDelete();
+
+        $table->foreignId('module_id')
+            ->constrained('modules')
+            ->cascadeOnDelete();
+
+        $table->timestamps();
+
+        $table->unique(['user_id','module_id']);
+    });
+
     }
 
 
