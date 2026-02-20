@@ -62,4 +62,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Question::class, 'teacher_id');
     }
+
+    public function moduleApprovals()
+    {
+        // 1 User (Guru) bisa punya banyak history approval dari modul-modulnya
+        return $this->hasMany(approvals::class, 'teacher_id');
+    }
 }
