@@ -61,15 +61,6 @@
 
         {{-- MENU UMUM (Bisa diakses semua) --}}
         <hr class="sidebar-divider">
-
-        <li class="sidebar-logout">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn-logout">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </button>
-            </form>
-        </li>
     </ul>
 </aside>
 

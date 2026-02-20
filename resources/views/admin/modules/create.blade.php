@@ -29,16 +29,14 @@
                     <div class="row mb-4 align-items-center">
                         <label class="col-sm-3 label-modern">Judul Modul</label>
                         <div class="col-sm-9">
-                            <input type="text" name="title" class="input-modern"
-                                   placeholder="Contoh: Dasar Pemrograman Laravel" required>
+                            <input type="text" name="title" class="input-modern" placeholder="Contoh: Dasar Pemrograman Laravel" required>
                         </div>
                     </div>
 
                     <div class="row mb-4 align-items-start">
                         <label class="col-sm-3 label-modern pt-2">Deskripsi Singkat</label>
                         <div class="col-sm-9">
-                            <textarea name="desc" class="input-modern" rows="4"
-                                      placeholder="Jelaskan isi modul ini secara ringkas..." required></textarea>
+                            <textarea name="desc" class="input-modern" rows="4" placeholder="Jelaskan isi modul ini secara ringkas..." required></textarea>
                         </div>
                     </div>
                 </div>
