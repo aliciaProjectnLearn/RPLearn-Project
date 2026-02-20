@@ -7,6 +7,7 @@ use App\Http\Controllers\FAQController;
 use App\Http\Controllers\Student\ModuleController as StudentModuleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
 use App\Http\Controllers\Admin\DictionaryController;
 
@@ -21,7 +22,7 @@ Route::get('/', function () {
         $role = auth()->user()->role;
         return match($role) {
             'admin' => redirect()->route('admin.dashboard'),
-            'guru'  => redirect()->route('dashboard.teacher'),
+            'guru'  => redirect()->route('teacher.dashboard'),
             default => redirect()->route('student.dashboard'),
         };
     }
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::resource('users', UserController::class);
 
     // 3. FITUR FAQ
+  
+    Route::get('faq/{id}', [App\Http\Controllers\Admin\FaqController::class, 'show'])->name('faq.show');
+
     Route::get('faq', [App\Http\Controllers\Admin\FAQController::class, 'index'])->name('faq.index');
     Route::post('faq/{id}/answer', [App\Http\Controllers\Admin\FAQController::class, 'answer'])->name('faq.answer');
 
@@ -70,7 +74,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 */
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
-    Route::get('/modules/{id}', [StudentModuleController::class, 'show'])->name('modules.show');
     Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
 
     // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
@@ -84,18 +87,39 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 | Shared Routes (Teacher & Profile)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/teacher', function () {
-        return view('dashboard.teacher');
-    })->name('dashboard.teacher');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::get('/dashboard', [TeacherController::class, 'index'])->name('dashboard');
+
+    Route::get('/modules', function () {return view('teacher.modules.index');})->name('modules.index');
+    
+    Route::resource('dictionaries', App\Http\Controllers\Teacher\DictionaryController::class);
+
+    Route::get('faq', [App\Http\Controllers\Teacher\FAQController::class, 'index'])->name('faq.index');
+    Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
+    Route::put('/teacher/faq/{answer}/update', [App\Http\Controllers\Teacher\FAQController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{answer}/delete', [App\Http\Controllers\Teacher\FAQController::class, 'destroy'])->name('faq.delete');
+
+
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+
 });
 
 Route::post('/modules/{id}/like', [StudentModuleController::class, 'toggleLike'])
+    ->middleware('auth')
     ->name('modules.like');
+
 
 
 require __DIR__ . '/auth.php';
