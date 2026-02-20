@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ModuleLike;
 
 class Module extends Model
 {
@@ -49,4 +50,14 @@ class Module extends Model
         // 1 Modul memiliki 1 status approval
         return $this->hasOne(approvals::class, 'module_id');
     }
+    public function likes()
+    {
+        return $this->hasMany(ModuleLike::class, 'module_id');
+    }
+
+        public function isLiked()
+    {
+        return $this->likes()->where('user_id', auth()->id())->exists();
+    }
+
 }
