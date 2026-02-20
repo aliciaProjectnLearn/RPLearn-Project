@@ -43,4 +43,10 @@ class Module extends Model
     {
         return $this->hasMany(ModuleContent::class, 'module_id');
     }
+
+    public function approval()
+    {
+        // 1 Modul memiliki 1 status approval
+        return $this->hasOne(approvals::class, 'module_id');
+    }
 }
