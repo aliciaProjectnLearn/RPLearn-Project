@@ -45,6 +45,11 @@ class Module extends Model
         return $this->hasMany(ModuleContent::class, 'module_id');
     }
 
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class,'save_modules');
+    }
+
     public function approval()
     {
         // 1 Modul memiliki 1 status approval

@@ -49,7 +49,7 @@ public function index(Request $request)
     if ($request->filled('subject_id')) {
         $query->where('subject_category_id', $request->subject_id);
     }
-    $modules = $query->get();
+    $modules = $query->limit(3)->get();
 
     if ($request->ajax() || $request->has('ajax')) {
         return view('partials._module_list', compact('modules'))->render();
@@ -114,6 +114,27 @@ public function toggleLike($id)
     }
 }
 
+public function save($id)
+{
+    $modul = Module::findOrFail($id);
+
+    auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
+
+    return response()->json([
+        'status' => 'saved'
+    ]);
+}
+
+public function unsave($id)
+{
+    $modul = Module::findOrFail($id);
+
+    auth()->user()->savedModuls()->detach($modul->id);
+
+    return response()->json([
+        'status' => 'unsaved'
+    ]);
+}
 
 
 }
