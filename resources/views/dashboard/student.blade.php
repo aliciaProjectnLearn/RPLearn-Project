@@ -24,7 +24,7 @@
     @endif
 
     <section class="hero">
-        <h1>Start <span>Learning.</span> Keep Growing.</h1>
+        <h1>Start <span>Learning. </span> Keep <br>Growing.</h1>
         <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
             guided learning.</p> 
 
@@ -199,7 +199,7 @@
 
     {{-- ================= FAQ ================= --}}
     <section class="faq-section reveal" id="faq-section">
-        <h2>F <span>A</span> Q</h2>
+        <h2>Ruang <span>Tanya</span></h2>
         <div class="question-search">
             <i class="ri-search-line"></i>
             <input type="text" id="faq-search" placeholder="Search question...">
@@ -225,7 +225,7 @@
                         </div>
                     @empty
                         <p style="text-align:center;color:#888;">
-                            FAQ belum tersedia
+                            Belum Tersedia Pertanyaan Apapun
                         </p>
                     @endforelse
                 </div>
@@ -236,7 +236,7 @@
                 <div class="faq-form-card">
                     <h3>Tanya Guru</h3>
                     <p class="form-desc">
-                        Punya pertanyaan tapi belum ada di FAQ? Kirim langsung ke guru.
+                        Punya pertanyaan tapi belum ada di Ruang Tanya? Kirim langsung ke guru.
                     </p>
 
                     <form action="/faq" method="POST">

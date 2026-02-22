@@ -51,7 +51,7 @@
 
             <li>
                 <a href="{{ Route::is('student.dashboard') ? '#faq-section' : route('student.dashboard').'#faq-section' }}" class="sidebar-link">
-                    FAQ
+                    Ruang Tanya
                 </a>
             </li>
         @endif
