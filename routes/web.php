@@ -45,11 +45,13 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 
     // 2. RESOURCE UTAMA
     Route::resource('modules', App\Http\Controllers\Admin\ModuleController::class);
+    // Rute untuk review/persetujuan modul oleh Admin
+    Route::put('modules/{id}/review', [App\Http\Controllers\Admin\ModuleController::class, 'review'])->name('modules.review');
     Route::resource('dictionaries', App\Http\Controllers\Admin\DictionaryController::class);
     Route::resource('users', UserController::class);
 
     // 3. FITUR FAQ
-  
+
     Route::get('faq/{id}', [App\Http\Controllers\Admin\FaqController::class, 'show'])->name('faq.show');
 
     Route::get('faq', [App\Http\Controllers\Admin\FAQController::class, 'index'])->name('faq.index');
@@ -91,8 +93,8 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherController::class, 'index'])->name('dashboard');
 
-    Route::get('/modules', function () {return view('teacher.modules.index');})->name('modules.index');
-    
+    Route::resource('modules', AdminModuleController::class);
+
     Route::resource('dictionaries', App\Http\Controllers\Teacher\DictionaryController::class);
 
     Route::get('faq', [App\Http\Controllers\Teacher\FAQController::class, 'index'])->name('faq.index');

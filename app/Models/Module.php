@@ -45,10 +45,10 @@ class Module extends Model
         return $this->hasMany(ModuleContent::class, 'module_id');
     }
 
-    public function approval()
+    public function Approval()
     {
         // 1 Modul memiliki 1 status approval
-        return $this->hasOne(approvals::class, 'module_id');
+        return $this->hasOne(Approval::class, 'module_id');
     }
     public function likes()
     {

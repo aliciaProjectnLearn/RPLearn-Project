@@ -61,10 +61,11 @@
                             <th style="min-width:200px;">Nama</th>
 
                             {{-- Kolom Dinamis --}}
-                                @if(request('role', 'siswa') == 'siswa')
+                            @if(request('role', 'siswa') == 'siswa')
                                 <th style="min-width:140px;">NIS</th>
                                 <th style="min-width:140px;">Kelas</th>
-                                @elseif(request('role', 'siswa') == 'guru')
+
+                            @elseif(request('role', 'siswa') == 'guru')
                                 <th style="min-width:160px;">NIP</th>
                             @endif
 
@@ -117,11 +118,11 @@
 
 
                             {{-- Kolom Dinamis --}}
-                            @if(request('role') == 'siswa')
+                            @if(request('role', 'siswa') == 'siswa')
                                 <td>{{ $user->student->nis ?? '-' }}</td>
                                 <td>{{ $user->student->kelas ?? '-' }}</td>
 
-                            @elseif(request('role') == 'guru')
+                            @elseif(request('role', 'siswa') == 'guru')
                                 <td>{{ $user->teacher->nip ?? '-' }}</td>
                             @endif
 

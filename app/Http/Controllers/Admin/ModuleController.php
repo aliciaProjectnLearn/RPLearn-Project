@@ -5,91 +5,103 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Module;
 use App\Models\ModuleContent;
+use App\Models\Approval; // <-- Perbaikan nama model (Biasanya huruf besar)
 use Illuminate\Http\Request;
 
 class ModuleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-$query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents']);
+        $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents', 'approval']);
+
+        if (auth()->user()->role === 'guru'){
+            $query->where('teacher_id', auth()->id());
+        }
 
         if ($request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->has('status') && $request->status != '') {
+            $query->whereHas('approval', function($q) use ($request) {
+                $q->where('status', $request->status);
+            });
+        }
+
         $modules = $query->latest()->paginate(10);
 
-        return view('admin.modules.index', compact('modules'));
+        $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
+
+        return view("{$rolePrefix}.modules.index", compact('modules'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        // Mengambil data kategori untuk isi dropdown
         $grades = \App\Models\GradeCategory::all();
         $subjects = \App\Models\SubjectCategory::all();
         $teachers = \App\Models\User::where('role', 'guru')->get();
 
-        // Pastikan variabel ini di-compact ke view
         return view('admin.modules.create', compact('grades', 'subjects', 'teachers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // 1. Validasi dinamis (teacher_id hanya wajib diisi kalau yang login admin)
+        $rules = [
             'title'               => 'required|string|max:255',
             'desc'                => 'required|string',
-            'track'               => 'required|in:BE,FE', // Validasi hanya boleh BE atau FE
+            'track'               => 'required|in:BE,FE',
             'grade_category_id'   => 'required|exists:grade_categories,id',
             'subject_category_id' => 'required|exists:subject_categories,id',
-            'teacher_id'          => 'required|exists:users,id',
-        ]);
+        ];
+
+        if (auth()->user()->role === 'admin') {
+            $rules['teacher_id'] = 'required|exists:users,id';
+        }
+
+        $validated = $request->validate($rules);
+
+        // 2. Set teacher_id otomatis kalau yang login guru
+        if (auth()->user()->role === 'guru') {
+            $validated['teacher_id'] = auth()->id();
+        } else {
+            $validated['teacher_id'] = $request->teacher_id;
+        }
 
         $validated['is_published'] = $request->has('is_published');
         $validated['like'] = 0;
 
-        \App\Models\Module::create($validated);
+        $module = \App\Models\Module::create($validated);
 
-        return redirect()->route('admin.modules.index')->with('success', 'Modul berhasil dibuat!');
+        Approval::create([
+            'module_id'  => $module->id,
+            'teacher_id' => $module->teacher_id,
+            'status'     => 'pending',
+            'comment'    => null,
+        ]);
+
+        $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
+        return redirect()->route("{$rolePrefix}.modules.index")->with('success', 'Modul berhasil dibuat & status saat ini adalah Pending untuk direview Admin!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function showContent(ModuleContent $content)
     {
         $playlist = ModuleContent::where('module_id', $content->module_id)
             ->orderBy('id')
             ->get();
 
-        // Cari index materi sekarang
         $currentIndex = $playlist->search(function ($item) use ($content) {
             return $item->id === $content->id;
         });
 
-        // Prev & Next
         $prev = $playlist[$currentIndex - 1] ?? null;
         $next = $playlist[$currentIndex + 1] ?? null;
 
         return view('admin.modules.content_detail', compact(
-            'content',
-            'playlist',
-            'prev',
-            'next'
+            'content', 'playlist', 'prev', 'next'
         ));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $module = \App\Models\Module::findOrFail($id);
@@ -97,6 +109,7 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
         $subjects = \App\Models\SubjectCategory::all();
         $teachers = \App\Models\User::where('role', 'guru')->get();
 
+        // Bisa ditambahkan pengecekan role prefix jika view edit guru berbeda tempatnya
         return view('admin.modules.edit', compact('module', 'grades', 'subjects', 'teachers'));
     }
 
@@ -114,17 +127,24 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
         $module = \App\Models\Module::findOrFail($id);
         $module->update($validated);
 
-        return redirect()->route('admin.modules.index')
+        if ($module->approval && in_array($module->approval->status, ['revisi', 'rejected'])) {
+            $module->approval->update(['status' => 'pending', 'comment' => null]);
+        }
+
+        // FOKUS PERBAIKAN: Redirect sesuai role
+        $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
+        return redirect()->route("{$rolePrefix}.modules.index")
             ->with('success', 'Modul "' . $module->title . '" berhasil diperbarui!');
     }
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy($id)
     {
         $module = \App\Models\Module::findOrFail($id);
         $module->delete();
-        return redirect()->route('admin.modules.index')
+
+        // FOKUS PERBAIKAN: Redirect sesuai role
+        $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
+        return redirect()->route("{$rolePrefix}.modules.index")
             ->with('success', 'Modul berhasil dihapus dari sistem!');
     }
 
@@ -132,8 +152,7 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
     {
         $module = \App\Models\Module::findOrFail($id);
 
-        $query = ModuleContent::where('module_id', $id)
-            ->orderBy('order');
+        $query = ModuleContent::where('module_id', $id)->orderBy('order');
 
         if ($request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -150,7 +169,7 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
             'title'     => 'required|string|max:255',
             'content'   => 'nullable|string',
             'video_url' => 'nullable|url',
-            'file_path' => 'nullable|file|mimes:pdf|max:20000', // Max 20MB
+            'file_path' => 'nullable|file|mimes:pdf|max:20000',
         ]);
 
         $lastOrder = ModuleContent::where('module_id', $id)->max('order');
@@ -160,7 +179,6 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
         $data['order'] = $lastOrder ? $lastOrder + 1 : 1;
 
         if ($request->hasFile('file_path')) {
-            // Simpan PDF ke folder public
             $data['file_path'] = $request->file('file_path')->store('modules/pdf', 'public');
         }
 
@@ -175,10 +193,12 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
 
     public function destroyContent(ModuleContent $content)
     {
+        // Menyimpan ID module sebelum content dihapus untuk keperluan redirect
+        $moduleId = $content->module_id;
         $content->delete();
 
         return redirect()
-            ->route('admin.modules.index')
+            ->route('admin.modules.addContent', $moduleId) // Redirect ke list content modul tersebut
             ->with('success', 'Sub materi berhasil dihapus bro 🔥');
     }
 
@@ -200,5 +220,40 @@ $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents'
         return redirect()
             ->route('admin.modules.content.show', $content->id)
             ->with('success', 'Sub-Materi berhasil diupdate bro 🔥');
+    }
+
+    /**
+     * TUGAS CARD 21: Proses review modul oleh admin (Approved/Revisi/Rejected)
+     */
+    public function review(Request $request, $id)
+    {
+        $request->validate([
+            'status'  => 'required|in:approved,revisi,rejected',
+            'comment' => 'nullable|string'
+        ]);
+
+        $module = \App\Models\Module::findOrFail($id);
+
+        // Menyiapkan data yang akan disimpan
+        $dataToUpdate = [
+            'teacher_id' => $module->teacher_id,
+            'status'     => $request->status,
+            'comment'    => $request->comment
+        ];
+
+        // LOGIKA TAMBAHAN UNTUK CHECKLIST TRELLO: Catat waktu approve!
+        if ($request->status === 'approved') {
+            $dataToUpdate['approved_at'] = now();
+        } else {
+            $dataToUpdate['approved_at'] = null;
+        }
+
+        \App\Models\Approval::updateOrCreate(
+            ['module_id' => $module->id],
+            $dataToUpdate
+        );
+
+        return redirect()->route('admin.modules.index')
+            ->with('success', 'Status persetujuan modul "' . $module->title . '" berhasil diperbarui!');
     }
 }

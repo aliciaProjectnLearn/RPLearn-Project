@@ -1094,7 +1094,7 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
-.module-title { color: #fff !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
+.module-title { color: #000000 !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
 .author-label { font-size: 0.8rem; color: #fff; margin-bottom: 10px; }
 .module-desc-text { font-size: 0.9rem; color: #fff !important; line-height: 1.5; margin-bottom: 15px; }
 
