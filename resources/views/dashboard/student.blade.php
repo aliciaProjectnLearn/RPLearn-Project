@@ -26,7 +26,7 @@
     <section class="hero">
         <h1>Start <span>Learning.</span> Keep Growing.</h1>
         <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
-            guided learning.</p>
+            guided learning.</p> 
 
         <div class="features-card">
             <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
@@ -107,19 +107,18 @@
                     </div>
                 </div>
 
-                <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="padding-bottom: 10px; padding-top: 10px;">
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})">
                     {{ $module->title }}
                 </h3>
                 <p class="module-desc-text">
                     {{ Str::limit($module->desc, 80) }}
                 </p>
-                <br>
                 <div class="foot-module-card">
                     <button class="btn-pelajari-orange"
-                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
+                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31); font-size: 12px;">
                         Pelajari Sekarang <i class="ri-arrow-right-line"></i>
                     </button>
-                    <div class="author-label" style="font-size: 0.9rem; color: var(--light);">
+                    <div class="author-label">
                         <i class="ri-user-3-line" style="margin-right: 5px; color: var(--orange);"></i>
                         {{ $module->teacher->username ?? 'Admin' }}
                     </div>
@@ -135,10 +134,10 @@
         @endforelse
     </div>
     <div class="button-more">
-                <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
-                    Lihat Semua →
-                </a>
-            </div>
+        <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
+            Lihat Semua →
+        </a>
+    </div>
 </section>
 
 
