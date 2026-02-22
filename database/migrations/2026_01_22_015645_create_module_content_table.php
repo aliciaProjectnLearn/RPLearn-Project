@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('module_id')->constrained('modules')->onDelete('cascade');
             $table->string('title');
             $table->longText('content');
+            $table->integer('order')->default(1);
             $table->timestamps();
         });
     }
