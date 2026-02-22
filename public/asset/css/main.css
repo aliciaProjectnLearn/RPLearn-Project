@@ -23,7 +23,7 @@
 
 /* SIDEBAR */
 .sidebar {
-    width: 250px;
+    width: 225px;
     height: 100vh;
     background-color: var(--dark);
     color: var(--light);
@@ -40,20 +40,20 @@
 }
 
 .sidebar-logo img {
-    height: 40px;
-    width: 40px;
+    height: 30px;
+    width: 30px;
     margin-left: 70px;
 }
 
 .sidebar-menu {
     list-style: none;
-    font-size: 1rem;
+    font-size: 0.9rem;
     padding: 0.8rem;
 }
 
 .sidebar .sidebar-menu li a {
     display: block;
-    padding: 10px 23px;
+    padding: 7px 20px;
     border-radius: 12px;
     font-weight: 600;
     color: #cbd5e1;
@@ -87,36 +87,61 @@
     background: var(--orange);
 }
 
-
-/* MAIN */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-top: 80px; /* Height navbar */
-    margin-left: 260px; /* Width sidebar */
-}
-
 /* NAVBAR */
 .navbar {
     background-color: var(--dark);
     color: var(--light);
-    padding: 25px 25px;
+    padding: 20px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: fixed;
     top: 0;
-    left: 260px; /* sejajar sidebar */
+    left: 225px; /* sejajar sidebar */
     right: 0;
-    height: 80px;
+    height: 70px;
     z-index: 10;
 }
 
-.navbar-user img {
-    width: 45px;
+.navbar-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Navbar Profile Link */
+.navbar-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    padding: 5px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+}
+
+.navbar-profile-trigger:hover { 
+    background: rgba(255,255,255,0.1); 
+}
+
+.header-profile-avatar {
+    width: 30px;
+    height: 30px;
+    background: var(--orange);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
-    margin-right: 3rem;
+    font-weight: 700;
+}
+
+/* MAIN */
+.main-content {
+    margin-left: 225px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: 70px; /* Height navbar */
 }
 
 /* CONTENT */
@@ -128,16 +153,15 @@
 /* HERO */
 .hero {
     color: var(--dark-soft);
-    padding: 50px;
+    padding: 40px;
     border-radius: 8px;
     margin-bottom: 80px;
-    margin-top: 50px;
+    margin-top: 90px;
 }
 
 .hero h1 {
-    padding: 1.5rem;
-    font-size: 5rem;
-    font-weight: 700;
+    padding: 1.2rem;
+    font-size: 3.5rem;
 }
 
 .hero h1 span {
@@ -147,19 +171,19 @@
 .hero p {
     padding: 0.1rem 3rem 3rem 3rem;
     color: var(--dark-soft);
-    font-size: 1.7rem;
+    font-size: 1rem;
 }
 .features-card {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 25px;
-    padding: 0 5rem;
+    padding: 0 4rem;
 }
 
 .feat-card {
     background-color: var(--dark-soft);
     color: var(--light);
-    padding: 25px 20px;
+    padding: 17px 10px;
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -170,7 +194,8 @@
 }
 
 .feat-card i {
-    font-size: 2rem;
+    padding-left: 15px;
+    font-size: 1.2rem;
     color: var(--orange);
 }
 
@@ -183,11 +208,11 @@
 /* MODULE */
 .module-section {
     margin-bottom: 35px;
-    padding-top: 7.5rem;
+    padding-top: 5rem;
 }
 
 .module-section h1, .faq-section h2{
-    font-size: 3rem;
+    font-size: 2rem;
     text-align: center;
     color: var(--dark-soft);
     margin-bottom: 1rem;
@@ -204,16 +229,17 @@
     align-items: center;
     gap: 12px;
     background-color: white;
-    padding: 14px 20px;
+    padding: 10px 16px;
     border-radius: 14px;
-    max-width: 420px;
+    max-width: 390px;
     margin: 0 auto 35px auto; /* center + jarak ke modul */
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
+    font-size: 1rem;
 }
 
 .module-search i, .dictionary-search i {
-    font-size: 1.3rem;
+    font-size: 1rem;
     color: #999;
 }
 
@@ -221,7 +247,7 @@
     border: none;
     outline: none;
     width: 100%;
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--dark-soft);
 }
 
@@ -239,11 +265,110 @@
     color: var(--orange);
 }
 
+/* --- MODERN FILTER & DROPDOWN --- */
+.module-filter-form {
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+
+/* --- REFINING THE DROPDOWN TEXT & UI --- */
+.filter-group-modern {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 2px solid #eeeeee;
+    border-radius: 50px; /* Bentuk Pill Sempurna */
+    padding: 0 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 180px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+/* Efek saat Hover: Border jadi Oranye Sidebar */
+.custom-select-wrapper:hover {
+    border-color: var(--orange);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(241, 90, 36, 0.12);
+}
+
+/* Styling Teks di Dalam Select */
+.custom-select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 14px 35px 14px 12px; /* Padding ditingkatkan agar teks bernapas */
+    width: 100%;
+    font-weight: 800; /* Teks dibuat lebih tebal agar jelas */
+    color: var(--dark-soft);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Ikon Samping Teks */
+.select-icon {
+    color: var(--orange);
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+/* Panah Custom di Kanan */
+.arrow-icon {
+    position: absolute;
+    right: 20px;
+    pointer-events: none;
+    color: #b2bec3;
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+/* Animasi Panah Berputar saat Select Fokus */
+.custom-select-wrapper:focus-within .arrow-icon {
+    transform: rotate(180deg);
+    color: var(--orange);
+}
+
+/* Fokus State untuk Wrapper */
+.custom-select-wrapper:focus-within {
+    border-color: var(--orange);
+    background: #fff9f7;
+}
+
+/* Tombol Reset yang Lebih Manis */
+.btn-reset-simple {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0 10px;
+    transition: 0.3s;
+}
+
+.btn-reset-simple:hover {
+    transform: rotate(-15deg);
+}
+
+
 .module-cards{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-bottom: 1rem;
+    padding: 0 4rem;
 }
 
 .module-card {
@@ -271,13 +396,113 @@
     align-items: center;
 }
 
+/* --- WARNA TEKS ORANYE KELAS | MATERI --- */
+.module-meta-text {
+    color: var(--orange) !important;
+    font-weight: 700;
+    font-size: 0.7rem;
+}
+
+.module-card:hover {
+    transform: translateY(-8px); 
+    border-color: var(--orange);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.module-title { 
+    color: #fff !important; 
+    font-weight: 700; 
+    margin-bottom: 8px; 
+    line-height: 1.4; 
+    cursor: pointer; 
+    padding-bottom: 8px; 
+    padding-top: 8px;
+    font-size: 1rem;
+}
+
+.author-label { 
+    font-size: 12px; 
+    color: #fff; 
+    margin-bottom: 10px; 
+}
+
+.module-desc-text { 
+    font-size: 12px; 
+    color: #fff !important; 
+    line-height: 1.5; 
+    margin-bottom: 15px; 
+}
+
+/* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
+.btn-pelajari-orange, .pdf-btn {
+    background: var(--orange); 
+    color: white; 
+    border: none; 
+    padding: 10px;
+    border-radius: 8px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: background 0.2s;
+} 
+
+.btn-pelajari-orange:hover, .pdf-btn:hover { 
+    background: vaer(--orange); 
+}
+
+.pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 12px; }
+
+/* --- LAYOUT ELEMEN --- */
+.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.media-icons-row { display: flex; gap: 8px; font-size: 1.3rem; }
+.filter-container-simple { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
+.filter-container-simple select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
+
+/* --- MODAL (SESUAI SKETSA FOTO) --- */
+/* --- MODAL FULL LEBAR --- */
+.modal-overlay {
+    position: fixed ;
+    inset: 0 ;
+    width: 100vw ;
+    height: 100vh ;
+    background: rgba(0,0,0,0.6) ;
+    z-index: 9999;
+
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding-top: 60px;
+    top: 0;
+    left: 0;
+}
+
+/* Box modal utama */
+.modal-card-box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+
+    width: 92%;              /* lebih full */
+    max-width: 1200px;       /* biar gede */
+
+    max-height: 85vh;
+    overflow-y: auto;
+
+    position: relative;
+}
+
+.button-more{
+    margin-top:15px;
+    text-align: right;
+    padding: 0 4rem;
+}
+
 /* ================= FAQ ================= */
 
 .faq-section {
-    margin-top: 80px;
-    padding-top: 7.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    margin-top: 180px;
+    padding-top: 5rem;
+    padding: 5rem 4rem;
 }
 
 .faq-list {
@@ -298,16 +523,12 @@
     width: 100%;
     background: transparent;
     border: none;
-    padding: 22px 26px;
-
+    padding: 18px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     cursor: pointer;
     text-align: left;
-
-    font-size: 1rem;
     font-weight: 500;
     color: #222;
 }
@@ -331,7 +552,7 @@
 .faq-form-card {
     margin: 40px auto 0;
     background: var(--dark);
-    padding: 24px;
+    padding: 18px;
     border-radius: 16px;
     color: #393e46;
     max-width: 530px;
@@ -619,12 +840,12 @@
 /* DICTIONARY SECTION */
 .dictionary-section {
     margin-top: 80px;
-    padding: 0 4rem;
+    padding: 0 6rem;
     padding-top: 7.5rem;
 }
 
 .dictionary-section h2 {
-    font-size: 3rem;
+    font-size: 2rem;
     text-align: center;
     color: var(--dark-soft);
     margin-bottom: 10px;
@@ -634,7 +855,7 @@
 .dictionary-desc {
     text-align: center;
     color: #666;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 30px;
 }
 
@@ -648,7 +869,7 @@
 .dictionary-column {
     background: var(--dark);
     border-radius: 12px;
-    padding: 1rem;
+    padding: 0.8rem;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
@@ -748,10 +969,7 @@
     }
 }
 
-.button-more{
-    margin-top:20px;
-    text-align: right;
-}
+
 
 /* tombol */
 .btn-more-dictionary{
@@ -761,7 +979,7 @@
 
     padding:10px 22px;
     font-weight:600;
-    font-size:14px;
+    font-size:10px;
     letter-spacing:.4px;
 
     color:white;
@@ -790,10 +1008,10 @@
 /* FOOTER */
 /* DASHBOARD FOOTER */
 .dashboard-footer {
-    padding: 40px 60px;
+    padding: 20px 60px;
     background-color: var(--dark);
     color: var(--light);
-    margin-left: 300px;
+     margin-left: 225px;
 }
 
 .footer-content {
@@ -804,19 +1022,19 @@
 }
 
 .footer-brand h3 {
-    font-size: 1.6rem;
+    font-size: 1rem;
     margin-bottom: 10px;
 }
 
 .footer-brand p {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     line-height: 1.6;
     color: #ccc;
 }
 
 .footer-links h4 {
     margin-bottom: 15px;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .footer-links ul {
@@ -1093,75 +1311,6 @@
     }
 }
 
-/* --- WARNA TEKS ORANYE KELAS | MATERI --- */
-.module-meta-text {
-    color: var(--orange) !important;
-    font-weight: 700;
-    font-size: 0.8rem;
-}
-
-/* --- CARD HOVER & DESIGN --- */
-/* .module-card {
-    background: white; border-radius: 15px; padding: 20px; border: 1px solid #eee;
-    transition: transform 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column;
-} */
-.module-card:hover {
-    transform: translateY(-8px); border-color: var(--orange);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-
-.module-title { color: #fff !important; font-weight: 700; margin-bottom: 8px; line-height: 1.4; cursor: pointer; }
-.author-label { font-size: 0.8rem; color: #fff; margin-bottom: 10px; }
-.module-desc-text { font-size: 0.9rem; color: #fff !important; line-height: 1.5; margin-bottom: 15px; }
-
-/* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
-.btn-pelajari-orange, .pdf-btn {
-    background: var(--orange); color: white; border: none; padding: 10px;
-    border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s;
-}
-.btn-pelajari-orange:hover, .pdf-btn:hover { background: #f15a24; }
-
-.pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 12px; }
-
-/* --- LAYOUT ELEMEN --- */
-.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.media-icons-row { display: flex; gap: 8px; font-size: 1.3rem; }
-.filter-container-simple { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
-.filter-container-simple select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
-
-/* --- MODAL (SESUAI SKETSA FOTO) --- */
-/* --- MODAL FULL LEBAR --- */
-.modal-overlay {
-    position: fixed ;
-    inset: 0 ;
-    width: 100vw ;
-    height: 100vh ;
-    background: rgba(0,0,0,0.6) ;
-    z-index: 9999;
-
-    display: none;
-    justify-content: center;
-    align-items: flex-start;
-
-    padding-top: 60px;
-    top: 0;
-    left: 0;
-}
-
-/* Box modal utama */
-.modal-card-box {
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-
-    width: 92%;              /* lebih full */
-    max-width: 1200px;       /* biar gede */
-
-    max-height: 85vh;
-    overflow-y: auto;
-
-    position: relative;
-}
 
 body {
     overflow: visible !important;
@@ -1218,113 +1367,17 @@ body {
 .modal-title-text { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px; color: #333; }
 .close-modal-btn { position: absolute; right: 20px; top: 10px; font-size: 30px; cursor: pointer; color: #999; }
 
-/* --- MODERN FILTER & DROPDOWN --- */
-.module-filter-form {
-    max-width: 900px;
-    margin: 0 auto 40px;
-}
-
-/* --- REFINING THE DROPDOWN TEXT & UI --- */
-.filter-group-modern {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-.custom-select-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background: #ffffff;
-    border: 2px solid #eeeeee;
-    border-radius: 50px; /* Bentuk Pill Sempurna */
-    padding: 0 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 220px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-}
-
-/* Efek saat Hover: Border jadi Oranye Sidebar */
-.custom-select-wrapper:hover {
-    border-color: var(--orange);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(241, 90, 36, 0.12);
-}
-
-/* Styling Teks di Dalam Select */
-.custom-select-wrapper select {
-    appearance: none;
-    -webkit-appearance: none;
-    background: transparent;
-    border: none;
-    outline: none;
-    padding: 14px 35px 14px 12px; /* Padding ditingkatkan agar teks bernapas */
-    width: 100%;
-    font-weight: 800; /* Teks dibuat lebih tebal agar jelas */
-    color: #2d3436;
-    font-size: 0.95rem;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-/* Ikon Samping Teks */
-.select-icon {
-    color: var(--orange);
-    font-size: 1.25rem;
-    pointer-events: none;
-}
-
-/* Panah Custom di Kanan */
-.arrow-icon {
-    position: absolute;
-    right: 20px;
-    pointer-events: none;
-    color: #b2bec3;
-    font-size: 1.3rem;
-    transition: transform 0.3s ease;
-}
-
-/* Animasi Panah Berputar saat Select Fokus */
-.custom-select-wrapper:focus-within .arrow-icon {
-    transform: rotate(180deg);
-    color: #f15a24;
-}
-
-/* Fokus State untuk Wrapper */
-.custom-select-wrapper:focus-within {
-    border-color: #f15a24;
-    background: #fff9f7;
-}
-
-/* Tombol Reset yang Lebih Manis */
-.btn-reset-simple {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #f15a24;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.9rem;
-    padding: 0 10px;
-    transition: 0.3s;
-}
-
-.btn-reset-simple:hover {
-    transform: rotate(-15deg);
-}
 /* Dictionary Table */
 .dictionary-table-wrapper {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 .dictionary-group {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .dictionary-letter {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0.75rem;
     border-bottom: 2px solid #ddd;
@@ -1340,8 +1393,8 @@ body {
 .dictionary-table th,
 .dictionary-table td {
     border: 1px solid #e5e7eb;
-    padding: 0.75rem 1rem;
     text-align: left;
+    font-size: 1rem;
     vertical-align: top;
 }
 
@@ -1358,6 +1411,7 @@ body {
     font-weight: 600;
     color: #111827;
     white-space: nowrap;
+    font-size: 0.8rem;
 }
 
 .dictionary-term:hover {
@@ -1643,30 +1697,9 @@ body {
 
 .faq-status-answered { border-left-color: #2ecc71; background: #f0fff4; }
 
-.faq-status-pending { border-left-color: #f1c40f; background: #fffdf0; }
-
-/* Navbar Profile Link */
-.navbar-profile-trigger {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    padding: 5px 15px;
-    border-radius: 50px;
-    transition: 0.3s;
-}
-.navbar-profile-trigger:hover { background: rgba(255,255,255,0.1); }
-.header-profile-avatar {
-    width: 40px;
-    height: 40px;
-    background: var(--orange);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-weight: 800;
-}
+.faq-status-pending { 
+    border-left-color: #f1c40f; 
+    background: #fffdf0; }
 
 /* Tampilan untuk Edit Module */
     /* Reset & Typography */
