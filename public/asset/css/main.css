@@ -1,9 +1,9 @@
-/* RESET */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'poppins';
+    font-family: 'poppins' !important;
 }
 
 :root {
@@ -23,11 +23,11 @@
 
 /* SIDEBAR */
 .sidebar {
-    width: 300px;
+    width: 250px;
     height: 100vh;
     background-color: var(--dark);
     color: var(--light);
-    padding: 30px 50px;
+    padding: 30px 30px;
     position: fixed;
     top: 0;
     left: 0;
@@ -40,87 +40,52 @@
 }
 
 .sidebar-logo img {
-    height: 60px;
-    width: 60px;
+    height: 40px;
+    width: 40px;
     margin-left: 70px;
 }
 
 .sidebar-menu {
     list-style: none;
-    font-size: 1.2rem;
-    padding: 1rem;
-}
-
-.sidebar-menu li {
-    margin-bottom: 15px;
-
-}
-
-.sidebar-menu a {
-    display: block;
-    padding: 12px 18px;
-    border-radius: 10px;
-    color: var(--light);
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.sidebar-menu a:hover {
-    background-color: rgba(214, 90, 49, 0.2);
-    color: var(--orange);
-    transform: translateX(6px);
-}
-
-/* LOGOUT BUTTON */
-.sidebar-logout {
-    margin-top: 40px;
-}
-
-.btn-logout {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    background: linear-gradient(135deg, #F6973F, #D65A31);
-    color: white;
-
-    padding: 14px 18px;
-    border: none;
-    border-radius: 12px;
-
     font-size: 1rem;
+    padding: 0.8rem;
+}
+
+.sidebar .sidebar-menu li a {
+    display: block;
+    padding: 10px 23px;
+    border-radius: 12px;
     font-weight: 600;
-    cursor: pointer;
-
-    transition: all 0.3s ease;
+    color: #cbd5e1;
+    transition: 0.25s ease;
+    text-decoration: none;
+    margin-bottom: 10px;
 }
 
-.btn-logout i {
-    font-size: 1.2rem;
+.sidebar .sidebar-menu li a:hover {
+    background: var(--dark-soft);
+    color: var(--orange);
+    transform: translateX(4px);
 }
 
-.swal2-timer-progress-bar {
-    background: #F6973F !important;
+.sidebar .sidebar-menu li.active a {
+    background: var(--dark-soft);
+    color: var(--orange);
+    font-weight: 700;
+    position: relative;
 }
 
-/* HOVER */
-.btn-logout:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(246,151,63,0.4);
+.sidebar .sidebar-menu li.active a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    border-radius: 10px;
+    background: var(--orange);
 }
-
-/* ACTIVE (klik) */
-.btn-logout:active {
-    transform: scale(0.97);
-}
-
-/* FOCUS (aksesibilitas) */
-.btn-logout:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(246,151,63,0.35);
-}
-
 
 
 /* MAIN */
@@ -172,6 +137,7 @@
 .hero h1 {
     padding: 1.5rem;
     font-size: 5rem;
+    font-weight: 700;
 }
 
 .hero h1 span {
@@ -225,6 +191,7 @@
     text-align: center;
     color: var(--dark-soft);
     margin-bottom: 1rem;
+    font-weight: 700;
 }
 
 .module-section h1 span, .faq-section h2 span, .dictionary-section h2 span {
@@ -661,6 +628,7 @@
     text-align: center;
     color: var(--dark-soft);
     margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .dictionary-desc {
