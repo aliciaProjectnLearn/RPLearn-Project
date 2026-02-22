@@ -1,16 +1,16 @@
 <nav class="navbar">
     <div class="navbar-title">
-        <h3>Welcome, {{ auth()->user()->username }}</h3>
+        <h3>Welcome, <span style="color: var(--orange);">{{ auth()->user()->username }}</span></h3>
     </div>
 
     <div class="navbar-user" style="position: relative; margin-right: 3rem;">
 
         <div onclick="toggleProfileMenu()" style="cursor: pointer; display: flex; align-items: center; gap: 15px; user-select: none;">
-            <span style="color: white; font-weight: 600; font-size: 1rem;">
-                {{ Auth::user()->username }} <i class="fa-solid fa-caret-down" style="margin-left: 5px; font-size: 0.8rem;"></i>
+            <span style="color: white; font-weight: 600; font-size: 0.8rem;">
+                {{ Auth::user()->username }} </i>
             </span>
 
-            <div style="width: 45px; height: 45px; background-color: #F6973F; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(246, 151, 63, 0.3);">
+            <div style="width: 35px; height: 35px; background-color: #F6973F; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 1rem; box-shadow: 0 4px 10px rgba(246, 151, 63, 0.3);">
                 {{ strtoupper(substr(Auth::user()->username, 0, 2)) }}
             </div>
         </div>
@@ -19,17 +19,17 @@
 
             <div style="padding: 16px 20px; background-color: #f8f9fa; border-bottom: 1px solid #eee;">
                 <p style="margin: 0; font-size: 0.8rem; color: #888;">Masuk sebagai</p>
-                <p style="margin: 0; font-weight: bold; color: #222831; font-size: 1rem;">{{ Auth::user()->username }}</p>
+                <p style="margin: 0; font-weight: bold; color: #222831; font-size: 0.8rem;">{{ Auth::user()->username }}</p>
             </div>
 
-            <a href="{{ route('profile.edit') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
-                <i class="fa-solid fa-user-gear" style="width: 25px; color: #F6973F;"></i> Pengaturan Profil
+            <a href="{{ route('profile.edit') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
+                <i class="fa-solid fa-user-gear" style="width: 25px; color: #F6973F; font-size: 0.8rem;"></i> Pengaturan Profil
             </a>
 
             <form method="POST" action="{{ route('logout') }}" style="margin: 0; border-top: 1px solid #eee;">
                 @csrf
-                <button type="submit" style="display: block; width: 100%; text-align: left; background: white; border: none; padding: 14px 20px; color: #d63031; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background='white'">
-                    <i class="fa-solid fa-right-from-bracket" style="width: 25px;"></i> Keluar
+                <button type="submit" style="display: block; width: 100%; text-align: left; background: white; border: none; padding: 14px 20px; color: #d63031; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background='white'">
+                    <i class="fa-solid fa-right-from-bracket" style="width: 25px; font-size: 0.8rem;"></i> Keluar
                 </button>
             </form>
 
