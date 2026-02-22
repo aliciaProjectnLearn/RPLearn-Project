@@ -19,6 +19,16 @@
         </a>
     </div>
 
+    <form method="GET" action="{{ route('admin.modules.index') }}" class="mb-3">
+    <div class="d-flex gap-2">
+        <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari modul berdasarkan judul...">
+
+        <button type="submit" class="btn btn-warning text-white fw-bold">
+            Cari
+        </button>
+    </div>
+</form>
+
     {{-- Tabel Modul --}}
     <div class="module-card shadow-sm border-0 bg-white rounded-3 overflow-hidden">
         <div class="table-responsive">
@@ -63,8 +73,15 @@
                         {{-- Aksi --}}
                         <td class="text-end pe-4 action-cell">
                             <div class="action-bar">
-                                <a href="{{ route('admin.modules.addContent', $module->id) }}" title="Isi Materi">
-                                    <i class="fa-solid fa-book"></i>
+                                <a href="{{ route('admin.modules.addContent', $module->id) }}" class="position-relative" title="Kelola Sub-Materi">
+
+                                    <i class="fa-solid fa-layer-group"></i>
+
+                                    @if($module->contents->count())
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                            {{ $module->contents->count() }}
+                                        </span>
+                                    @endif
                                 </a>
 
                                 <a href="{{ route('admin.modules.edit', $module->id) }}" title="Edit">
@@ -90,6 +107,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="mt-3">
+            {{ $modules->withQueryString()->links() }}
         </div>
     </div>
 </div>

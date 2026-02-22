@@ -55,7 +55,7 @@
                 <div>
                     <h2 class="rg-title">{{ $content->title }}</h2>
                     <p class="rg-subtitle">
-                        Detail Sub-Materi Ruangguru Style 🔥
+                        Detail Sub-Materi
                     </p>
                 </div>
 

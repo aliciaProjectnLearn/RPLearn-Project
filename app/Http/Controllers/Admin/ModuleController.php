@@ -12,10 +12,15 @@ class ModuleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Mengambil data modul beserta relasi sesuai ERD
-        $modules = \App\Models\Module::with(['gradeCategory', 'subjectCategory', 'teacher'])->get();
+$query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents']);
+
+        if ($request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $modules = $query->latest()->paginate(10);
 
         return view('admin.modules.index', compact('modules'));
     }
@@ -123,12 +128,21 @@ class ModuleController extends Controller
             ->with('success', 'Modul berhasil dihapus dari sistem!');
     }
 
-    public function addContent($id)
-{
-    // Mengambil data modul beserta isi konten yang sudah ada
-    $module = \App\Models\Module::with('contents')->findOrFail($id);
-    return view('admin.modules.add_content', compact('module'));
-}
+    public function addContent(Request $request, $id)
+    {
+        $module = \App\Models\Module::findOrFail($id);
+
+        $query = ModuleContent::where('module_id', $id)
+            ->orderBy('order');
+
+        if ($request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $contents = $query->get();
+
+        return view('admin.modules.add_content', compact('module', 'contents'));
+    }
 
     public function storeContent(Request $request, $id)
     {
@@ -139,8 +153,11 @@ class ModuleController extends Controller
             'file_path' => 'nullable|file|mimes:pdf|max:20000', // Max 20MB
         ]);
 
-        $data = $request->only(['title', 'content']);
+        $lastOrder = ModuleContent::where('module_id', $id)->max('order');
+
+        $data = $request->only(['title', 'content', 'order']);
         $data['module_id'] = $id;
+        $data['order'] = $lastOrder ? $lastOrder + 1 : 1;
 
         if ($request->hasFile('file_path')) {
             // Simpan PDF ke folder public

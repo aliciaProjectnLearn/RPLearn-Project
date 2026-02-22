@@ -43,7 +43,7 @@
                         <h6 class="section-title-premium mb-4">
                             <span class="dot-indicator bg-orange"></span> KLASIFIKASI & PENGAJAR
                         </h6>
-                        
+
 
                         <div class="settings-grid">
                             <div class="setting-item">

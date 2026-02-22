@@ -15,6 +15,7 @@ class ModuleContent extends Model
         'module_id',
         'title',
         'content',
+        'order',
         'video_url',
         'file_path',
     ];

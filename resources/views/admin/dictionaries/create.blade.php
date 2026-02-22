@@ -11,12 +11,9 @@
             <div>
                 <h3 class="fw-800 text-dark m-0" style="font-size: 3rem">{{ isset($dictionary) ? 'Edit' : 'Tambah' }} <span class="text-orange fw-bold">Istilah</span></h3>
             </div>
-            <a href="{{ route('admin.dictionaries.index') }}" class="btn-back">
-                <i class="fa-solid fa-arrow-left" style="color: var(--orange); font-size: 1.2rem;"></i>
-            </a> <br>
-        </div>  
+        </div>
 
-        {{-- Form Card Sejajar --}}
+        {{-- Form Card --}}
         <div class="main-form-card">
             <form action="{{ isset($dictionary) ? route('admin.dictionaries.update', $dictionary->id) : route('admin.dictionaries.store') }}" method="POST">
                 @csrf
@@ -29,9 +26,7 @@
                     <div class="row mb-14 align-items-center">
                         <label class="col-sm-3 label-modern" >Istilah (Term)</label><br>
                         <div class="col-sm-9">
-                            <input type="text" name="term" class="input-modern"
-                                   value="{{ $dictionary->term ?? '' }}"
-                                   placeholder="Contoh: API, Middleware, Database..." required>
+                            <input type="text" name="term" class="input-modern" value="{{ $dictionary->term ?? '' }}" placeholder="Contoh: API, Middleware, Database..." required>
                         </div>
                     </div><br>
 
@@ -39,10 +34,9 @@
                     <div class="row mb-4 align-items-start">
                         <label class="col-sm-3 label-modern pt-2">Definisi</label><br>
                         <div class="col-sm-9">
-                            <textarea name="definition" class="input-modern" rows="6"
-                                      placeholder="Jelaskan definisi istilah ini secara mendalam..." required>{{ $dictionary->definition ?? '' }}</textarea>
+                            <textarea name="definition" class="input-modern" rows="6" placeholder="Jelaskan definisi istilah ini secara mendalam..." required>{{ $dictionary->definition ?? '' }}</textarea>
                         </div>
-                    </div><br>
+                    </div>
                 </div>
 
                 <div class="form-section mb-5">
@@ -51,7 +45,7 @@
                     {{-- Row 3: Module ID --}}
                     <div class="row align-items-center">
                         <label class="col-sm-3 label-modern">Modul Terkait</label>
-                        <div class="col-sm-6">
+                        <div class="col-sm-8">
                             <select name="module_id" class="input-modern appearance-none">
                                 <option value="">-- Umum (Tidak Terikat Modul) --</option>
                                 @foreach($modules as $module)
@@ -59,7 +53,7 @@
                                         {{ $module->title }}
                                     </option>
                                 @endforeach
-                            </select><br>
+                            </select>
                             <small class="text-muted mt-2 d-block small">Pilih modul jika istilah ini spesifik untuk materi tertentu.</small>
                         </div>
                     </div>
