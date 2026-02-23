@@ -98,46 +98,46 @@ class ModuleController extends Controller
             'isLiked' => auth()->check() && $module->likes()->where('user_id', auth()->id())->exists()
         ]);
     }
-}
-
-public function save($id)
-{
-    $modul = Module::findOrFail($id);
-
-    auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
-
-    return response()->json([
-        'status' => 'saved'
-    ]);
-}
-
-public function unsave($id)
-{
-    $modul = Module::findOrFail($id);
-
-    auth()->user()->savedModuls()->detach($modul->id);
-
-    return response()->json([
-        'status' => 'unsaved'
-    ]);
-}
 
 
-    public function toggleLike($id)
+    public function save($id)
     {
-        $module = Module::findOrFail($id);
-        $user = auth()->user();
+        $modul = Module::findOrFail($id);
 
-        $like = $module->likes()->where('user_id', $user->id)->first();
+        auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
 
-        if ($like) {
-            $like->delete();
-            $module->decrement('like');
-            return response()->json(['liked' => false]);
-        } else {
-            $module->likes()->create(['user_id' => $user->id]);
-            $module->increment('like');
-            return response()->json(['liked' => true]);
-        }
+        return response()->json([
+            'status' => 'saved'
+        ]);
     }
+
+    public function unsave($id)
+    {
+        $modul = Module::findOrFail($id);
+
+        auth()->user()->savedModuls()->detach($modul->id);
+
+        return response()->json([
+            'status' => 'unsaved'
+        ]);
+    }
+
+
+        public function toggleLike($id)
+        {
+            $module = Module::findOrFail($id);
+            $user = auth()->user();
+
+            $like = $module->likes()->where('user_id', $user->id)->first();
+
+            if ($like) {
+                $like->delete();
+                $module->decrement('like');
+                return response()->json(['liked' => false]);
+            } else {
+                $module->likes()->create(['user_id' => $user->id]);
+                $module->increment('like');
+                return response()->json(['liked' => true]);
+            }
+        }
 }

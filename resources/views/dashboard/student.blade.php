@@ -98,7 +98,6 @@
         {{-- ================= TUGAS CARD 14: TOP 3 MODULES ================= --}}
         {{-- INI BUNGKUSAN YANG BENAR UNTUK TOP 3, DENGAN ID YANG SESUAI --}}
         <div id="top3Section" style="display: {{ $isFiltering ? 'none' : 'block' }};">
-            <h3 style="text-align: center; margin-bottom: 20px;">Top 3 Modul Terfavorit <i class="ri-fire-fill" style="color: #F6973F;"></i></h3>
 
             <div class="module-cards">
                 @forelse ($topModules as $module)
@@ -144,19 +143,6 @@
                     </p>
                 @endforelse
             </div>
-
-            {{-- TOMBOL PANAH BAWAH JUGA MASUK KE SINI --}}
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="margin-bottom: 10px; color: #888; font-weight: 500;">Jelajahi Keseluruhan Modul</p>
-                <button id="toggleAllModulesBtn" style="background: #393E46; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 1.5rem; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    <i class="ri-arrow-down-line"></i>
-                </button>
-            </div>
-        </div> {{-- AKHIR DARI BUNGKUSAN TOP 3 --}}
-
-        {{-- ================= TUGAS CARD 14: KESELURUHAN MODUL ================= --}}
-        <div id="allModulesSection" style="display: {{ $isFiltering ? 'block' : 'none' }};">
-            @include('partials._module_list')
         </div>
 
     </div>
