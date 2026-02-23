@@ -7,7 +7,9 @@
 
         {{-- HEADER --}}
         <div class="mb-4">
-            <h3 class="fw-900 text-dark m-0">Kelola Isi Modul</h3>
+            <h3 class="fw-900 text-dark m-0">
+                {{ auth()->user()->role === 'admin' ? 'Review Isi Modul' : 'Kelola Isi Modul' }}
+            </h3>
             <p class="text-muted small mb-0">
                 Modul: <span class="text-orange fw-bold">{{ $module->title }}</span>
             </p>
@@ -28,9 +30,12 @@
                     </span>
                 </div>
 
-                <button class="btn-save-modern" onclick="toggleForm()">
+                {{-- HANYA GURU YANG BISA MELIHAT TOMBOL TAMBAH (SEKARANG MEMBUKA MODAL) --}}
+                @if(auth()->user()->role === 'guru')
+                <button class="btn-save-modern" data-bs-toggle="modal" data-bs-target="#addContentModal">
                     + Tambah Sub-Materi
                 </button>
+                @endif
             </div>
 
             <form method="GET" class="mb-3">
@@ -43,6 +48,7 @@
             {{-- Scroll Area --}}
             <div class="submateri-scroll">
                 @forelse($contents as $index => $content)
+                <br>
                     <div class="content-row">
 
                         <div class="left-info">
@@ -64,13 +70,15 @@
                         </div>
 
                         <div class="right-action">
-                            <a href="{{ route('admin.modules.content.show', $content->id) }}" class="btn-icon-action">👁</a>
+                            <a href="{{ route('admin.modules.content.show', $content->id) }}" class="btn-icon-action" style="text-decoration: none;" title="Lihat Materi">👁</a>
 
+                            @if(auth()->user()->role === 'guru')
                             <form action="{{ route('admin.modules.content.destroy', $content->id) }}" method="POST" onsubmit="return confirm('Hapus sub-materi ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-icon-action danger">🗑</button>
+                                <button type="submit" class="btn-icon-action danger" title="Hapus Materi">🗑</button>
                             </form>
+                            @endif
                         </div>
 
                     </div>
@@ -83,66 +91,58 @@
 
         </div>
 
-        {{-- FORM TAMBAH (COLLAPSIBLE) --}}
-        <div class="main-form-card d-none" id="formContainer">
-
-            <h4 class="fw-900 mb-4 text-orange">
-                Tambah Sub-Materi Baru
-            </h4>
-
-            <form action="{{ route('admin.modules.storeContent', $module->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-
-                <div class="mb-3">
-                    <label class="label-modern">Judul Materi</label>
-                    <input type="text" name="title" class="input-modern" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="label-modern">Penjelasan</label>
-                    <textarea name="content" rows="4" class="input-modern"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="label-modern">Video URL</label>
-                    <input type="url" name="video_url" class="input-modern">
-                </div>
-
-                <div class="mb-3">
-                    <label class="label-modern">File PDF</label>
-                    <input type="file" name="file_path" class="input-modern">
-                    <small class="text-muted">Max 20MB, PDF only</small>
-                </div>
-
-                <div class="mb-3">
-                    <label class="label-modern">Urutan Materi</label>
-                    <input type="number" name="order" class="input-modern" value="{{ $module->contents->count() + 1 }}" min="1">
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn-save-modern">
-                        Simpan
-                    </button>
-
-                    <button type="button"
-                            onclick="toggleForm()"
-                            class="btn-cancel-modern">
-                        Tutup
-                    </button>
-                </div>
-
-            </form>
-        </div>
-
     </div>
 </div>
 
-{{-- SCRIPT --}}
-<script>
-function toggleForm() {
-    document.getElementById('formContainer').classList.toggle('d-none');
-}
-</script>
+{{-- ================= MODAL TAMBAH SUB-MATERI (KHUSUS GURU) ================= --}}
+@if(auth()->user()->role === 'guru')
+<div class="modal fade text-start" id="addContentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-900 text-orange">Tambah Sub-Materi Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="{{ route('admin.modules.storeContent', $module->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="label-modern">Judul Materi</label>
+                        <input type="text" name="title" class="input-modern" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="label-modern">Penjelasan</label>
+                        <textarea name="content" rows="4" class="input-modern"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="label-modern">Video URL</label>
+                        <input type="url" name="video_url" class="input-modern">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="label-modern">File PDF</label>
+                        <input type="file" name="file_path" class="input-modern">
+                        <small class="text-muted">Max 20MB, PDF only</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="label-modern">Urutan Materi</label>
+                        <input type="number" name="order" class="input-modern" value="{{ $module->contents->count() + 1 }}" min="1">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px;">Batal</button>
+                    <button type="submit" class="btn-save-modern">Simpan Materi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 
 {{-- STYLE --}}
 <style>
@@ -152,16 +152,6 @@ function toggleForm() {
 .fw-900 { font-weight: 900; }
 
 .text-orange { color: #f37021 !important; }
-
-.main-form-card {
-    background: white;
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-
-    max-width: 1075px;
-    margin: 40px auto 0 auto;
-}
 
 .input-modern {
     width: 100%;
@@ -188,15 +178,6 @@ function toggleForm() {
     border-radius: 10px;
     border: none;
     font-weight: 800;
-}
-
-.btn-cancel-modern {
-    margin-left: 10px;
-    padding: 9px 18px;
-    border-radius: 10px;
-    background: #f1f5f9;
-    font-weight: 700;
-    border: none;
 }
 
 .materi-list-box {
