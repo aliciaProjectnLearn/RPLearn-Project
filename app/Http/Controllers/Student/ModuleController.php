@@ -98,6 +98,30 @@ class ModuleController extends Controller
             'isLiked' => auth()->check() && $module->likes()->where('user_id', auth()->id())->exists()
         ]);
     }
+}
+
+public function save($id)
+{
+    $modul = Module::findOrFail($id);
+
+    auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
+
+    return response()->json([
+        'status' => 'saved'
+    ]);
+}
+
+public function unsave($id)
+{
+    $modul = Module::findOrFail($id);
+
+    auth()->user()->savedModuls()->detach($modul->id);
+
+    return response()->json([
+        'status' => 'unsaved'
+    ]);
+}
+
 
     public function toggleLike($id)
     {

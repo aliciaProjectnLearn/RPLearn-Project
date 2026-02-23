@@ -10,6 +10,10 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
 use App\Http\Controllers\Admin\DictionaryController;
+use App\Http\Controllers\Teacher\DictionaryController as TeacherDictionaryController;
+use App\Http\Controllers\Student\DictionaryController as StudentDictionaryController;
+use App\Http\Controllers\Student\ModulesAllController as StudentModuleAllController;
+use App\Http\Controllers\Student\SavedModuleController;
 
 
 /*
@@ -77,11 +81,22 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
     Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
+    Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
+    Route::get('/modules', [StudentModuleAllController::class, 'index'])->name('modules.index');
 
     // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
     Route::get('/modules/{id}/json', function($id) {
         return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
     });
+
+    Route::get('/modules/saved',
+        [SavedModuleController::class,'index']
+    )->name('modules.saved');
+
+    Route::post('/modules/{module}/save',
+        [SavedModuleController::class,'toggleSave']
+    )->name('modules.save');
+
 });
 
 /*
@@ -122,6 +137,12 @@ Route::post('/modules/{id}/like', [StudentModuleController::class, 'toggleLike']
     ->middleware('auth')
     ->name('modules.like');
 
+    Route::middleware('auth')->group(function () {
+        Route::post('/modules/{id}/save', [StudentModuleController::class, 'save'])
+            ->name('modules.save');
+        Route::delete('/modules/{id}/unsave', [StudentModuleController::class, 'unsave'])
+            ->name('modules.unsave');
+    });
 
 
 require __DIR__ . '/auth.php';
