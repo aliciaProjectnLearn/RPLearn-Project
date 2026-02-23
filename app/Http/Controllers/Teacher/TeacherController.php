@@ -15,9 +15,7 @@ class TeacherController extends Controller
     {
         $user = auth()->user();
 
-        // =========================
         // SUMMARY DATA
-        // =========================
         $summary = [
             'total_modul' => Module::where('teacher_id', $user->id)->count(),
 
@@ -33,9 +31,7 @@ class TeacherController extends Controller
                 ->get(),
         ];
 
-        // =========================
         // GRAFIK MODUL PER BULAN
-        // =========================
         $rawModules = Module::select(
                 DB::raw('MONTH(created_at) as month'),
                 DB::raw('COUNT(*) as total')

@@ -1,4 +1,4 @@
-/* RESET */
+
 * {
     margin: 0;
     padding: 0;
@@ -218,6 +218,7 @@
     color: var(--dark-soft);
     font-weight: 700;
     margin-bottom: 1rem;
+    font-weight: 700;
 }
 
 .module-section h1 span, .faq-section h2 span, .dictionary-section h2 span {
@@ -850,6 +851,7 @@
     text-align: center;
     color: var(--dark-soft);
     margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .dictionary-desc {

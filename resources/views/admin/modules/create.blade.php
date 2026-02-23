@@ -79,17 +79,19 @@
                         </div>
                     </div>
 
-                    <div class="row mb-4 align-items-center">
-                        <label class="col-sm-3 label-modern">Pengajar (Guru)</label>
-                        <div class="col-sm-6">
-                            <select name="teacher_id" class="input-modern" required>
-                                <option value="">-- Pilih Guru --</option>
-                                @foreach($teachers as $teacher)
+                    @if (auth()->user()->role === 'admin')
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Pengajar (Guru)</label>
+                            <div class="col-sm-6">
+                                <select name="teacher_id" class="input-modern" required>
+                                    <option value="">-- Pilih Guru --</option>
+                                    @foreach($teachers as $teacher)
                                     <option value="{{ $teacher->id }}">{{ $teacher->username }}</option>
-                                @endforeach
-                            </select>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     <div class="row align-items-center">
                         <div class="col-sm-3"></div>
