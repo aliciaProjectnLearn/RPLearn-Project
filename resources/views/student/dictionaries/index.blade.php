@@ -17,8 +17,8 @@
 
         @forelse($words as $word)
             <div class="word-item">
-                <h4 style="color: var(--orange); margin-bottom: 10px;">{{ $word->term }}</h4>
-                <p>{{ Str::limit($word->definition,120) }}</p>
+                <h4 style="color: var(--orange); margin-bottom: 10px; font-size: 1.1rem; font-weight: 600;">{{ $word->term }}</h4>
+                <p style="font-size: 0.8rem">{{ Str::limit($word->definition,120) }}</p>
             </div>
         @empty
             <p>No words found.</p>
@@ -57,6 +57,7 @@
     grid-template-columns: 1fr 70px;
     gap:20px;
     align-items:start;
+    padding: 0 20px;
 }
 
 .dictionary-content{
@@ -94,9 +95,10 @@
 
 .dictionary-content h2{
     padding-top: 1.5rem;
-    font-size: 2rem;
+    font-size: 1.7rem;
     margin-bottom:20px;
     text-align: center;
+    font-weight: 700;
 }   
 
 .dictionary-content h2 span{
@@ -111,7 +113,7 @@
 
     background:#1f2630;
     border-radius:14px;
-    padding:12px 8px;
+    padding: 12px 10px;
 
     display:flex;
     flex-direction:column;
@@ -124,7 +126,7 @@
     color:#fff;
     text-decoration:none;
     border-radius:6px;
-    font-size:13px;
+    font-size:10px;
 }
 
 .alphabet-sidebar a.active,
@@ -135,7 +137,7 @@
 /* card kata */
 .word-item{
     background: var(--light);
-    padding:14px;
+    padding:10px;
     border-radius:12px;
     margin-bottom:12px;
 }
