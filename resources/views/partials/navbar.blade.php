@@ -1,6 +1,6 @@
 <nav class="navbar">
     <div class="navbar-title">
-        <h3>Welcome, <span style="color: var(--orange);">{{ auth()->user()->username }}</span></h3>
+        <h3  style="font-size: 1rem;">Welcome, <span style="color: var(--orange);">{{ auth()->user()->username }}</span></h3>
     </div>
 
     <div class="navbar-user" style="position: relative; margin-right: 3rem;">
