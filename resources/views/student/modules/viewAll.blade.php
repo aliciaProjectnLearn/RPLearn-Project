@@ -4,12 +4,12 @@
 
 <section class="module-section" id="module-section">
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
-        {{-- SEARCH & FILTER --}}
+
+    {{-- SEARCH & FILTER --}}
     <form id="moduleFilterForm"
       action="{{ url()->current() }}"
       method="GET"
       class="module-filter-form">
-
 
         <div class="module-search">
             <i class="ri-search-line"></i>
@@ -23,7 +23,8 @@
             {{-- Kelas --}}
             <div class="custom-select-wrapper">
                 <i class="ri-government-line select-icon"></i>
-                <select name="grade_id" onchange="this.form.submit()">
+                {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
+                <select name="grade_id">
                     <option value="">Semua Kelas</option>
                     @foreach ($grades as $grade)
                         <option value="{{ $grade->id }}"
@@ -38,7 +39,8 @@
             {{-- Materi --}}
             <div class="custom-select-wrapper">
                 <i class="ri-book-3-line select-icon"></i>
-                <select name="subject_id" onchange="this.form.submit()">
+                {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
+                <select name="subject_id">
                     <option value="">Semua Materi</option>
                     @foreach ($subjects as $subject)
                         <option value="{{ $subject->id }}"
@@ -52,6 +54,12 @@
         </div>
     </form>
 
+    {{-- CEK APAKAH SEDANG ADA FILTER AKTIF DI URL --}}
+    @php
+        $isFiltering = request('search') || request('grade_id') || request('subject_id');
+    @endphp
+
+    {{-- ================= KONTINER UTAMA MODUL ================= --}}
     {{-- MODULE CARDS --}}
     <div class="module-cards" id="moduleCardsContainer">
         @forelse ($modules as $module)

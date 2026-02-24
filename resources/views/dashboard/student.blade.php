@@ -93,7 +93,7 @@
     @endphp
 
     {{-- ================= KONTINER UTAMA MODUL ================= --}}
-{{-- MODULE CARDS --}}
+    {{-- MODULE CARDS --}}
     <div class="module-cards" id="moduleCardsContainer">
         @forelse ($modules as $module)
             <div class="module-card">

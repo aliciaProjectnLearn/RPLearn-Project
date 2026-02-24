@@ -76,7 +76,7 @@
                         {{-- Input Group: Username --}}
                         <div class="form-group">
                             <label>USERNAME</label>
-                            <input type="text" name="username" class="custom-input" value="{{ old('username', $user->username) }}" required>
+                            <input type="text" name="username" class="custom-input" style="font-size: 14px;" value="{{ old('username', $user->username) }}" required>
                             @error('username')
                                 <span class="error-msg">{{ $message }}</span>
                             @enderror
@@ -114,10 +114,10 @@
     }
     /* 1. RESET & LAYOUT UTAMA */
     .profile-page-container {
-        max-width: 1000px;
+        max-width: 900px;
         margin: 40px auto;
         padding: 0 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
         color: #333;
     }
 
@@ -149,14 +149,14 @@
 
     .profile-header-bg {
         background: #f37021; /* ORANYE RPLEARN */
-        padding: 25px 5px;
+        padding: 15px 0;
         text-align: center;
         color: white;
     }
 
     .avatar-circle {
-        width: 90px;
-        height: 90px;
+        width: 70px;
+        height: 70px;
         background: white;
         color: #f37021;
         border-radius: 50%;
@@ -169,7 +169,7 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .profile-name { font-size: 20px; font-weight: 700; margin: 0; }
+    .profile-name { font-size: 17px; font-weight: 700; margin: 0; }
     .profile-email { font-size: 13px; opacity: 0.8; margin-top: 5px; }
 
     .profile-menu { padding: 20px 0; }
@@ -182,7 +182,7 @@
         text-decoration: none;
         color: #4a5568;
         font-weight: 600;
-        font-size: 14px;
+        font-size: 12px;
         transition: 0.2s;
         border-left: 4px solid transparent;
     }
@@ -219,7 +219,7 @@
         padding: 20px 30px;
         border-bottom: 1px solid #edf2f7;
     }
-    .card-title h4 { margin: 0; font-size: 16px; font-weight: 700; color: #2d3748; }
+    .card-title h4 { margin: 0; font-size: 14px; font-weight: 700; color: #2d3748; }
 
     .card-body { padding: 13px; }
 
@@ -250,9 +250,10 @@
         background: #f37021;
         color: white;
         border: none;
-        padding: 12px 30px;
+        padding: 10px 18px;
         border-radius: 8px;
         font-weight: 600;
+        font-size: 14px;
         cursor: pointer;
         transition: 0.3s;
     }
@@ -262,9 +263,9 @@
         text-decoration: none;
         color: #4a5568;
         border: 1px solid #cbd5e0;
-        padding: 10px 20px;
+        padding: 8px 18px;
         border-radius: 6px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         transition: 0.2s;
     }
@@ -272,7 +273,7 @@
 
     /* 7. KEAMANAN SECTION */
     .security-flex { display: flex; justify-content: space-between; align-items: center; }
-    .security-text strong { display: block; font-size: 15px; margin-bottom: 4px; }
+    .security-text strong { display: block; font-size: 14px; margin-bottom: 4px; }
     .security-text p { margin: 0; font-size: 13px; color: #718096; }
 
     /* 8. ALERT */
