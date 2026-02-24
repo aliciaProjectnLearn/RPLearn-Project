@@ -57,7 +57,6 @@
 
             {{-- Banner Info --}}
             <div class="info-banner">
-                <div class="banner-icon">ℹ️</div>
                 <div class="banner-text">
                     <strong>Halo, {{ $user->username }}!</strong>
                     <p>Pastikan data profil Anda selalu update untuk keamanan.</p>
@@ -115,7 +114,7 @@
     }
     /* 1. RESET & LAYOUT UTAMA */
     .profile-page-container {
-        max-width: 1100px;
+        max-width: 1000px;
         margin: 40px auto;
         padding: 0 20px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -148,10 +147,9 @@
         border: 1px solid #f0f0f0;
     }
 
-    /* 3. SIDEBAR KIRI (Style Camila Smith) */
     .profile-header-bg {
         background: #f37021; /* ORANYE RPLEARN */
-        padding: 40px 20px;
+        padding: 25px 5px;
         text-align: center;
         color: white;
     }
@@ -208,7 +206,7 @@
     .info-banner {
         background: linear-gradient(135deg, #f37021 0%, #ff9f43 100%);
         color: white;
-        padding: 20px;
+        padding: 13px;
         border-radius: 12px;
         margin-bottom: 25px;
         display: flex;
@@ -223,7 +221,7 @@
     }
     .card-title h4 { margin: 0; font-size: 16px; font-weight: 700; color: #2d3748; }
 
-    .card-body { padding: 30px; }
+    .card-body { padding: 13px; }
 
     /* 5. FORM INPUT */
     .form-group { margin-bottom: 25px; }

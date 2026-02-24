@@ -451,7 +451,7 @@
     background: vaer(--orange); 
 }
 
-.pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 12px; }
+.pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 10px; font-size: 0.9rem;}
 
 /* --- LAYOUT ELEMEN --- */
 .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -481,11 +481,11 @@
 /* Box modal utama */
 .modal-card-box {
     background: white;
-    padding: 30px;
+    padding: 10px;
     border-radius: 18px;
 
-    width: 92%;              /* lebih full */
-    max-width: 1200px;       /* biar gede */
+    width: 100%;              /* lebih full */
+    max-width: 900px;       /* biar gede */
 
     max-height: 85vh;
     overflow-y: auto;
@@ -1330,6 +1330,8 @@ body {
     align-items: flex-start;
 }
 
+
+
 /* Media kiri */
 .modal-side-media {
     flex: 1;
@@ -1366,7 +1368,7 @@ body {
 .modal-tags-row { display: flex; gap: 8px; margin-bottom: 15px; }
 .m-tag { background: #f15a24; color: white; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; }
 .modal-footer-info { font-size: 0.8rem; color: #777; line-height: 1.4; }
-.modal-title-text { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px; color: #333; }
+.modal-title-text { font-size: 1rem; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px; color: #333; }
 .close-modal-btn { position: absolute; right: 20px; top: 10px; font-size: 30px; cursor: pointer; color: #999; }
 
 /* Dictionary Table */

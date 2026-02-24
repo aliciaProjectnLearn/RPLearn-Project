@@ -4,17 +4,7 @@
 
 <section class="module-section" id="module-section">
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
-
-    <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
-    <a href="{{ route('student.modules.saved') }}"
-       class="btn-pelajari-orange"
-       style="background: var(--orange);">
-        <i class="ri-bookmark-fill"></i> Modul Tersimpan
-    </a>
-</div>
-
-
-    {{-- SEARCH & FILTER --}}
+        {{-- SEARCH & FILTER --}}
     <form id="moduleFilterForm"
       action="{{ url()->current() }}"
       method="GET"
@@ -90,12 +80,12 @@
                     {{ Str::limit($module->desc, 80) }}
                 </p>
                 <br>
-                <div class="foot-module-card">
+                <div class="foot-module-card" style="gap: 1rem">
                     <button class="btn-pelajari-orange"
-                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
-                        Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31); font-size: 0.7rem;">
+                        Pelajari Sekarang
                     </button>
-                    <div class="author-label" style="font-size: 0.9rem; color: var(--light);">
+                    <div class="author-label" style="font-size: 0.7rem; color: var(--light);">
                         <i class="ri-user-3-line" style="margin-right: 5px; color: var(--orange);"></i>
                         {{ $module->teacher->username ?? 'Admin' }}
                     </div>
@@ -215,7 +205,7 @@
                     </div>
                     <div class="modal-side-text">
                     <h2 class="modal-title-text">${data.title}</h2>
-                    <div class="modal-scroll"><p>${data.desc}</p></div>
+                    <div class="modal-scroll"><p style="font-size: 0.8rem;">${data.desc}</p></div>
                     </div>
                     </div>`;
                     });

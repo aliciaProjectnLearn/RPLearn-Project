@@ -29,9 +29,9 @@
             guided learning.</p> 
 
         <div class="features-card">
-            <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
-            <div class="feat-card"><i class="ri-bookmark-line"></i><span>Dictionary</span></div>
-            <div class="feat-card"><i class="ri-question-line"></i><span>FAQ</span></div>
+            <div class="feat-card"><i class="ri-book-open-line"></i><span>Kumpulan Modul</span></div>
+            <div class="feat-card"><i class="ri-bookmark-line"></i><span>Kamus</span></div>
+            <div class="feat-card"><i class="ri-question-line"></i><span>Ruang Tanya</span></div>
         </div>
     </section>
 
@@ -93,58 +93,53 @@
     @endphp
 
     {{-- ================= KONTINER UTAMA MODUL ================= --}}
-    <div id="moduleCardsContainer">
+{{-- MODULE CARDS --}}
+    <div class="module-cards" id="moduleCardsContainer">
+        @forelse ($modules as $module)
+            <div class="module-card">
 
-        {{-- ================= TUGAS CARD 14: TOP 3 MODULES ================= --}}
-        {{-- INI BUNGKUSAN YANG BENAR UNTUK TOP 3, DENGAN ID YANG SESUAI --}}
-        <div id="top3Section" style="display: {{ $isFiltering ? 'none' : 'block' }};">
+                <div class="card-header-row">
+                    <span class="module-meta-text" >
+                        {{ $module->gradeCategory->grade ?? '-' }} |
+                        {{ $module->subjectCategory->subject ?? '-' }}
+                    </span>
 
-            <div class="module-cards">
-                @forelse ($topModules as $module)
-                    <div class="module-card">
-                        <div class="card-header-row">
-                            <span class="module-meta-text" >
-                                {{ $module->gradeCategory->grade ?? '-' }} |
-                                {{ $module->subjectCategory->subject ?? '-' }}
-                            </span>
-
-                            <div class="media-icons-row">
-                                @if ($module->contents->whereNotNull('video_url')->count())
-                                    <i class="ri-youtube-fill text-red"></i>
-                                @endif
-                                @if ($module->contents->whereNotNull('file_path')->count())
-                                    <i class="ri-file-pdf-2-fill"></i>
-                                @endif
-                            </div>
-                        </div>
-
-                        <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="text-align: center; cursor: pointer; margin-top: 15px;">
-                            {{ $module->title }}
-                        </h3>
-
-                        <p class="module-desc-text" style="margin-top: 10px;">
-                            {{ Str::limit($module->desc, 80) }}
-                        </p>
-
-                        <div class="author-label" style="margin-top: 15px; margin-bottom: 15px;">
-                            <i class="ri-user-3-line"></i>
-                            {{ $module->teacher->username ?? 'Admin' }}
-                        </div>
-
-                        {{-- Ceklis Card 14: Ubah tombol jadi "Lihat detail Modul" --}}
-                        <button class="btn-pelajari-orange"
-                            onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31); width: 100%;">
-                            Lihat detail Modul <i class="ri-arrow-right-line"></i>
-                        </button>
+                    <div class="media-icons-row">
+                        @if ($module->contents->whereNotNull('video_url')->count())
+                            <i class="ri-youtube-fill text-red" style="color: var(--orange);"></i>
+                        @endif
+                        @if ($module->contents->whereNotNull('file_path')->count())
+                            <i class="ri-file-pdf-2-fill" style="color: var(--orange);"></i>
+                        @endif
                     </div>
-                @empty
-                    <p style="grid-column: 1 / -1; text-align:center;">
-                        Belum ada modul terpopuler.
-                    </p>
-                @endforelse
-            </div>
-        </div>
+                </div>
 
+                <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="padding-bottom: 10px; padding-top: 10px;">
+                    {{ $module->title }}
+                </h3>
+                <p class="module-desc-text">
+                    {{ Str::limit($module->desc, 80) }}
+                </p>
+                <br>
+                <div class="foot-module-card" style="gap: 1rem">
+                    <button class="btn-pelajari-orange"
+                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31); font-size: 0.7rem;">
+                        Pelajari Sekarang
+                    </button>
+                    <div class="author-label" style="font-size: 0.7rem; color: var(--light);">
+                        <i class="ri-user-3-line" style="margin-right: 5px; color: var(--orange);"></i>
+                        {{ $module->teacher->username ?? 'Admin' }}
+                    </div>
+                </div>
+
+                
+
+            </div>
+        @empty
+            <p style="grid-column: 1 / -1; text-align:center;">
+                Modul tidak ditemukan
+            </p>
+        @endforelse
     </div>
     <div class="button-more">
         <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
@@ -155,7 +150,7 @@
 
     {{-- DICTIONARY --}}
     <section class="dictionary-section reveal" id="dictionary-section">
-        <h2>Dict<span>io</span>nary</h2>
+        <h2>Ka<span>m</span>us</h2>
         <p class="dictionary-desc">
             Learn common technical terms used in vocational learning.
         </p>
@@ -486,9 +481,9 @@
 
                         if (content.video_url) {
                             let vId = content.video_url.split('v=')[1]?.split('&')[0];
-                            videoElement = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                            videoElement = `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
                         } else if (content.file_path && content.file_path.endsWith('.mp4')) {
-                            videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
+                            videoElement = `<video width="100%" height="250" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
                                         Browser kamu tidak mendukung video player.
                                 </video>`;
@@ -512,7 +507,7 @@
                                 </div>
                                 <div class="modal-side-text">
                                     <h2 class="modal-title-text">${data.title}</h2>
-                                    <div class="modal-scroll"><p>${data.desc}</p></div>
+                                    <div class="modal-scroll"><p style="font-size: 0.8rem;">${data.desc}</p></div>
                                 </div>
                             </div>`;
                     });
