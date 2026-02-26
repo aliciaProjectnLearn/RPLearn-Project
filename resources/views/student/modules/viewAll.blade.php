@@ -5,21 +5,11 @@
 <section class="module-section" id="module-section">
     <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-    <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
-    <a href="{{ route('student.modules.saved') }}"
-       class="btn-pelajari-orange"
-       style="background: var(--orange);">
-        <i class="ri-bookmark-fill"></i> Modul Tersimpan
-    </a>
-</div>
-
-
     {{-- SEARCH & FILTER --}}
     <form id="moduleFilterForm"
       action="{{ url()->current() }}"
       method="GET"
       class="module-filter-form">
-
 
         <div class="module-search">
             <i class="ri-search-line"></i>
@@ -33,7 +23,8 @@
             {{-- Kelas --}}
             <div class="custom-select-wrapper">
                 <i class="ri-government-line select-icon"></i>
-                <select name="grade_id" onchange="this.form.submit()">
+                {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
+                <select name="grade_id">
                     <option value="">Semua Kelas</option>
                     @foreach ($grades as $grade)
                         <option value="{{ $grade->id }}"
@@ -48,7 +39,8 @@
             {{-- Materi --}}
             <div class="custom-select-wrapper">
                 <i class="ri-book-3-line select-icon"></i>
-                <select name="subject_id" onchange="this.form.submit()">
+                {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
+                <select name="subject_id">
                     <option value="">Semua Materi</option>
                     @foreach ($subjects as $subject)
                         <option value="{{ $subject->id }}"
@@ -62,6 +54,12 @@
         </div>
     </form>
 
+    {{-- CEK APAKAH SEDANG ADA FILTER AKTIF DI URL --}}
+    @php
+        $isFiltering = request('search') || request('grade_id') || request('subject_id');
+    @endphp
+
+    {{-- ================= KONTINER UTAMA MODUL ================= --}}
     {{-- MODULE CARDS --}}
     <div class="module-cards" id="moduleCardsContainer">
         @forelse ($modules as $module)
@@ -90,12 +88,12 @@
                     {{ Str::limit($module->desc, 80) }}
                 </p>
                 <br>
-                <div class="foot-module-card">
+                <div class="foot-module-card" style="gap: 1rem">
                     <button class="btn-pelajari-orange"
-                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31);">
-                        Pelajari Sekarang <i class="ri-arrow-right-line"></i>
+                        onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31); font-size: 0.7rem;">
+                        Pelajari Sekarang
                     </button>
-                    <div class="author-label" style="font-size: 0.9rem; color: var(--light);">
+                    <div class="author-label" style="font-size: 0.7rem; color: var(--light);">
                         <i class="ri-user-3-line" style="margin-right: 5px; color: var(--orange);"></i>
                         {{ $module->teacher->username ?? 'Admin' }}
                     </div>
@@ -215,7 +213,7 @@
                     </div>
                     <div class="modal-side-text">
                     <h2 class="modal-title-text">${data.title}</h2>
-                    <div class="modal-scroll"><p>${data.desc}</p></div>
+                    <div class="modal-scroll"><p style="font-size: 0.8rem;">${data.desc}</p></div>
                     </div>
                     </div>`;
                     });

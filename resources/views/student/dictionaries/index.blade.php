@@ -16,9 +16,10 @@
         </div>
 
         @forelse($words as $word)
-            <div class="word-item">
-                <h4 style="color: var(--orange); margin-bottom: 10px; font-size: 1.1rem; font-weight: 600;">{{ $word->term }}</h4>
-                <p style="font-size: 0.8rem">{{ Str::limit($word->definition,120) }}</p>
+            <div class="word-item" 
+                data-term="{{ $word->term }}"
+                data-desc="{{ $word->definition }}">
+                <h4 class="word-click" style="color: var(--dark); font-size: 0.8rem; font-weight: 600; align-items: center; margin-top: 5px;">{{ $word->term }}</h4>
             </div>
         @empty
             <p>No words found.</p>
@@ -39,6 +40,15 @@
             </a>
         @endforeach
     </div>
+
+<!-- MODAL detail term -->
+<div id="dictionaryModal" class="dict-modal">
+    <div class="dict-box">
+        <span class="dict-close">&times;</span>
+        <h2 id="modalTerm"></h2>
+        <p id="modalDesc" style="font-size: 0.8rem;"></p>
+    </div>
+</div>
 
 </div>
 
@@ -137,7 +147,7 @@
 /* card kata */
 .word-item{
     background: var(--light);
-    padding:10px;
+    padding: 5px 10px;
     border-radius:12px;
     margin-bottom:12px;
 }
@@ -153,6 +163,52 @@
         flex-wrap:wrap;
         justify-content:center;
     }
+}
+
+.dict-modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.4);
+    align-items:center;
+    justify-content:center;
+}
+
+.dict-box{
+    background:#fff;
+    width:420px;
+    padding:25px 30px;
+    border-radius:20px;
+    position:relative;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    animation:pop .2s ease;
+}
+
+.dict-box h2{
+    color:var(--orange);
+    margin-bottom:10px;
+    font-size: 1rem;
+}
+
+.dict-close{
+    position:absolute;
+    top:15px;
+    right:18px;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.word-click{
+    cursor:pointer;
+}
+
+@keyframes pop{
+    from{transform:scale(.8);opacity:0;}
+    to{transform:scale(1);opacity:1;}
 }
 
 </style>
@@ -196,6 +252,29 @@ document.addEventListener('DOMContentLoaded', function () {
             noResult.style.display = 'none';
         }
     });
+
+    const modal = document.getElementById("dictionaryModal");
+const closeBtn = document.querySelector(".dict-close");
+const modalTerm = document.getElementById("modalTerm");
+const modalDesc = document.getElementById("modalDesc");
+
+document.querySelectorAll(".word-item").forEach(item=>{
+    item.addEventListener("click", function(){
+
+        modalTerm.innerText = this.dataset.term;
+        modalDesc.innerText = this.dataset.desc;
+
+        modal.style.display = "flex";
+    });
+});
+
+closeBtn.onclick = () => modal.style.display = "none";
+
+window.onclick = e=>{
+    if(e.target == modal){
+        modal.style.display = "none";
+    }
+};
 
 });
 </script>

@@ -14,61 +14,70 @@ use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
-    public function index(Request $request)
-    {
-        // 1. Ambil data pendukung
-        $grades = GradeCategory::all();
-        $subjects = SubjectCategory::all();
-        $teachers = User::where('role', 'guru')->get();
-        $dictionaries = Dictionary::orderBy('term', 'asc')->limit(6)->get();
+public function index(Request $request)
+{
+    // 1. Ambil data pendukung
+    $grades = GradeCategory::all();
+    $subjects = SubjectCategory::all();
+    $teachers = User::where('role', 'guru')->get();
+    $dictionaries = Dictionary::orderBy('term', 'asc')->limit(6)->get();
 
-        $faqs = Question::with('answer')
-            ->where('status', 'answered')
-            ->whereHas('answer')
-            ->latest()
-            ->get();
+    $faqs = Question::with('answer')
+        ->where('status', 'answered')
+        ->whereHas('answer')
+        ->latest()
+        ->get();
 
-        // 2. TUGAS CARD 14: Ambil 3 modul dengan like terbanyak (Hanya yang Approved)
-        $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
-            ->whereHas('approval', function ($query) {
-                $query->where('status', 'approved'); // Aturan dari catatan revisi
-            })
-            ->orderByDesc('like')
-            ->limit(3)
-            ->get();
+    // 2. Top modules (tetap)
+    $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
+        ->whereHas('approval', function ($query) {
+            $query->where('status', 'approved');
+        })
+        ->orderByDesc('like')
+        ->limit(3)
+        ->get();
 
-        // 3. TUGAS CARD 14: Query Modul Utama (Hanya yang Approved) untuk Filter & Grouping
-        $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher', 'approval'])
-            ->whereHas('approval', function ($query) {
-                $query->where('status', 'approved'); // Aturan dari catatan revisi
-            });
-
-        // TUGAS CARD 14: Logika Filter Module (Pencarian, Kelas, Materi)
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-        if ($request->filled('grade_id')) {
-            $query->where('grade_category_id', $request->grade_id);
-        }
-        if ($request->filled('subject_id')) {
-            $query->where('subject_category_id', $request->subject_id);
-        }
-
-        // TUGAS CARD 14: Kelompokkan modul berdasarkan jenjang kelas
-        // Ambil datanya dulu, lalu kelompokkan berdasarkan nama grade
-        $allModules = $query->get();
-        $groupedModules = $allModules->groupBy(function($module) {
-            return $module->gradeCategory ? $module->gradeCategory->grade : 'Tidak Ada Kelas';
+    // 3. QUERY MODUL UTAMA → HANYA 3 TERBARU
+    $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher', 'approval'])
+        ->whereHas('approval', function ($query) {
+            $query->where('status', 'approved');
         });
 
-        // Handling untuk AJAX pencarian/filter tanpa load ulang halaman
-        if ($request->ajax() || $request->has('ajax')) {
-            // Nanti di frontend (partials._module_list) kita harus loop $groupedModules
-            return view('partials._module_list', compact('groupedModules'))->render();
-        }
-
-        return view('dashboard.student', compact('topModules', 'groupedModules', 'grades', 'subjects', 'dictionaries', 'faqs', 'teachers'));
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
     }
+    if ($request->filled('grade_id')) {
+        $query->where('grade_category_id', $request->grade_id);
+    }
+    if ($request->filled('subject_id')) {
+        $query->where('subject_category_id', $request->subject_id);
+    }
+
+    // 👉 INI YANG DIPERBAIKI
+    $modules = $query->latest()->limit(3)->get();
+
+    // kalau masih butuh grouping
+    $groupedModules = $modules->groupBy(function($module) {
+        return $module->gradeCategory
+            ? $module->gradeCategory->grade
+            : 'Tidak Ada Kelas';
+    });
+
+    if ($request->ajax() || $request->has('ajax')) {
+        return view('partials._module_list', compact('groupedModules'))->render();
+    }
+
+    return view('dashboard.student', compact(
+        'topModules',
+        'modules',          // ✅ ini bikin error hilang
+        'groupedModules',
+        'grades',
+        'subjects',
+        'dictionaries',
+        'faqs',
+        'teachers'
+    ));
+}
 
     public function show($id)
     {
