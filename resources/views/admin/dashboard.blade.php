@@ -17,7 +17,7 @@
 
     {{-- HERO --}}
     <div class="admin-hero mb-4">
-        <h1 class="m-0">Selamat Datang, <span>Admin!</span></h1>
+        <h1 class="m-0" style="font-weight: 700;">Selamat Datang, <span>Admin!</span></h1><br>
         <p class="mb-0 opacity-75">Ringkasan statistik sistem RPLearn hari ini.</p>
     </div>
 
@@ -132,19 +132,18 @@
 {{-- STYLE KHUSUS DASHBOARD --}}
 <style>
 .admin-dashboard {
-    background-color: #f5f7fa;
     min-height: 100vh;
 }
 
 .admin-hero {
-    background: #F6973F;
     padding: 30px;
     border-radius: 20px;
-    color: white;
+    color: var(--dark);
+
 }
 
 .admin-hero span {
-    font-weight: 900;
+    color: var(--orange);
 }
 
 .admin-card {
