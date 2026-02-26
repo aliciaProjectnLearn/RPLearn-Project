@@ -26,9 +26,13 @@
                 <i class="fa-solid fa-user-gear" style="width: 25px; color: #F6973F; font-size: 0.8rem;"></i> Pengaturan Profil
             </a>
 
-            <a href="{{ route('student.modules.saved') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
-                <i class="fa-solid fa-bookmark" style="width: 25px; color: #F6973F; font-size: 0.8rem;"></i> Modul Tersimpan
-            </a>
+            @auth
+                @if(auth()->user()->role === 'siswa')
+                    <a href="{{ route('student.modules.saved') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
+                        <i class="fa-solid fa-bookmark" style="width: 25px; color: #F6973F; font-size: 0.8rem;"></i> Modul Tersimpan
+                    </a>
+                @endif
+            @endauth
 
             <form method="POST" action="{{ route('logout') }}" style="margin: 0; border-top: 1px solid #eee;">
                 @csrf

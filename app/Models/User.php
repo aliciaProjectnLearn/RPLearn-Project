@@ -66,7 +66,7 @@ class User extends Authenticatable
 
     public function savedModules()
     {
-        return $this->belongsToMany(Module::class,'save_modules');
+        return $this->belongsToMany(Module::class,'save_modules', 'user_id', 'module_id');
     }
 
 

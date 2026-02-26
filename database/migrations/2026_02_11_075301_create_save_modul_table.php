@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('save_modul');
+        Schema::dropIfExists('save_modules');
     }
 };

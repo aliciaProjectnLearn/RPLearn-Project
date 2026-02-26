@@ -197,19 +197,21 @@
                                                     <i class="ri-file-pdf-line"></i> Download PDF Materi
                                                     </a>` : ''}
                             <div class="modal-tags-row">
-                        <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
-                        <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
+                                <div class="tag-group">
+                                    <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
+                                    <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
+                                </div>
 
-                        <i class="fa-solid fa-heart love-btn ${data.isLiked ? 'liked' : ''}" 
-                            data-id="${data.id}">
-                        </i>
+                                <div class="icon-group">
+                                    <i class="fa-solid fa-heart love-btn ${data.isLiked ? 'liked' : ''}" 
+                                        data-id="${data.id}">
+                                    </i>
 
-                        <i class="fa-solid fa-bookmark save-btn ${data.isSaved ? 'saved' : ''}" 
-                            data-id="${data.id}">
-                        </i>
-
-
-                    </div>
+                                    <i class="fa-solid fa-bookmark save-btn ${data.isSaved ? 'saved' : ''}" 
+                                        data-id="${data.id}">
+                                    </i>
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-side-text">
                     <h2 class="modal-title-text">${data.title}</h2>
@@ -293,7 +295,7 @@ document.addEventListener('click', function (e) {
 
     button.classList.toggle('saved');
 
-    fetch(`/modules/${moduleId}/save`, {
+    fetch(`/student/modules/${moduleId}/save`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
