@@ -26,7 +26,7 @@
     <section class="hero">
         <h1>Start <span>Learning. </span> Keep <br>Growing.</h1>
         <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
-            guided learning.</p> 
+            guided learning.</p>
 
         <div class="features-card">
             <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
@@ -35,123 +35,118 @@
         </div>
     </section>
 
-<section class="module-section" id="module-section">
-    <h1>Cari <span>Modul</span> Belajarmu!</h1>
+    <section class="module-section" id="module-section">
+        <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-    {{-- SEARCH & FILTER --}}
-    <form id="moduleFilterForm"
-      action="{{ url()->current() }}"
-      method="GET"
-      class="module-filter-form">
+        {{-- SEARCH & FILTER --}}
+        <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
 
-        <div class="module-search">
-            <i class="ri-search-line"></i>
-            <input type="text" name="search"
-                id="moduleSearchInput"
-                placeholder="Mau belajar apa hari ini?"
-                value="{{ request('search') }}">
-        </div>
-
-        <div class="filter-group-modern">
-            {{-- Kelas --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-government-line select-icon"></i>
-                {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
-                <select name="grade_id">
-                    <option value="">Semua Kelas</option>
-                    @foreach ($grades as $grade)
-                        <option value="{{ $grade->id }}"
-                            {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
-                            {{ $grade->grade }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            <div class="module-search">
+                <i class="ri-search-line"></i>
+                <input type="text" name="search" id="moduleSearchInput" placeholder="Mau belajar apa hari ini?"
+                    value="{{ request('search') }}">
             </div>
 
-            {{-- Materi --}}
-            <div class="custom-select-wrapper">
-                <i class="ri-book-3-line select-icon"></i>
-                {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
-                <select name="subject_id">
-                    <option value="">Semua Materi</option>
-                    @foreach ($subjects as $subject)
-                        <option value="{{ $subject->id }}"
-                            {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                            {{ $subject->subject }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line arrow-icon"></i>
+            <div class="filter-group-modern">
+                {{-- Kelas --}}
+                <div class="custom-select-wrapper">
+                    <i class="ri-government-line select-icon"></i>
+                    {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
+                    <select name="grade_id">
+                        <option value="">Semua Kelas</option>
+                        @foreach ($grades as $grade)
+                            <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
+                                {{ $grade->grade }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="ri-arrow-down-s-line arrow-icon"></i>
+                </div>
+
+                {{-- Materi --}}
+                <div class="custom-select-wrapper">
+                    <i class="ri-book-3-line select-icon"></i>
+                    {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
+                    <select name="subject_id">
+                        <option value="">Semua Materi</option>
+                        @foreach ($subjects as $subject)
+                            <option value="{{ $subject->id }}"
+                                {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                                {{ $subject->subject }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="ri-arrow-down-s-line arrow-icon"></i>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
 
-    {{-- CEK APAKAH SEDANG ADA FILTER AKTIF DI URL --}}
-    @php
-        $isFiltering = request('search') || request('grade_id') || request('subject_id');
-    @endphp
+        {{-- CEK APAKAH SEDANG ADA FILTER AKTIF DI URL --}}
+        @php
+            $isFiltering = request('search') || request('grade_id') || request('subject_id');
+        @endphp
 
-    {{-- ================= KONTINER UTAMA MODUL ================= --}}
-    <div id="moduleCardsContainer">
+        {{-- ================= KONTINER UTAMA MODUL ================= --}}
+        <div id="moduleCardsContainer">
 
-        {{-- ================= TUGAS CARD 14: TOP 3 MODULES ================= --}}
-        {{-- INI BUNGKUSAN YANG BENAR UNTUK TOP 3, DENGAN ID YANG SESUAI --}}
-        <div id="top3Section" style="display: {{ $isFiltering ? 'none' : 'block' }};">
+            {{-- ================= TUGAS CARD 14: TOP 3 MODULES ================= --}}
+            {{-- INI BUNGKUSAN YANG BENAR UNTUK TOP 3, DENGAN ID YANG SESUAI --}}
+            <div id="top3Section" style="display: {{ $isFiltering ? 'none' : 'block' }};">
 
-            <div class="module-cards">
-                @forelse ($topModules as $module)
-                    <div class="module-card">
-                        <div class="card-header-row">
-                            <span class="module-meta-text" >
-                                {{ $module->gradeCategory->grade ?? '-' }} |
-                                {{ $module->subjectCategory->subject ?? '-' }}
-                            </span>
+                <div class="module-cards">
+                    @forelse ($topModules as $module)
+                        <div class="module-card">
+                            <div class="card-header-row">
+                                <span class="module-meta-text">
+                                    {{ $module->gradeCategory->grade ?? '-' }} |
+                                    {{ $module->subjectCategory->subject ?? '-' }}
+                                </span>
 
-                            <div class="media-icons-row">
-                                @if ($module->contents->whereNotNull('video_url')->count())
-                                    <i class="ri-youtube-fill text-red"></i>
-                                @endif
-                                @if ($module->contents->whereNotNull('file_path')->count())
-                                    <i class="ri-file-pdf-2-fill"></i>
-                                @endif
+                                <div class="media-icons-row">
+                                    @if ($module->contents->whereNotNull('video_url')->count())
+                                        <i class="ri-youtube-fill text-red"></i>
+                                    @endif
+                                    @if ($module->contents->whereNotNull('file_path')->count())
+                                        <i class="ri-file-pdf-2-fill"></i>
+                                    @endif
+                                </div>
                             </div>
+
+                            <h3 class="module-title" onclick="showDetail({{ $module->id }})"
+                                style="text-align: center; cursor: pointer; margin-top: 15px;">
+                                {{ $module->title }}
+                            </h3>
+
+                            <p class="module-desc-text" style="margin-top: 10px;">
+                                {{ Str::limit($module->desc, 80) }}
+                            </p>
+
+                            <div class="author-label" style="margin-top: 15px; margin-bottom: 15px;">
+                                <i class="ri-user-3-line"></i>
+                                {{ $module->teacher->username ?? 'Admin' }}
+                            </div>
+
+                            {{-- Ceklis Card 14: Ubah tombol jadi "Lihat detail Modul" --}}
+                            <button class="btn-pelajari-orange" onclick="showDetail({{ $module->id }})"
+                                style="background: linear-gradient(135deg, #F6973F, #D65A31); width: 100%;">
+                                Lihat detail Modul <i class="ri-arrow-right-line"></i>
+                            </button>
                         </div>
-
-                        <h3 class="module-title" onclick="showDetail({{ $module->id }})" style="text-align: center; cursor: pointer; margin-top: 15px;">
-                            {{ $module->title }}
-                        </h3>
-
-                        <p class="module-desc-text" style="margin-top: 10px;">
-                            {{ Str::limit($module->desc, 80) }}
+                    @empty
+                        <p style="grid-column: 1 / -1; text-align:center;">
+                            Belum ada modul terpopuler.
                         </p>
-
-                        <div class="author-label" style="margin-top: 15px; margin-bottom: 15px;">
-                            <i class="ri-user-3-line"></i>
-                            {{ $module->teacher->username ?? 'Admin' }}
-                        </div>
-
-                        {{-- Ceklis Card 14: Ubah tombol jadi "Lihat detail Modul" --}}
-                        <button class="btn-pelajari-orange"
-                            onclick="showDetail({{ $module->id }})" style="background: linear-gradient(135deg, #F6973F, #D65A31); width: 100%;">
-                            Lihat detail Modul <i class="ri-arrow-right-line"></i>
-                        </button>
-                    </div>
-                @empty
-                    <p style="grid-column: 1 / -1; text-align:center;">
-                        Belum ada modul terpopuler.
-                    </p>
-                @endforelse
+                    @endforelse
+                </div>
             </div>
-        </div>
 
-    </div>
-    <div class="button-more">
-        <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
-            Lihat Semua →
-        </a>
-    </div>
-</section>
+        </div>
+        <div class="button-more">
+            <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
+                Lihat Semua →
+            </a>
+        </div>
+    </section>
 
     {{-- DICTIONARY --}}
     <section class="dictionary-section reveal" id="dictionary-section">
@@ -197,20 +192,16 @@
                 @endforelse
             </div>
         </div>
-            <div class="button-more">
-                <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
-                    Lihat Semua →
-                </a>
-            </div>
+        <div class="button-more">
+            <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
+                Lihat Semua →
+            </a>
+        </div>
     </section>
 
     {{-- ================= FAQ ================= --}}
     <section class="faq-section reveal" id="faq-section">
         <h2>Ruang <span>Tanya</span></h2>
-        <div class="question-search">
-            <i class="ri-search-line"></i>
-            <input type="text" id="faq-search" placeholder="Search question...">
-        </div>
 
         <div class="faq-wrapper">
             {{-- KIRI: FAQ --}}
@@ -245,11 +236,11 @@
                     <p class="form-desc">
                         Punya pertanyaan tapi belum ada di Ruang Tanya? Kirim langsung ke guru.
                     </p>
-                    <form action="/faq" method="POST">
+                    <form action="/student/faq" method="POST">
                         @csrf
                         <div class="form-group">
                             <label>Nama Siswa</label>
-                            <input type="text" value="{{ auth()->user()->username }}" readonly>
+                            <input type="text" name="student_name" value="{{ auth()->user()->username }}" readonly>
                         </div>
                         <div class="form-group">
                             <label>Guru Tertuju</label>
@@ -308,7 +299,8 @@
                 // --- A. AJAX SEARCH MODUL (Instan & Dinamis) ---
                 const filterForm = document.getElementById('moduleFilterForm');
                 const allModulesSection = document.getElementById('allModulesSection');
-                const top3Section = document.getElementById('top3Section'); // Mengambil div Top 3 yang sekarang sudah BENAR
+                const top3Section = document.getElementById(
+                'top3Section'); // Mengambil div Top 3 yang sekarang sudah BENAR
                 const searchInput = document.getElementById('moduleSearchInput');
                 const toggleBtn = document.getElementById('toggleAllModulesBtn');
 
@@ -321,52 +313,56 @@
 
                     // Cek apakah user sedang melakukan pencarian/filter
                     const isFiltering = searchInput.value.trim() !== '' ||
-                                        (gradeSelect && gradeSelect.value !== '') ||
-                                        (subjectSelect && subjectSelect.value !== '');
+                        (gradeSelect && gradeSelect.value !== '') ||
+                        (subjectSelect && subjectSelect.value !== '');
 
                     if (isFiltering) {
                         // Jika sedang difilter: Sembunyikan Top 3, Tampilkan hasil
-                        if(top3Section) top3Section.style.display = 'none';
-                        if(allModulesSection) allModulesSection.style.display = 'block';
+                        if (top3Section) top3Section.style.display = 'none';
+                        if (allModulesSection) allModulesSection.style.display = 'block';
                     } else {
                         // Jika filter kosong: Munculkan Top 3, Sembunyikan daftar bawah
-                        if(top3Section) top3Section.style.display = 'block';
-                        if(allModulesSection) allModulesSection.style.display = 'none';
-                        if(toggleBtn) {
+                        if (top3Section) top3Section.style.display = 'block';
+                        if (allModulesSection) allModulesSection.style.display = 'none';
+                        if (toggleBtn) {
                             toggleBtn.innerHTML = '<i class="ri-arrow-down-line"></i>';
                             toggleBtn.style.background = '#393E46';
                         }
                     }
 
-                    if(allModulesSection) allModulesSection.style.opacity = '0.5';
+                    if (allModulesSection) allModulesSection.style.opacity = '0.5';
 
                     fetch(`${window.location.pathname}?${params}&ajax=1`, {
-                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
                         })
                         .then(res => res.text())
                         .then(html => {
-                            if(allModulesSection) {
+                            if (allModulesSection) {
                                 allModulesSection.innerHTML = html;
                                 allModulesSection.style.opacity = '1';
                             }
                         });
                 }
 
-                if(searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
-                if(gradeSelect) gradeSelect.addEventListener('change', fetchModules);
-                if(subjectSelect) subjectSelect.addEventListener('change', fetchModules);
-                if(filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());
+                if (searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
+                if (gradeSelect) gradeSelect.addEventListener('change', fetchModules);
+                if (subjectSelect) subjectSelect.addEventListener('change', fetchModules);
+                if (filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());
 
                 function debounce(func, timeout = 300) {
                     let timer;
                     return (...args) => {
                         clearTimeout(timer);
-                        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+                        timer = setTimeout(() => {
+                            func.apply(this, args);
+                        }, timeout);
                     };
                 }
 
                 // --- B. LOGIKA TOMBOL PANAH BAWAH ---
-                if(toggleBtn) {
+                if (toggleBtn) {
                     toggleBtn.addEventListener('click', function() {
                         if (allModulesSection.style.display === 'none') {
                             allModulesSection.style.display = 'block';
@@ -402,20 +398,22 @@
                 };
 
                 const closeBtn = document.getElementById('dictionaryModalClose');
-                if(closeBtn) closeBtn.addEventListener('click', closeDictModal);
+                if (closeBtn) closeBtn.addEventListener('click', closeDictModal);
                 const overlay = document.querySelector('.dictionary-modal-overlay');
-                if(overlay) overlay.addEventListener('click', closeDictModal);
+                if (overlay) overlay.addEventListener('click', closeDictModal);
 
-                if(dictSearchInput) {
+                if (dictSearchInput) {
                     dictSearchInput.addEventListener('input', function() {
                         const keyword = this.value.toLowerCase();
                         document.querySelectorAll('.dictionary-row').forEach(row => {
-                            const term = row.querySelector('.dictionary-term').textContent.toLowerCase();
+                            const term = row.querySelector('.dictionary-term').textContent
+                        .toLowerCase();
                             row.style.display = term.includes(keyword) ? '' : 'none';
                         });
 
                         document.querySelectorAll('.dictionary-letter-column').forEach(column => {
-                            const visibleRows = column.querySelectorAll('.dictionary-row:not([style*="display: none"])');
+                            const visibleRows = column.querySelectorAll(
+                                '.dictionary-row:not([style*="display: none"])');
                             column.style.display = visibleRows.length === 0 ? 'none' : '';
                         });
                     });
@@ -440,7 +438,7 @@
                 bindAccordion();
 
                 let faqDelay = null;
-                if(faqSearchInput) {
+                if (faqSearchInput) {
                     faqSearchInput.addEventListener('keyup', function() {
                         clearTimeout(faqDelay);
                         faqDelay = setTimeout(() => {
@@ -449,7 +447,8 @@
                                 .then(data => {
                                     faqList.innerHTML = '';
                                     if (data.length === 0) {
-                                        faqList.innerHTML = `<p style="text-align:center;color:#888;">FAQ tidak ditemukan</p>`;
+                                        faqList.innerHTML =
+                                            `<p style="text-align:center;color:#888;">FAQ tidak ditemukan</p>`;
                                         return;
                                     }
                                     data.forEach(faq => {
@@ -486,7 +485,8 @@
 
                         if (content.video_url) {
                             let vId = content.video_url.split('v=')[1]?.split('&')[0];
-                            videoElement = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                            videoElement =
+                                `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
                         } else if (content.file_path && content.file_path.endsWith('.mp4')) {
                             videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
@@ -502,8 +502,8 @@
                                     <div class="video-container">${videoElement}</div>
                                     ${content.file_path && content.file_path.endsWith('.pdf') ?
                                         `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
-                                            <i class="ri-file-pdf-line"></i> Download PDF Materi
-                                        </a>` : ''}
+                                                    <i class="ri-file-pdf-line"></i> Download PDF Materi
+                                                </a>` : ''}
                                     <div class="modal-tags-row">
                                         <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
                                         <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
@@ -523,27 +523,74 @@
             }
         </script>
 
-        {{-- FORM TANYA GURU & LIKES SCRIPT --}}
+        {{-- FORM TANYA GURU & LIKES SCRIPT (FIXED FAQ AJAX) --}}
         <script>
-            document.addEventListener('submit', function(e) {
-                if (e.target && e.target.getAttribute('action') === '/faq') {
+            // ====== FIX FORM TANYA GURU (FAQ) ======
+            document.addEventListener('DOMContentLoaded', function() {
+                const faqForm = document.querySelector('form[action="/student/faq"]');
+
+                if (!faqForm) return;
+
+                faqForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    const formData = new FormData(e.target);
-                    fetch('/faq', {
+
+                    const submitBtn = faqForm.querySelector('.btn-submit');
+                    const originalText = submitBtn.innerHTML;
+
+                    // Disable tombol biar tidak double submit
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'Mengirim...';
+
+                    try {
+                        const formData = new FormData(faqForm);
+
+                        const response = await fetch('/student/faq', {
                             method: 'POST',
-                            headers: { 'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value },
+                            headers: {
+                                'X-CSRF-TOKEN': faqForm.querySelector('input[name="_token"]').value,
+                                'Accept': 'application/json' // 🔥 PENTING: biar Laravel return JSON, bukan redirect
+                            },
                             body: formData
-                        })
-                        .then(res => res.json())
-                        .then(res => {
-                            alert(res.message);
-                            e.target.reset();
-                        })
-                        .catch(() => alert('Gagal mengirim pertanyaan'));
-                }
+                        });
+
+                        // Kalau validasi error (422)
+                        if (response.status === 422) {
+                            const errorData = await response.json();
+                            let errorMessages = '';
+
+                            Object.values(errorData.errors).forEach(errArr => {
+                                errorMessages += `• ${errArr[0]}\n`;
+                            });
+
+                            alert("Gagal mengirim pertanyaan:\n" + errorMessages);
+                            return;
+                        }
+
+                        // Kalau sukses
+                        if (response.ok) {
+                            // Tidak pakai res.json() paksa (biar aman kalau controller return text/redirect)
+                            alert('Pertanyaan berhasil dikirim ke guru! 🎉');
+
+                            // Reset hanya field input & textarea (nama siswa tetap)
+                            faqForm.querySelector('select[name="teacher_id"]').value = '';
+                            faqForm.querySelector('input[name="title"]').value = '';
+                            faqForm.querySelector('textarea[name="question"]').value = '';
+                        } else {
+                            alert('Terjadi kesalahan saat mengirim pertanyaan.');
+                        }
+
+                    } catch (error) {
+                        console.error('FAQ Submit Error:', error);
+                        alert('Gagal mengirim pertanyaan. Cek koneksi atau server.');
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                });
             });
 
-            document.addEventListener('click', function (e) {
+            // ====== LIKE MODULE (TETAP, TIDAK DIUBAH) ======
+            document.addEventListener('click', function(e) {
                 if (!e.target.classList.contains('love-btn')) return;
 
                 const button = e.target;
@@ -552,18 +599,18 @@
                 button.classList.toggle('liked');
 
                 fetch(`/modules/${moduleId}/like`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.liked) button.classList.add('liked');
-                    else button.classList.remove('liked');
-                })
-                .catch(() => button.classList.toggle('liked'));
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.liked) button.classList.add('liked');
+                        else button.classList.remove('liked');
+                    })
+                    .catch(() => button.classList.toggle('liked'));
             });
         </script>
     @endpush

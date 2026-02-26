@@ -82,13 +82,22 @@ class FAQController extends Controller
         $request->validate([
             'question'   => 'required|string',
             'teacher_id' => 'required|exists:users,id',
-            'module_id'  => 'nullable|exists:modules,id',
+            'title'      => 'required|string|max:255',
         ]);
 
+        // 🔥 Ambil student berdasarkan user yang login (SESUIAI struktur tabel kamu)
+        $student = \App\Models\Student::where('user_id', auth()->id())->first();
+
+        // Kalau tidak ketemu, ini penyebab error popup kamu
+        if (!$student) {
+            return response()->json([
+                'message' => 'Data siswa tidak ditemukan untuk akun ini.'
+            ], 422);
+        }
+
         $question = Question::create([
-            'student_id' => auth()->user()->student->id,
+            'student_id' => $student->id,
             'teacher_id' => $request->teacher_id,
-            'module_id'  => $request->module_id,
             'title'      => $request->title,
             'question'   => $request->question,
             'status'     => 'pending',

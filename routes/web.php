@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FAQController;
+use App\Http\Controllers\StudentQuestionController;
 use App\Http\Controllers\Student\ModuleController as StudentModuleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
@@ -96,6 +97,8 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     Route::post('/modules/{module}/save',
         [SavedModuleController::class,'toggleSave']
     )->name('modules.save');
+
+    Route::resource('/questions', StudentQuestionController::class);
 
 });
 

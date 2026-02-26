@@ -35,7 +35,6 @@ class FAQSeeder extends Seeder
             $question = Question::create([
                 'student_id' => 1,
                 'teacher_id' => 1,
-                'module_id' => 1,
                 'title' => $faq['title'],
                 'question' => $faq['question'],
                 'status' => 'answered',
@@ -70,7 +69,6 @@ class FAQSeeder extends Seeder
             Question::create([
                 'student_id' => 1,
                 'teacher_id' => 1,
-                'module_id' => 1,
                 'title' => $q['title'],
                 'question' => $q['question'],
                 'status' => 'pending', // atau 'unanswered'
