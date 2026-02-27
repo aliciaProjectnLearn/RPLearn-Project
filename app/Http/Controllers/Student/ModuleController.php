@@ -63,9 +63,11 @@ public function index(Request $request)
             : 'Tidak Ada Kelas';
     });
 
-    if ($request->ajax() || $request->has('ajax')) {
-        return view('partials._module_list', compact('groupedModules'))->render();
-    }
+        if ($request->ajax()) {
+            return view('partials._module_list', [
+                'modules' => $modules
+            ])->render();
+        }
 
     return view('dashboard.student', compact(
         'topModules',
