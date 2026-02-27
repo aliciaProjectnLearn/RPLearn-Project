@@ -84,10 +84,21 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
     Route::get('/modules', [StudentModuleAllController::class, 'index'])->name('modules.index');
 
-    // API/JSON route dipindah ke dalam grup agar aman (terproteksi auth)
-    Route::get('/modules/{id}/json', function($id) {
-        return \App\Models\Module::with(['contents', 'gradeCategory', 'subjectCategory', 'teacher'])->findOrFail($id);
-    });
+Route::get('/modules/{id}/json', function($id) {
+
+    $module = \App\Models\Module::with([
+        'contents',
+        'gradeCategory',
+        'subjectCategory',
+        'teacher'
+    ])->findOrFail($id);
+
+    $module->isSaved = $module->savedByUsers()
+        ->where('user_id', auth()->id())
+        ->exists();
+
+    return response()->json($module);
+});
 
     Route::get('/modules/saved',
         [SavedModuleController::class,'index']

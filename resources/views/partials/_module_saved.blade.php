@@ -7,12 +7,9 @@
             </span>
 
             <div class="media-icons-row">
-                @if ($module->contents->whereNotNull('video_url')->count())
-                    <i class="ri-youtube-fill text-red" style="color: var(--orange);"></i>
-                @endif
-                @if ($module->contents->whereNotNull('file_path')->count())
-                    <i class="ri-file-pdf-2-fill" style="color: var(--orange);"></i>
-                @endif
+                <i class="{{ $module->isSaved ? 'ri-bookmark-fill saved' : 'ri-bookmark-line' }} save-btn"
+                    data-id="{{ $module->id }}">
+                </i>
             </div>
         </div>
 

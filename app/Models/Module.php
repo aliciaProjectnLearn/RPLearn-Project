@@ -47,7 +47,16 @@ class Module extends Model
 
     public function savedByUsers()
     {
-        return $this->belongsToMany(User::class,'save_modules');
+        return $this->belongsToMany(User::class,'save_modules', 'module_id', 'user_id');
+    }
+
+    public function getIsSavedAttribute()
+    {
+        if (!auth()->check()) return false;
+
+        return $this->savedByUsers()
+            ->where('user_id', auth()->id())
+            ->exists();
     }
 
     public function approval()

@@ -13,7 +13,7 @@ class ModulesAllController extends Controller
     public function index(Request $request)
 {
     // 1. Ambil data pendukung
-    $grades = GradeCategory::all();
+    $grades = GradeCategory::all(); 
     $subjects = SubjectCategory::all();
 
     $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher', 'approval'])
@@ -32,7 +32,14 @@ class ModulesAllController extends Controller
     }
 
     // 👉 INI YANG DIPERBAIKI
-    $modules = $query->get();
+    $userId = auth()->id();
+
+    $modules = $query->get()->map(function ($module) use ($userId) {
+        $module->isSaved = $module->savedByUsers()
+            ->where('user_id', $userId)
+            ->exists();
+        return $module;
+    });
 
     if ($request->ajax() || $request->has('ajax')) {
         return view('partials._module_list', compact('modules'))->render();
@@ -43,6 +50,17 @@ class ModulesAllController extends Controller
         'grades',
         'subjects',
     ));
+}
+
+public function saves()
+{
+    return $this->hasMany(SaveModule::class);
+}
+
+public function getIsSavedAttribute()
+{
+    return auth()->check() &&
+        $this->saves()->where('user_id', auth()->id())->exists();
 }
 
 }

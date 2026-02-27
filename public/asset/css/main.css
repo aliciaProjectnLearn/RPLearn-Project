@@ -374,7 +374,7 @@
 }
 
 .module-card {
-    background-color: var(--light);
+    background-color: var(--dark);
     padding: 20px;
     border-radius: 15px;
 }
@@ -1364,8 +1364,39 @@ body {
     }
 }
 
+.modal-tags-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
 
-.modal-tags-row { display: flex; gap: 8px; margin-bottom: 15px; }
+.tag-group {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-group {
+    display: flex;
+    gap: 15px; /* jarak antar love & save */
+}
+
+.icon-group i {
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s ease;
+}
+
+.save-btn {
+    color: var(--orange);
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.save-btn.saved {
+    color: var(--orange);
+}
+/* .modal-tags-row { display: flex; gap: 8px; margin-bottom: 15px; justify-content: space-between;} */
 .m-tag { background: #f15a24; color: white; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; }
 .modal-footer-info { font-size: 0.8rem; color: #777; line-height: 1.4; }
 .modal-title-text { font-size: 1rem; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px; color: #333; }
