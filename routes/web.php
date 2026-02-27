@@ -48,6 +48,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         ->name('modules.storeContent');
 
     // 2. RESOURCE UTAMA
+    Route::post('modules/approve-all', [App\Http\Controllers\Admin\ModuleController::class, 'approveAll'])->name('modules.approveAll');
     Route::resource('modules', App\Http\Controllers\Admin\ModuleController::class);
     // Rute untuk review/persetujuan modul oleh Admin
     Route::put('modules/{id}/review', [App\Http\Controllers\Admin\ModuleController::class, 'review'])->name('modules.review');

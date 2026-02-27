@@ -14,8 +14,14 @@ class ModuleController extends Controller
     {
         $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'contents', 'approval']);
 
-        if (auth()->user()->role === 'guru'){
+        if (auth()->user()->role === 'guru') {
             $query->where('teacher_id', auth()->id());
+
+            // Tambahan: filter hanya modul dari kelas yang diajar guru
+            $teacher = \App\Models\Teacher::where('user_id', auth()->id())->first();
+            if ($teacher && $teacher->kelas_id) {
+                $query->where('kelas_id', $teacher->kelas_id);
+            }
         }
 
         if ($request->search) {
@@ -29,7 +35,6 @@ class ModuleController extends Controller
         }
 
         $modules = $query->latest()->paginate(10);
-
         $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
 
         return view("{$rolePrefix}.modules.index", compact('modules'));
@@ -41,12 +46,18 @@ class ModuleController extends Controller
         $subjects = \App\Models\SubjectCategory::all();
         $teachers = \App\Models\User::where('role', 'guru')->get();
 
-        return view('admin.modules.create', compact('grades', 'subjects', 'teachers'));
+        // Ambil kelas yang diajar guru yang sedang login
+        $kelas = [];
+        if (auth()->user()->role === 'guru') {
+            $teacher = \App\Models\Teacher::where('user_id', auth()->id())->first();
+            $kelas = $teacher ? \App\Models\Kelas::where('id', $teacher->kelas_id)->get() : collect();
+        }
+
+        return view('admin.modules.create', compact('grades', 'subjects', 'teachers', 'kelas'));
     }
 
     public function store(Request $request)
     {
-        // 1. Validasi dinamis (teacher_id hanya wajib diisi kalau yang login admin)
         $rules = [
             'title'               => 'required|string|max:255',
             'desc'                => 'required|string',
@@ -59,11 +70,21 @@ class ModuleController extends Controller
             $rules['teacher_id'] = 'required|exists:users,id';
         }
 
+        // Validasi kelas_id wajib untuk guru
+        if (auth()->user()->role === 'guru') {
+            $rules['kelas_id'] = 'required|exists:kelas,id';
+        }
+
         $validated = $request->validate($rules);
 
-        // 2. Set teacher_id otomatis kalau yang login guru
         if (auth()->user()->role === 'guru') {
             $validated['teacher_id'] = auth()->id();
+
+            // Proteksi: pastikan kelas_id milik guru tersebut
+            $teacher = \App\Models\Teacher::where('user_id', auth()->id())->first();
+            if (!$teacher || $teacher->kelas_id != $validated['kelas_id']) {
+                return back()->withErrors(['kelas_id' => 'Kamu tidak berhak upload modul ke kelas ini!'])->withInput();
+            }
         } else {
             $validated['teacher_id'] = $request->teacher_id;
         }
@@ -81,7 +102,8 @@ class ModuleController extends Controller
         ]);
 
         $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
-        return redirect()->route("{$rolePrefix}.modules.index")->with('success', 'Modul berhasil dibuat & status saat ini adalah Pending untuk direview Admin!');
+        return redirect()->route("{$rolePrefix}.modules.index")
+            ->with('success', 'Modul berhasil dibuat & status saat ini adalah Pending untuk direview Admin!');
     }
 
     public function showContent(ModuleContent $content)
@@ -255,5 +277,26 @@ class ModuleController extends Controller
 
         return redirect()->route('admin.modules.index')
             ->with('success', 'Status persetujuan modul "' . $module->title . '" berhasil diperbarui!');
+    }
+
+    public function approveAll(Request $request)
+    {
+        $updated = \App\Models\Approval::where('status', 'pending')
+            ->update([
+                'status'      => 'approved',
+                'comment'     => null,
+                'approved_at' => now(),
+            ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Berhasil menyetujui {$updated} modul sekaligus!",
+                'count'   => $updated,
+            ]);
+        }
+
+        return redirect()->route('admin.modules.index')
+            ->with('success', "Berhasil menyetujui {$updated} modul pending sekaligus!");
     }
 }

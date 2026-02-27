@@ -19,6 +19,7 @@ class Student extends Model
         'nis',
         'name',
         'kelas',
+        'kelas_id',
     ];
 
     // Relasi ke User
@@ -30,5 +31,10 @@ class Student extends Model
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 }
