@@ -21,6 +21,7 @@ class Module extends Model
         'track',
         'is_published',
         'like',
+        'kelas_id',
     ];
 
     // === RELATIONS ===
@@ -72,6 +73,11 @@ class Module extends Model
         public function isLiked()
     {
         return $this->likes()->where('user_id', auth()->id())->exists();
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
 }

@@ -109,7 +109,7 @@
                                         data-title="{{ $question->title }}" data-question="{{ $question->question }}"
                                         data-answer="{{ $question->answer->answer ?? 'Belum ada jawaban.' }}"
                                         data-teacher="{{ $question->answer->teacher->username ?? '-' }}">
-                                        <i class="fa-solid fa-eye"></i>
+                                        <i class="bi bi-ticket-detailed-fill"></i>
                                     </a>
                                 </td>
 

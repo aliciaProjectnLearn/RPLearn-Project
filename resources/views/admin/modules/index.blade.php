@@ -13,10 +13,21 @@
                 Total: <span class="text-orange fw-bold">{{ $modules->count() }} Modul</span>
             </p>
         </div>
-        <br>
-        {{-- Tombol Tambah Modul Dihilangkan untuk Admin --}}
-    </div>
 
+        {{-- Tombol Approve All di kanan --}}
+        @php
+            $pendingCount = $modules->filter(fn($m) => ($m->approval->status ?? 'pending') === 'pending')->count();
+        @endphp
+
+        @if($pendingCount > 0)
+        <div>
+            <button id="btnApproveAll" class="btn text-white fw-bold" style="background: #f37021;">
+                <i class="fa-solid fa-check-double me-1"></i>
+                Approve All <span class="badge bg-white text-dark ms-1">{{ $pendingCount }}</span>
+            </button>
+        </div>
+        @endif
+    </div>
     {{-- Filter Status --}}
     <form method="GET" action="{{ route('admin.modules.index') }}" class="mb-3">
         <div class="d-flex gap-2">
@@ -89,7 +100,7 @@
                             </span>
 
                             @if(!empty($module->approval->comment))
-                                <i class="fa-solid fa-comment-dots ms-1 text-secondary" style="cursor: help;" title="Catatan: {{ $module->approval->comment }}"></i>
+                                <i class="bi bi-chat-left-text style="cursor: help;" title="Catatan: {{ $module->approval->comment }}"></i>
                             @endif
                         </td>
 
@@ -98,7 +109,7 @@
                             <div class="action-bar d-flex justify-content-end align-items-center gap-2">
 
                                 <a href="{{ route('admin.modules.addContent', $module->id) }}" class="btn btn-sm btn-light border position-relative" title="Lihat Isi Materi">
-                                    <i class="fa-solid fa-eye text-primary"></i>
+                                    <i class="bi bi-eye-fill"></i>
                                 </a>
 
                                 {{-- Tombol Buka Modal Review --}}
@@ -174,5 +185,57 @@
         </div>
     </div>
 @endforeach
+
+{{-- ===== SCRIPT APPROVE ALL ===== --}}
+@if(isset($pendingCount) && $pendingCount > 0)
+<script>
+document.getElementById('btnApproveAll')?.addEventListener('click', function () {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Approve Semua Modul?',
+        text: 'Semua modul dengan status Pending akan disetujui sekaligus.',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Approve Semua!',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#f37021',
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        const btn = document.getElementById('btnApproveAll');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Memproses...';
+
+        fetch('{{ route('admin.modules.approveAll') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => window.location.reload());
+            } else {
+                Swal.fire({ icon: 'error', title: 'Terjadi kesalahan!', text: 'Silakan coba lagi.' });
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-double me-1"></i> Approve All';
+            }
+        })
+        .catch(() => {
+            Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Tidak bisa terhubung ke server.' });
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check-double me-1"></i> Approve All';
+        });
+    });
+});
+</script>
+@endif
 
 @endsection

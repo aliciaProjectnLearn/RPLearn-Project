@@ -93,6 +93,23 @@
                         </div>
                     @endif
 
+                    @if(auth()->user()->role === 'guru')
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Kelas yang Diajar</label>
+                            <div class="col-sm-6">
+                                <select name="kelas_id" class="input-modern" required>
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach($kelas as $k)
+                                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                    @endforeach
+                                </select>
+                                @error('kelas_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="row align-items-center">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
