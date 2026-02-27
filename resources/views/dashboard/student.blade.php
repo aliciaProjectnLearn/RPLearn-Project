@@ -371,7 +371,9 @@
                                         </div>
 
                                         <div class="icon-group">
-                                            <i class="ri-bookmark-line save-btn ${data.isSaved ? 'saved' : ''}" data-id="${data.id}"></i>
+                                            <i class="${data.isSaved ? 'ri-bookmark-fill saved' : 'ri-bookmark-line'} save-btn"
+                                                data-id="${data.id}">
+                                            </i>
                                         </div>
                                     </div>
                                 </div>

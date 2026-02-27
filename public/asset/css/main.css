@@ -1387,12 +1387,14 @@ body {
     transition: 0.2s ease;
 }
 
-.love-btn.liked {
-    color: red;
+.save-btn {
+    color: var(--orange);
+    cursor: pointer;
+    font-size: 20px;
 }
 
 .save-btn.saved {
-    color: orange;
+    color: var(--orange);
 }
 /* .modal-tags-row { display: flex; gap: 8px; margin-bottom: 15px; justify-content: space-between;} */
 .m-tag { background: #f15a24; color: white; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; }

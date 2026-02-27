@@ -121,9 +121,11 @@ ${content.file_path && content.file_path.endsWith('.pdf') ?
 <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
 </div>
 
-<div class="icon-group">
-<i class="ri-bookmark-line save-btn ${data.isSaved ? 'saved' : ''}" data-id="${data.id}"></i>
-</div>
+    <div class="icon-group">
+        <i class="${data.isSaved ? 'ri-bookmark-fill saved' : 'ri-bookmark-line'} save-btn"
+            data-id="${data.id}">
+        </i>
+    </div>
 </div>
 </div>
 
@@ -145,26 +147,35 @@ function closeModal() {
 <script>
 document.addEventListener('click', function (e) {
 
-if (!e.target.classList.contains('save-btn')) return;
+    if (!e.target.classList.contains('save-btn')) return;
 
-const button = e.target;
-const moduleId = button.dataset.id;
+    const button = e.target;
+    const moduleId = button.dataset.id;
 
-button.classList.toggle('saved');
+    const isSaved = button.classList.contains('saved');
 
-fetch(`/student/modules/${moduleId}/save`, {
-method: 'POST',
-headers: {
-'X-CSRF-TOKEN': '{{ csrf_token() }}',
-'Content-Type': 'application/json'
-}
-})
-.then(res => res.json())
-.then(data => {
-if (data.saved) button.classList.add('saved');
-else button.classList.remove('saved');
-})
-.catch(() => button.classList.toggle('saved'));
+    // ubah tampilan dulu biar responsif
+    button.classList.toggle('saved');
+    button.classList.toggle('ri-bookmark-fill');
+    button.classList.toggle('ri-bookmark-line');
+
+    fetch(`/student/modules/${moduleId}/save`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.saved) {
+            button.classList.add('saved','ri-bookmark-fill');
+            button.classList.remove('ri-bookmark-line');
+        } else {
+            button.classList.remove('saved','ri-bookmark-fill');
+            button.classList.add('ri-bookmark-line');
+        }
+    });
 });
 </script>
 

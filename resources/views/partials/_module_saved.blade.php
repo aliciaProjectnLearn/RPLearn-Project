@@ -7,8 +7,8 @@
             </span>
 
             <div class="media-icons-row">
-                <i class="ri-bookmark-line save-btn saved"
-                       data-id="{{ $module->id }}">
+                <i class="{{ $module->isSaved ? 'ri-bookmark-fill saved' : 'ri-bookmark-line' }} save-btn"
+                    data-id="{{ $module->id }}">
                 </i>
             </div>
         </div>
