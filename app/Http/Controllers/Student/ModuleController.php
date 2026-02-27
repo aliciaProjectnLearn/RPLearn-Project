@@ -10,6 +10,7 @@ use App\Models\Question;
 use App\Models\User;
 use App\Models\Dictionary;
 use Illuminate\Http\Request;
+use App\Models\SaveModule;
 use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
@@ -54,13 +55,13 @@ public function index(Request $request)
     }
 
     // 👉 INI YANG DIPERBAIKI
-    $modules = $query->latest()->limit(3)->get();
+    $userId = auth()->id();
 
-    // kalau masih butuh grouping
-    $groupedModules = $modules->groupBy(function($module) {
-        return $module->gradeCategory
-            ? $module->gradeCategory->grade
-            : 'Tidak Ada Kelas';
+    $modules = $query->get()->map(function ($module) use ($userId) {
+        $module->isSaved = $module->savedByUsers()
+            ->where('user_id', $userId)
+            ->exists();
+        return $module;
     });
 
         if ($request->ajax()) {
@@ -72,7 +73,6 @@ public function index(Request $request)
     return view('dashboard.student', compact(
         'topModules',
         'modules',          // ✅ ini bikin error hilang
-        'groupedModules',
         'grades',
         'subjects',
         'dictionaries',
@@ -111,27 +111,16 @@ public function index(Request $request)
     }
 
 
-    public function save($id)
-    {
-        $modul = Module::findOrFail($id);
+    public function saves()
+{
+    return $this->hasMany(SaveModule::class);
+}
 
-        auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
-
-        return response()->json([
-            'status' => 'saved'
-        ]);
-    }
-
-    public function unsave($id)
-    {
-        $modul = Module::findOrFail($id);
-
-        auth()->user()->savedModuls()->detach($modul->id);
-
-        return response()->json([
-            'status' => 'unsaved'
-        ]);
-    }
+public function getIsSavedAttribute()
+{
+    return auth()->check() &&
+        $this->saves()->where('user_id', auth()->id())->exists();
+}
 
 
         public function toggleLike($id)

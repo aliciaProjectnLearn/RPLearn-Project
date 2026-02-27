@@ -410,15 +410,24 @@
                 }
             });
 
+        </script>
+
+        <script>
             document.addEventListener('click', function (e) {
-                if (!e.target.classList.contains('love-btn')) return;
+
+                if (!e.target.classList.contains('save-btn')) return;
 
                 const button = e.target;
                 const moduleId = button.dataset.id;
 
-                button.classList.toggle('liked');
+                const isSaved = button.classList.contains('saved');
 
-                fetch(`/modules/${moduleId}/like`, {
+                // ubah tampilan dulu biar responsif
+                button.classList.toggle('saved');
+                button.classList.toggle('ri-bookmark-fill');
+                button.classList.toggle('ri-bookmark-line');
+
+                fetch(`/student/modules/${moduleId}/save`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -427,11 +436,15 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.liked) button.classList.add('liked');
-                    else button.classList.remove('liked');
-                })
-                .catch(() => button.classList.toggle('liked'));
+                    if (data.saved) {
+                        button.classList.add('saved','ri-bookmark-fill');
+                        button.classList.remove('ri-bookmark-line');
+                    } else {
+                        button.classList.remove('saved','ri-bookmark-fill');
+                        button.classList.add('ri-bookmark-line');
+                    }
+                });
             });
-        </script>
+            </script>
     @endpush
 @endsection

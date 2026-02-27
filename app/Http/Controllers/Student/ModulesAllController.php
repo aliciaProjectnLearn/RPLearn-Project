@@ -13,7 +13,7 @@ class ModulesAllController extends Controller
     public function index(Request $request)
 {
     // 1. Ambil data pendukung
-    $grades = GradeCategory::all();
+    $grades = GradeCategory::all(); 
     $subjects = SubjectCategory::all();
 
     $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher', 'approval'])
