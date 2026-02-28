@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FAQController;
+use App\Http\Controllers\StudentQuestionController;
 use App\Http\Controllers\Student\ModuleController as StudentModuleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
@@ -81,7 +82,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 */
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
-    Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
     Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
     Route::get('/modules', [StudentModuleAllController::class, 'index'])->name('modules.index');
 
@@ -108,6 +108,13 @@ Route::get('/modules/{id}/json', function($id) {
     Route::post('/modules/{module}/save',
         [SavedModuleController::class,'toggleSave']
     )->name('modules.save');
+
+    Route::resource('/questions', StudentQuestionController::class);
+
+    Route::get('/faq', [FAQController::class, 'all'])->name('faq.index');
+    Route::post('/faq', [FAQController::class, 'store'])->name('faq.store');
+    Route::get('/faq/list', [FAQController::class, 'index'])->name('faq.list');
+    Route::get('/faq/{id}', [FAQController::class, 'show'])->name('faq.show');
 
 });
 

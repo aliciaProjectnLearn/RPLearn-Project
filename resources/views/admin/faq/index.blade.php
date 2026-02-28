@@ -103,7 +103,6 @@
                                     {{ $question->answer?->teacher?->username ?? 'Belum dijawab' }}
                                 </td>
 
-                                {{-- Detail (INI YANG TADI SALAH) --}}
                                 <td class="text-end pe-4 py-3">
                                     <a href="javascript:void(0)" class="faq-detail-btn" title="Lihat Detail"
                                         data-title="{{ $question->title }}" data-question="{{ $question->question }}"

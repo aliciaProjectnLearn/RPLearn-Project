@@ -15,7 +15,7 @@ class FAQController extends Controller
         $filter = $request->query('filter');
         $search = $request->query('search');
 
-        $questions = Question::with(['student', 'module', 'answer'])
+        $questions = Question::with(['student', 'answer'])
             ->when($filter === 'pending', function ($query) {
                 $query->where('status', 'pending');
             })

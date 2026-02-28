@@ -107,7 +107,7 @@
     font-size: 0.5rem;
     font-weight: 600;
 }
- 
+
 /* Navbar Profile Link */
 .navbar-profile-trigger {
     display: flex;
@@ -119,8 +119,8 @@
     transition: 0.3s;
 }
 
-.navbar-profile-trigger:hover { 
-    background: rgba(255,255,255,0.1); 
+.navbar-profile-trigger:hover {
+    background: rgba(255,255,255,0.1);
 }
 
 .header-profile-avatar {
@@ -406,49 +406,49 @@
 }
 
 .module-card:hover {
-    transform: translateY(-8px); 
+    transform: translateY(-8px);
     border-color: var(--orange);
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
-.module-title { 
-    color: #fff !important; 
-    font-weight: 700; 
-    margin-bottom: 8px; 
-    line-height: 1.4; 
-    cursor: pointer; 
-    padding-bottom: 8px; 
+.module-title {
+    color: #fff !important;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    cursor: pointer;
+    padding-bottom: 8px;
     padding-top: 8px;
     font-size: 1rem;
 }
 
-.author-label { 
-    font-size: 12px; 
-    color: #fff; 
-    margin-bottom: 10px; 
+.author-label {
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 10px;
 }
 
-.module-desc-text { 
-    font-size: 12px; 
-    color: #fff !important; 
-    line-height: 1.5; 
-    margin-bottom: 15px; 
+.module-desc-text {
+    font-size: 12px;
+    color: #fff !important;
+    line-height: 1.5;
+    margin-bottom: 15px;
 }
 
 /* --- TOMBOL ORANYE (PDF & PELAJARI) --- */
 .btn-pelajari-orange, .pdf-btn {
-    background: var(--orange); 
-    color: white; 
-    border: none; 
+    background: var(--orange);
+    color: white;
+    border: none;
     padding: 10px;
-    border-radius: 8px; 
-    font-weight: 600; 
-    cursor: pointer; 
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
     transition: background 0.2s;
-} 
+}
 
-.btn-pelajari-orange:hover, .pdf-btn:hover { 
-    background: vaer(--orange); 
+.btn-pelajari-orange:hover, .pdf-btn:hover {
+    background: vaer(--orange);
 }
 
 .pdf-btn { display: block; width: 100%; text-align: center; text-decoration: none; margin: 15px 0; padding: 10px; font-size: 0.9rem;}
@@ -579,22 +579,24 @@
 
 .form-group label {
     display: block;
-    font-size: 13px;
-    color: #aaaaaa;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #d1d5db;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #222831;
-    background: #f8f8f8;
-    color: #777;
-    outline: none;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: none;
+    background: #374151;
+    color: #f9fafb;
     font-size: 14px;
+    outline: none;
+    transition: 0.2s;
 }
 
 .form-group input::placeholder,
@@ -609,8 +611,8 @@
 }
 
 .form-group input[readonly] {
-    background: #f8f8f8;
-    color: #aaaaaa;
+    background: #374151;
+    color: #f9fafb;
     cursor: not-allowed;
 }
 
@@ -628,7 +630,8 @@
 }
 
 .btn-submit:hover {
-    background: var(--orange);
+transform: translateY(-2px);
+box-shadow: 0 10px 25px rgba(246, 151, 63, 0.4);
 }
 
 .question-search {
@@ -728,7 +731,7 @@
     color: #555;
     line-height: 1.6;
 
-    transition: max-height 0.35s ease;
+    transition: max-height 0.2s ease, padding 0.3s ease;
 }
 
 /* ACTIVE */
@@ -1732,8 +1735,8 @@ body {
 
 .faq-status-answered { border-left-color: #2ecc71; background: #f0fff4; }
 
-.faq-status-pending { 
-    border-left-color: #f1c40f; 
+.faq-status-pending {
+    border-left-color: #f1c40f;
     background: #fffdf0; }
 
 /* Tampilan untuk Edit Module */

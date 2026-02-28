@@ -15,34 +15,29 @@ use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
-public function index(Request $request)
-{
-    // 1. Ambil data pendukung
-    $grades = GradeCategory::all();
-    $subjects = SubjectCategory::all();
-    $teachers = User::where('role', 'guru')->get();
-    $dictionaries = Dictionary::orderBy('term', 'asc')->limit(6)->get();
+    public function index(Request $request)
+    {
+        // 1. Ambil data pendukung
+        $grades = GradeCategory::all();
+        $subjects = SubjectCategory::all();
+        $teachers = User::where('role', 'guru')->get();
+        $dictionaries = Dictionary::orderBy('term', 'asc')->limit(6)->get();
 
-    $faqs = Question::with('answer')
-        ->where('status', 'answered')
-        ->whereHas('answer')
-        ->latest()
-        ->get();
+        $faqs = Question::with('answer')
+            ->where('status', 'answered')
+            ->whereHas('answer')
+            ->latest()
+            ->limit(5)
+            ->get();
 
-    // 2. Top modules (tetap)
-    $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
-        ->whereHas('approval', function ($query) {
-            $query->where('status', 'approved');
-        })
-        ->orderByDesc('like')
-        ->limit(3)
-        ->get();
-
-    // 3. QUERY MODUL UTAMA → HANYA 3 TERBARU
-    $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher', 'approval'])
-        ->whereHas('approval', function ($query) {
-            $query->where('status', 'approved');
-        });
+        // 2. TUGAS CARD 14: Ambil 3 modul dengan like terbanyak (Hanya yang Approved)
+        $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
+            ->whereHas('approval', function ($query) {
+                $query->where('status', 'approved'); // Aturan dari catatan revisi
+            })
+            ->orderByDesc('like')
+            ->limit(3)
+            ->get();
 
     if ($request->filled('search')) {
         $query->where('title', 'like', '%' . $request->search . '%');

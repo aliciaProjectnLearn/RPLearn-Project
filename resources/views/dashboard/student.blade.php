@@ -26,7 +26,7 @@
     <section class="hero">
         <h1>Start <span>Learning. </span> Keep <br>Growing.</h1>
         <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
-            guided learning.</p> 
+            guided learning.</p>
 
         <div class="features-card">
             <div class="feat-card"><i class="ri-book-open-line"></i><span>Kumpulan Modul</span></div>
@@ -35,8 +35,8 @@
         </div>
     </section>
 
-<section class="module-section" id="module-section">
-    <h1>Cari <span>Modul</span> Belajarmu!</h1>
+    <section class="module-section" id="module-section">
+        <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
     {{-- SEARCH --}}
     <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
@@ -105,20 +105,16 @@
                 @endforelse
             </div>
         </div>
-            <div class="button-more">
-                <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
-                    Lihat Semua →
-                </a>
-            </div>
+        <div class="button-more">
+            <a href="{{ route('student.dictionary.index') }}" class="btn-more-dictionary">
+                Lihat Semua →
+            </a>
+        </div>
     </section>
 
     {{-- ================= FAQ ================= --}}
     <section class="faq-section reveal" id="faq-section">
         <h2>Ruang <span>Tanya</span></h2>
-        <div class="question-search">
-            <i class="ri-search-line"></i>
-            <input type="text" id="faq-search" placeholder="Search question...">
-        </div>
 
         <div class="faq-wrapper">
             {{-- KIRI: FAQ --}}
@@ -153,11 +149,11 @@
                     <p class="form-desc">
                         Punya pertanyaan tapi belum ada di Ruang Tanya? Kirim langsung ke guru.
                     </p>
-                    <form action="/faq" method="POST">
+                    <form action="/student/faq" method="POST">
                         @csrf
                         <div class="form-group">
                             <label>Nama Siswa</label>
-                            <input type="text" value="{{ auth()->user()->username }}" readonly>
+                            <input type="text" name="student_name" value="{{ auth()->user()->username }}" readonly>
                         </div>
                         <div class="form-group">
                             <label>Guru Tertuju</label>
@@ -172,7 +168,7 @@
                         </div>
                         <div class="form-group">
                             <label>Judul Pertanyaan</label>
-                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
+                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required style="background: #374151; color: #f9fafb">
                         </div>
                         <div class="form-group">
                             <label>Pertanyaan</label>
@@ -236,8 +232,25 @@
                     let timer;
                     return (...args) => {
                         clearTimeout(timer);
-                        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+                        timer = setTimeout(() => {
+                            func.apply(this, args);
+                        }, timeout);
                     };
+                }
+
+                // --- B. LOGIKA TOMBOL PANAH BAWAH ---
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function() {
+                        if (allModulesSection.style.display === 'none') {
+                            allModulesSection.style.display = 'block';
+                            this.innerHTML = '<i class="ri-arrow-up-line"></i>';
+                            this.style.background = '#F6973F'; // Ubah warna saat aktif
+                        } else {
+                            allModulesSection.style.display = 'none';
+                            this.innerHTML = '<i class="ri-arrow-down-line"></i>';
+                            this.style.background = '#393E46'; // Kembali ke warna awal
+                        }
+                    });
                 }
 
                 // --- C. DICTIONARY MODAL & SEARCH ---
@@ -262,20 +275,22 @@
                 };
 
                 const closeBtn = document.getElementById('dictionaryModalClose');
-                if(closeBtn) closeBtn.addEventListener('click', closeDictModal);
+                if (closeBtn) closeBtn.addEventListener('click', closeDictModal);
                 const overlay = document.querySelector('.dictionary-modal-overlay');
-                if(overlay) overlay.addEventListener('click', closeDictModal);
+                if (overlay) overlay.addEventListener('click', closeDictModal);
 
-                if(dictSearchInput) {
+                if (dictSearchInput) {
                     dictSearchInput.addEventListener('input', function() {
                         const keyword = this.value.toLowerCase();
                         document.querySelectorAll('.dictionary-row').forEach(row => {
-                            const term = row.querySelector('.dictionary-term').textContent.toLowerCase();
+                            const term = row.querySelector('.dictionary-term').textContent
+                        .toLowerCase();
                             row.style.display = term.includes(keyword) ? '' : 'none';
                         });
 
                         document.querySelectorAll('.dictionary-letter-column').forEach(column => {
-                            const visibleRows = column.querySelectorAll('.dictionary-row:not([style*="display: none"])');
+                            const visibleRows = column.querySelectorAll(
+                                '.dictionary-row:not([style*="display: none"])');
                             column.style.display = visibleRows.length === 0 ? 'none' : '';
                         });
                     });
@@ -300,7 +315,7 @@
                 bindAccordion();
 
                 let faqDelay = null;
-                if(faqSearchInput) {
+                if (faqSearchInput) {
                     faqSearchInput.addEventListener('keyup', function() {
                         clearTimeout(faqDelay);
                         faqDelay = setTimeout(() => {
@@ -309,7 +324,8 @@
                                 .then(data => {
                                     faqList.innerHTML = '';
                                     if (data.length === 0) {
-                                        faqList.innerHTML = `<p style="text-align:center;color:#888;">FAQ tidak ditemukan</p>`;
+                                        faqList.innerHTML =
+                                            `<p style="text-align:center;color:#888;">FAQ tidak ditemukan</p>`;
                                         return;
                                     }
                                     data.forEach(faq => {
@@ -362,8 +378,8 @@
                                     <div class="video-container">${videoElement}</div>
                                     ${content.file_path && content.file_path.endsWith('.pdf') ?
                                         `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
-                                            <i class="ri-file-pdf-line"></i> Download PDF Materi
-                                        </a>` : ''}
+                                                    <i class="ri-file-pdf-line"></i> Download PDF Materi
+                                                </a>` : ''}
                                     <div class="modal-tags-row">
                                         <div class="tag-group">
                                             <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
@@ -390,24 +406,70 @@
             }
         </script>
 
-        {{-- FORM TANYA GURU & LIKES SCRIPT --}}
+        {{-- FORM TANYA GURU & LIKES SCRIPT (FIXED FAQ AJAX) --}}
         <script>
-            document.addEventListener('submit', function(e) {
-                if (e.target && e.target.getAttribute('action') === '/faq') {
+            // ====== FIX FORM TANYA GURU (FAQ) ======
+            document.addEventListener('DOMContentLoaded', function() {
+                const faqForm = document.querySelector('form[action="/student/faq"]');
+
+                if (!faqForm) return;
+
+                faqForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    const formData = new FormData(e.target);
-                    fetch('/faq', {
+
+                    const submitBtn = faqForm.querySelector('.btn-submit');
+                    const originalText = submitBtn.innerHTML;
+
+                    // Disable tombol biar tidak double submit
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'Mengirim...';
+
+                    try {
+                        const formData = new FormData(faqForm);
+
+                        const response = await fetch('/student/faq', {
                             method: 'POST',
-                            headers: { 'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value },
+                            headers: {
+                                'X-CSRF-TOKEN': faqForm.querySelector('input[name="_token"]').value,
+                                'Accept': 'application/json' // 🔥 PENTING: biar Laravel return JSON, bukan redirect
+                            },
                             body: formData
-                        })
-                        .then(res => res.json())
-                        .then(res => {
-                            alert(res.message);
-                            e.target.reset();
-                        })
-                        .catch(() => alert('Gagal mengirim pertanyaan'));
-                }
+                        });
+
+                        // Kalau validasi error (422)
+                        if (response.status === 422) {
+                            const errorData = await response.json();
+                            let errorMessages = '';
+
+                            Object.values(errorData.errors).forEach(errArr => {
+                                errorMessages += `• ${errArr[0]}\n`;
+                            });
+
+                            alert("Gagal mengirim pertanyaan:\n" + errorMessages);
+                            return;
+                        }
+
+                        // Kalau sukses
+                        if (response.ok) {
+                            // Tidak pakai res.json() paksa (biar aman kalau controller return text/redirect)
+                            alert('Pertanyaan berhasil dikirim ke guru! 🎉');
+
+                            // Reset hanya field input & textarea (nama siswa tetap)
+                            faqForm.querySelector('select[name="teacher_id"]').value = '';
+                            faqForm.querySelector('input[name="title"]').value = '';
+                            faqForm.querySelector('textarea[name="question"]').value = '';
+                        } else {
+                            alert('Terjadi kesalahan saat mengirim pertanyaan.');
+                        }
+
+                    } catch (error) {
+                        console.error('FAQ Submit Error:', error);
+                        alert('Gagal mengirim pertanyaan. Cek koneksi atau server.');
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                });
             });
 
         </script>

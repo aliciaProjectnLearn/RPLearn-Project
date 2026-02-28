@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Answer extends Model
 {
     protected $fillable = ['question_id', 'teacher_id', 'answer'];
+    
+    protected $hidden = ['question'];
 
     public function question()
     {

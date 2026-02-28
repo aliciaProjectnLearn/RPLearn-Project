@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
-    protected $fillable = ['student_id', 'teacher_id', 'module_id', 'title', 'question', 'status'];
+    protected $fillable = ['student_id', 'teacher_id', 'title', 'question', 'status'];
 
     public function student()
     {
@@ -18,9 +18,5 @@ class Question extends Model
     public function answer()
     {
         return $this->hasOne(Answer::class);
-    }
-    public function module()
-    {
-        return $this->belongsTo(Module::class);
     }
 }
