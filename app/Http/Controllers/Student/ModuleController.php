@@ -30,34 +30,35 @@ class ModuleController extends Controller
             ->limit(5)
             ->get();
 
-        // 2. TUGAS CARD 14: Ambil 3 modul dengan like terbanyak (Hanya yang Approved)
-        $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
-            ->whereHas('approval', function ($query) {
-                $query->where('status', 'approved'); // Aturan dari catatan revisi
-            })
-            ->orderByDesc('like')
-            ->limit(3)
-            ->get();
-
-    if ($request->filled('search')) {
-        $query->where('title', 'like', '%' . $request->search . '%');
-    }
-    if ($request->filled('grade_id')) {
-        $query->where('grade_category_id', $request->grade_id);
-    }
-    if ($request->filled('subject_id')) {
-        $query->where('subject_category_id', $request->subject_id);
-    }
-
-    // 👉 INI YANG DIPERBAIKI
-    $userId = auth()->id();
-
-    $modules = $query->get()->map(function ($module) use ($userId) {
-        $module->isSaved = $module->savedByUsers()
-            ->where('user_id', $userId)
-            ->exists();
-        return $module;
+// QUERY DASAR MODULE (HANYA APPROVED)
+$query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
+    ->whereHas('approval', function ($q) {
+        $q->where('status', 'approved');
     });
+
+// FILTER SEARCH
+if ($request->filled('search')) {
+    $query->where('title', 'like', '%' . $request->search . '%');
+}
+
+// FILTER GRADE
+if ($request->filled('grade_id')) {
+    $query->where('grade_category_id', $request->grade_id);
+}
+
+// FILTER SUBJECT
+if ($request->filled('subject_id')) {
+    $query->where('subject_category_id', $request->subject_id);
+}
+
+$userId = auth()->id();
+
+$modules = $query->get()->map(function ($module) use ($userId) {
+    $module->isSaved = $module->savedByUsers()
+        ->where('user_id', $userId)
+        ->exists();
+    return $module;
+});
 
         if ($request->ajax()) {
             return view('partials._module_list', [
@@ -66,7 +67,6 @@ class ModuleController extends Controller
         }
 
     return view('dashboard.student', compact(
-        'topModules',
         'modules',          // ✅ ini bikin error hilang
         'grades',
         'subjects',
