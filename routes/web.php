@@ -9,6 +9,7 @@ use App\Http\Controllers\Student\ModuleController as StudentModuleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Teacher\TeacherController;
+use App\Http\Controllers\Teacher\ModuleStatController;
 use App\Http\Controllers\Admin\ModuleController as AdminModuleController;
 use App\Http\Controllers\Admin\DictionaryController;
 use App\Http\Controllers\Teacher\DictionaryController as TeacherDictionaryController;
@@ -135,7 +136,7 @@ Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')
     Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
     Route::put('/teacher/faq/{answer}/update', [App\Http\Controllers\Teacher\FAQController::class, 'update'])->name('faq.update');
     Route::delete('/faq/{answer}/delete', [App\Http\Controllers\Teacher\FAQController::class, 'destroy'])->name('faq.delete');
-
+    Route::get('modules/{id}/statistik', [App\Http\Controllers\Teacher\ModuleStatController::class, 'show'])->name('modules.statistik');
 
 });
 
