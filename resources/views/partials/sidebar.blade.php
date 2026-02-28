@@ -34,7 +34,7 @@
                 <a href="{{ route('teacher.dictionaries.index') }}">Fitur Kamus</a>
             </li>
             <li class="{{ Route::is('teacher.faq*') ? 'active' : '' }}">
-                <a href="{{ route('teacher.faq.index') }}">Fitur Q&A</a>
+                <a href="{{ route('teacher.faq.index') }}">Fitur Jawaban</a>
             </li>
 
         {{-- MENU KHUSUS SISWA --}}
@@ -48,11 +48,8 @@
             <li class="{{ Route::is('student.dictionary*') ? 'active' : '' }}">
                 <a href="{{ route('student.dictionary.index') }}">Dictionaries</a>
             </li>
-
-            <li>
-                <a href="{{ Route::is('student.dashboard') ? '#faq-section' : route('student.dashboard').'#faq-section' }}" class="sidebar-link">
-                    Ruang Tanya
-                </a>
+            <li class="{{ Route::is('student.faq*') ? 'active' : '' }}">
+                <a href="{{ route('student.faq.index') }}">Ruang Tanya</a>
             </li>
         @endif
     </ul>

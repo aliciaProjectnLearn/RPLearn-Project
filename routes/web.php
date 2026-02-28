@@ -81,7 +81,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 */
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
-    Route::post('/faq', [FAQController::class, 'store'])->middleware('auth');
     Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
     Route::get('/modules', [StudentModuleAllController::class, 'index'])->name('modules.index');
 
@@ -99,6 +98,11 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     )->name('modules.save');
 
     Route::resource('/questions', StudentQuestionController::class);
+
+    Route::get('/faq', [FAQController::class, 'all'])->name('faq.index');
+    Route::post('/faq', [FAQController::class, 'store'])->name('faq.store');
+    Route::get('/faq/list', [FAQController::class, 'index'])->name('faq.list');
+    Route::get('/faq/{id}', [FAQController::class, 'show'])->name('faq.show');
 
 });
 

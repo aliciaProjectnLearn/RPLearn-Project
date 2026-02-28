@@ -26,6 +26,7 @@ class ModuleController extends Controller
             ->where('status', 'answered')
             ->whereHas('answer')
             ->latest()
+            ->limit(5)
             ->get();
 
         // 2. TUGAS CARD 14: Ambil 3 modul dengan like terbanyak (Hanya yang Approved)

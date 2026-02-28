@@ -8,25 +8,15 @@ use App\Models\User;
 
 class FAQController extends Controller
 {
-    /**
-     * =========================
-     * VIEW FAQ DI DASHBOARD SISWA
-     * =========================
-     */
-    public function student(Request $request)
+    public function all()
     {
         $faqs = Question::with('answer')
             ->where('status', 'answered')
             ->whereHas('answer')
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('question', 'like', '%' . $request->search . '%');
-            })
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        $teachers = User::where('role', 'guru')->get();
-
-        return view('dashboard.student', compact('faqs', 'teachers'));
+        return view('student.faq.allQuestion', compact('faqs'));
     }
 
     /**
@@ -34,19 +24,20 @@ class FAQController extends Controller
      * API: LIST FAQ (SEARCH)
      * =========================
      */
+
     public function index(Request $request)
     {
-        $faqs = Question::with('answer')
+        $faqs = Question::with([
+                'answer:id,question_id,answer'
+            ])
             ->where('status', 'answered')
             ->whereHas('answer')
             ->when($request->search, function ($query) use ($request) {
                 $query->where('question', 'like', '%' . $request->search . '%');
             })
-            ->when($request->module, function ($query) use ($request) {
-                $query->where('module_id', $request->module);
-            })
             ->latest()
-            ->get();
+            ->limit(20)
+            ->get(['id','title','question']);
 
         return response()->json($faqs);
     }

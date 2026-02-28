@@ -579,22 +579,24 @@
 
 .form-group label {
     display: block;
-    font-size: 13px;
-    color: #aaaaaa;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #d1d5db;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #222831;
-    background: #f8f8f8;
-    color: #777;
-    outline: none;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: none;
+    background: #374151;
+    color: #f9fafb;
     font-size: 14px;
+    outline: none;
+    transition: 0.2s;
 }
 
 .form-group input::placeholder,
@@ -609,8 +611,8 @@
 }
 
 .form-group input[readonly] {
-    background: #f8f8f8;
-    color: #aaaaaa;
+    background: #374151;
+    color: #f9fafb;
     cursor: not-allowed;
 }
 
@@ -628,7 +630,8 @@
 }
 
 .btn-submit:hover {
-    background: var(--orange);
+transform: translateY(-2px);
+box-shadow: 0 10px 25px rgba(246, 151, 63, 0.4);
 }
 
 .question-search {

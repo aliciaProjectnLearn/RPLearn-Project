@@ -48,7 +48,7 @@
 
             <form method="POST" action="{{ route('logout') }}" style="margin: 0; border-top: 1px solid #eee;">
                 @csrf
-                <button type="submit"
+                <button type="button" id="logout-btn"
                     style="display: block; width: 100%; text-align: left; background: white; border: none; padding: 14px 20px; color: #d63031; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: 0.2s;"
                     onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background='white'">
                     <i class="fa-solid fa-right-from-bracket" style="width: 25px; font-size: 0.8rem;"></i> Keluar
@@ -78,5 +78,44 @@
         if (navbarUser && !navbarUser.contains(event.target)) {
             dropdown.style.display = 'none';
         }
+    });
+    document.getElementById('logout-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const form = this.closest('form');
+
+        Swal.fire({
+            title: 'Keluar Akun?',
+            text: 'Kamu akan keluar dari sesi ini.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Keluar',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+
+            width: '380px',
+            padding: '1.8em',
+            borderRadius: '14px',
+
+            background: '#222831',
+            color: '#f1f5f9',
+
+            confirmButtonColor: '#f6973f',
+            cancelButtonColor: '#374151',
+
+            backdrop: 'rgba(0,0,0,0.75)',
+
+            customClass: {
+                popup: 'smooth-popup',
+                title: 'smooth-title',
+                confirmButton: 'smooth-confirm',
+                cancelButton: 'smooth-cancel'
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
     });
 </script>

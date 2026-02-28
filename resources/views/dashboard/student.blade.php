@@ -255,7 +255,7 @@
                         </div>
                         <div class="form-group">
                             <label>Judul Pertanyaan</label>
-                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required>
+                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required style="background: #374151; color: #f9fafb">
                         </div>
                         <div class="form-group">
                             <label>Pertanyaan</label>
