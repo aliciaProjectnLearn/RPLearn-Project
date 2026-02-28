@@ -102,13 +102,9 @@ Route::get('/modules/{id}/json', function($id) {
     return response()->json($module);
 });
 
-    Route::get('/modules/saved',
-        [SavedModuleController::class,'index']
-    )->name('modules.saved');
-
-    Route::post('/modules/{module}/save',
-        [SavedModuleController::class,'toggleSave']
-    )->name('modules.save');
+    Route::get('/modules/saved',[SavedModuleController::class,'index'])->name('modules.saved');
+    Route::post('/modules/{module}/save',[SavedModuleController::class,'toggleSave'])->name('modules.save');
+    Route::get('/modules/{id}', [StudentModuleController::class, 'show'])->name('modules.show');
 
     Route::resource('/questions', StudentQuestionController::class);
 

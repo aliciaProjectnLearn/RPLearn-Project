@@ -6,7 +6,7 @@
     <div class="page-content px-4">
         <div class="admin-card-box faq-dashboard-card">
 
-            {{-- Header --}} 
+            {{-- Header --}}
             <div class="faq-header-modern">
                 <div>
                     <h2 class="faq-title">Fitur Tanya Jawab</h2>
@@ -50,7 +50,7 @@
                         placeholder="Cari judul, isi pertanyaan, atau nama siswa..." class="faq-search-input">
 
                     <button type="submit" class="faq-search-btn">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <i class="ri-search-line"></i>
                     </button>
                 </div>
             </form>
@@ -63,7 +63,7 @@
                     <div class="faq-top">
                         <div class="faq-left">
                             <div class="faq-icon">
-                                <i class="fa-solid fa-circle-question"></i>
+                                <i class="ri-question-line"></i>
                             </div>
 
                             <div>
@@ -94,7 +94,7 @@
                             <textarea name="answer" class="input-modern" rows="2" placeholder="Tulis jawaban resmi anda di sini..." required></textarea>
 
                             <button type="submit" class="btn-save-modern">
-                                <i class="fa-solid fa-paper-plane me-1"></i> Balas
+                                <i class="ri-send-plane-line me-1"></i> Balas
                             </button>
                         </form>
                     @else
@@ -104,7 +104,7 @@
                             {{-- Tombol di kanan atas --}}
                             <div class="faq-answer-actions">
                                 <button type="button" class="btn-edit-answer" onclick="toggleEdit({{ $q->answer->id }})">
-                                    <i class="fa-solid fa-pen"></i>
+                                    <i class="ri-pencil-line"></i>
                                 </button>
 
                                 <form action="{{ route('teacher.faq.delete', $q->answer->id) }}" method="POST"
@@ -112,14 +112,14 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-delete-answer">
-                                        <i class="fa-solid fa-trash"></i>
+                                        <i class="ri-delete-bin-line"></i>
                                     </button>
                                 </form>
                             </div>
 
                             {{-- Label --}}
                             <div class="faq-answer-label mb-2">
-                                <i class="fa-solid fa-reply"></i>
+                                <i class="ri-reply-line"></i>
                                 JAWABAN ANDA
                             </div>
 
@@ -150,7 +150,7 @@
 
             @if ($questions->isEmpty())
                 <div class="faq-empty-state">
-                    <i class="fa-solid fa-inbox"></i>
+                    <i class="ri-inbox-line"></i>
                     <p>Belum ada pertanyaan masuk hari ini.</p>
                 </div>
             @endif

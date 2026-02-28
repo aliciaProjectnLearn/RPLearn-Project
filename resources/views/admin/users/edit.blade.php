@@ -63,25 +63,43 @@
                     {{-- ===================== --}}
                     {{-- SECTION: SISWA --}}
                     {{-- ===================== --}}
-                    <div id="studentFields">
-                        <h6 class="section-title mt-5">PROFIL SISWA</h6>
+<div id="studentFields">
+    <h6 class="section-title mt-5">PROFIL SISWA</h6>
 
-                        <div class="row mb-4 align-items-center">
-                            <label class="col-sm-3 label-modern">NIS</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="nis" class="input-modern"
-                                    value="{{ old('nis', $user->student->nis ?? '') }}">
-                            </div>
-                        </div>
+    <div class="row mb-4 align-items-center">
+        <label class="col-sm-3 label-modern">NIS</label>
+        <div class="col-sm-6">
+            <input type="text" name="nis" class="input-modern"
+                value="{{ old('nis', $user->student->nis ?? '') }}">
+        </div>
+    </div>
 
-                        <div class="row mb-4 align-items-center">
-                            <label class="col-sm-3 label-modern">Kelas</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="kelas" class="input-modern"
-                                    value="{{ old('kelas', $user->student->kelas ?? '') }}">
-                            </div>
-                        </div>
-                    </div>
+    <div class="row mb-4 align-items-center">
+        <label class="col-sm-3 label-modern">Nama Lengkap Kelas</label>
+        <div class="col-sm-6">
+            <input type="text" name="kelas" class="input-modern"
+                value="{{ old('kelas', $user->student->kelas ?? '') }}"
+                placeholder="Contoh: XII RPL 1">
+        </div>
+    </div>
+
+    {{-- ✅ Tambah dropdown kelas_id --}}
+    <div class="row mb-4 align-items-center">
+        <label class="col-sm-3 label-modern">Kelas (Sistem)</label>
+        <div class="col-sm-6">
+            <select name="kelas_id" class="input-modern">
+                <option value="">-- Pilih Kelas --</option>
+                @foreach($kelas as $k)
+                    <option value="{{ $k->id }}"
+                        {{ old('kelas_id', $user->student->kelas_id ?? '') == $k->id ? 'selected' : '' }}>
+                        {{ $k->nama }}
+                    </option>
+                @endforeach
+            </select>
+            <small class="text-muted mt-1 d-block">Kelas ini digunakan untuk filter akses modul</small>
+        </div>
+    </div>
+</div>
 
                     {{-- ===================== --}}
                     {{-- SECTION: GURU --}}

@@ -21,7 +21,7 @@
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #198754;">
-            <i class="fa-solid fa-circle-check"></i>
+            <i class="ri-checkbox-circle-line"></i>
             <span>{{ session('success') }}</span>
             <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -29,7 +29,7 @@
 
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
-            <i class="fa-solid fa-circle-xmark"></i>
+            <i class="ri-close-circle-line"></i>
             <span>{{ session('error') }}</span>
             <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -37,7 +37,7 @@
 
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show d-flex align-items-start gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
-            <i class="fa-solid fa-triangle-exclamation mt-1"></i>
+            <i class="ri-error-warning-line mt-1"></i>
             <div>
                 <strong>Terjadi kesalahan!</strong>
                 <ul class="mb-0 mt-1 ps-3">
@@ -77,7 +77,7 @@
                         <th class="py-3 text-uppercase small fw-bold text-muted">Mata Pelajaran</th>
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Kelas</th>
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Status</th>
-                        <th class="text-end pe-4 py-3 text-uppercase small fw-bold text-muted">Aksi</th>
+                        <th class="text-center pe-4 py-3 text-uppercase small fw-bold text-muted">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,7 +97,7 @@
                         <td class="text-center py-3">
                             @if($module->kelas)
                                 <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 11px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
-                                    <i class="fa-solid fa-users" style="font-size: 10px;"></i>
+                                    <i class="ri-group-line" style="font-size: 10px;"></i>
                                     {{ $module->kelas->nama }}
                                 </span>
                             @else
@@ -123,7 +123,7 @@
                             @if(!empty($module->approval->comment))
                                 <div class="mt-2">
                                     <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#noteModal{{ $module->id }}" style="font-size: 11px; padding: 2px 8px; border-radius: 6px;">
-                                        <i class="fa-solid fa-envelope-open-text"></i> Lihat Catatan
+                                        <i class="ri-mail-open-line"></i> Lihat Catatan
                                     </button>
                                 </div>
                             @endif
@@ -134,12 +134,12 @@
 
                                 {{-- ✅ Tombol Statistik --}}
                                 <a href="{{ route('teacher.modules.statistik', $module->id) }}" title="Lihat Statistik">
-                                    <i class="fa-solid fa-chart-bar text-info"></i>
+                                    <i class="ri-bar-chart-line text-info"></i>
                                 </a>
 
                                 {{-- Tombol Kelola Sub-Materi --}}
                                 <a href="{{ route('admin.modules.addContent', $module->id) }}" class="position-relative" title="Kelola Sub-Materi">
-                                    <i class="fa-solid fa-layer-group text-primary"></i>
+                                    <i class="ri-stack-line text-primary"></i>
                                     @if($module->contents->count())
                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style="font-size: 10px;">
                                             {{ $module->contents->count() }}
@@ -149,14 +149,14 @@
 
                                 {{-- Tombol Edit Modul --}}
                                 <a href="{{ route('teacher.modules.edit', $module->id) }}" title="Edit">
-                                    <i class="fa-solid fa-pen text-warning"></i>
+                                    <i class="ri-pencil-line text-warning"></i>
                                 </a>
 
                                 {{-- Tombol Hapus Modul --}}
                                 <form action="{{ route('teacher.modules.destroy', $module->id) }}" method="POST" class="m-0">
                                     @csrf @method('DELETE')
                                     <button type="submit" title="Hapus" onclick="return confirm('Hapus modul ini?')" style="background: none; border: none; padding: 0;">
-                                        <i class="fa-solid fa-trash text-danger"></i>
+                                        <i class="ri-delete-bin-line text-danger"></i>
                                     </button>
                                 </form>
                             </div>
@@ -186,7 +186,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold text-info">
-                        <i class="fa-solid fa-clipboard-list"></i> Catatan Revisi / Penolakan
+                        <i class="ri-clipboard-line"></i> Catatan Revisi / Penolakan
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -195,7 +195,7 @@
                         <div class="mb-3 p-2 rounded" style="background-color: #fff3e0; border-left: 3px solid var(--orange, #f57c00);">
                             <small class="fw-bold text-muted text-uppercase" style="font-size: 11px;">Kelas</small>
                             <div class="fw-bold" style="color: var(--orange, #f57c00);">
-                                <i class="fa-solid fa-users" style="font-size: 12px;"></i>
+                                <i class="ri-group-line" style="font-size: 12px;"></i>
                                 {{ $module->kelas->nama }}
                             </div>
                         </div>

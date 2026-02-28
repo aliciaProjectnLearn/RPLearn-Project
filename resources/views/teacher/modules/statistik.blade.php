@@ -11,7 +11,7 @@
             <p class="text-muted m-0">{{ $module->title }}</p>
         </div>
         <a href="{{ route('teacher.modules.index') }}" class="btn-back">
-            <i class="fa-solid fa-arrow-left"></i>
+            <i class="ri-arrow-left-line"></i>
         </a>
     </div>
 
@@ -42,13 +42,13 @@
         <div class="col-md-6">
             <div class="bg-white rounded-3 shadow-sm overflow-hidden">
                 <div class="px-4 py-3 border-bottom d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-success"></i>
+                    <i class="ri-checkbox-circle-line text-success"></i>
                     <h6 class="fw-bold m-0">Sudah Membuka</h6>
                 </div>
                 @if($studentsViewed->isEmpty())
                     <div class="text-center text-muted py-5 small">
-                        <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i>
-                        Belum ada siswa yang membuka modul ini
+                        <i class="ri-inbox-line" style="font-size: 2rem;"></i>
+                        <div class="mt-2">Belum ada siswa yang membuka modul ini</div>
                     </div>
                 @else
                     <ul class="list-group list-group-flush">
@@ -74,13 +74,13 @@
         <div class="col-md-6">
             <div class="bg-white rounded-3 shadow-sm overflow-hidden">
                 <div class="px-4 py-3 border-bottom d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-circle-xmark text-danger"></i>
+                    <i class="ri-close-circle-line text-danger"></i>
                     <h6 class="fw-bold m-0">Belum Membuka</h6>
                 </div>
                 @if($studentsNotYet->isEmpty())
                     <div class="text-center text-muted py-5 small">
-                        <i class="fa-solid fa-party-horn fa-2x mb-2 d-block"></i>
-                        Semua siswa sudah membuka modul ini! 🎉
+                        <i class="ri-emotion-happy-line" style="font-size: 2rem;"></i>
+                        <div class="mt-2">Semua siswa sudah membuka modul ini! 🎉</div>
                     </div>
                 @else
                     <ul class="list-group list-group-flush">
