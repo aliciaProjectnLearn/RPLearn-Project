@@ -19,7 +19,39 @@
         </a>
     </div>
 
-    {{-- TUGAS CARD 14: Filter Status untuk Guru --}}
+    {{-- ✅ TASK: Notifikasi sukses / gagal upload --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #198754;">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>{{ session('success') }}</span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span>{{ session('error') }}</span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-start gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
+            <i class="fa-solid fa-triangle-exclamation mt-1"></i>
+            <div>
+                <strong>Terjadi kesalahan!</strong>
+                <ul class="mb-0 mt-1 ps-3">
+                    @foreach($errors->all() as $error)
+                        <li style="font-size: 13px;">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    {{-- Filter & Search --}}
     <form method="GET" action="{{ route('teacher.modules.index') }}" class="mb-3">
         <div class="d-flex gap-2">
             <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari modul berdasarkan judul...">
@@ -44,6 +76,7 @@
                     <tr style="background: #f8fafc;">
                         <th class="ps-4 py-3 text-uppercase small fw-bold text-muted">Judul Modul</th>
                         <th class="py-3 text-uppercase small fw-bold text-muted">Mata Pelajaran</th>
+                        {{-- ✅ TASK: Tampilkan label kelas di card modul guru --}}
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Kelas</th>
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Status</th>
                         <th class="text-end pe-4 py-3 text-uppercase small fw-bold text-muted">Aksi</th>
@@ -63,10 +96,16 @@
                             {{ $module->subjectCategory->subject ?? 'Mapel Belum Set' }}
                         </td>
 
+                        {{-- ✅ TASK: Label kelas (nama kelas yang diajar guru) --}}
                         <td class="text-center py-3">
-                            <span class="badge-grade px-3 py-1 rounded-pill bg-light text-dark small fw-bold" style="font-size: 11px;">
-                                {{ $module->gradeCategory->grade ?? 'N/A' }}
-                            </span>
+                            @if($module->kelas)
+                                <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 11px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
+                                    <i class="fa-solid fa-users" style="font-size: 10px;"></i>
+                                    {{ $module->kelas->nama }}
+                                </span>
+                            @else
+                                <span class="text-muted small">—</span>
+                            @endif
                         </td>
 
                         {{-- Badge Status --}}
@@ -152,6 +191,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    {{-- ✅ TASK: Info kelas di detail modul (dalam modal catatan) --}}
+                    @if($module->kelas)
+                        <div class="mb-3 p-2 rounded" style="background-color: #fff3e0; border-left: 3px solid var(--orange, #f57c00);">
+                            <small class="fw-bold text-muted text-uppercase" style="font-size: 11px;">Kelas</small>
+                            <div class="fw-bold" style="color: var(--orange, #f57c00);">
+                                <i class="fa-solid fa-users" style="font-size: 12px;"></i>
+                                {{ $module->kelas->nama }}
+                            </div>
+                        </div>
+                    @endif
                     <p class="text-dark" style="white-space: pre-line;">
                         {{ $module->approval->comment }}
                     </p>
