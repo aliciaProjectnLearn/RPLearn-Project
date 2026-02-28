@@ -48,7 +48,7 @@ class Module extends Model
 
     public function savedByUsers()
     {
-        return $this->belongsToMany(User::class,'save_modules', 'module_id', 'user_id');
+        return $this->belongsToMany(User::class, 'save_modules', 'module_id', 'user_id');
     }
 
     public function getIsSavedAttribute()
@@ -70,7 +70,7 @@ class Module extends Model
         return $this->hasMany(ModuleLike::class, 'module_id');
     }
 
-        public function isLiked()
+    public function isLiked()
     {
         return $this->likes()->where('user_id', auth()->id())->exists();
     }
@@ -80,4 +80,8 @@ class Module extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
+    public function views()
+    {
+        return $this->hasMany(ModuleView::class, 'module_id');
+    }
 }

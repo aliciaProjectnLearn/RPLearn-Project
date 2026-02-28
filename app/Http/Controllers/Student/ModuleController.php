@@ -106,6 +106,18 @@ $modules = $query->get()->map(function ($module) use ($userId) {
     public function show($id)
     {
         $module = Module::with('contents')->findOrFail($id);
+
+        // ✅ Tracking: catat view siswa, hanya sekali per modul
+        $student = \App\Models\Student::where('user_id', auth()->id())->first();
+        if ($student) {
+            \App\Models\ModuleView::firstOrCreate([
+                'module_id'  => $module->id,
+                'student_id' => $student->id,
+            ], [
+                'viewed_at' => now(),
+            ]);
+        }
+
         return view('student.modules.show', compact('module'));
     }
 

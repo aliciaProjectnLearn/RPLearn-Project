@@ -19,7 +19,6 @@
         </a>
     </div>
 
-    {{-- ✅ TASK: Notifikasi sukses / gagal upload --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #198754;">
             <i class="fa-solid fa-circle-check"></i>
@@ -76,7 +75,6 @@
                     <tr style="background: #f8fafc;">
                         <th class="ps-4 py-3 text-uppercase small fw-bold text-muted">Judul Modul</th>
                         <th class="py-3 text-uppercase small fw-bold text-muted">Mata Pelajaran</th>
-                        {{-- ✅ TASK: Tampilkan label kelas di card modul guru --}}
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Kelas</th>
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Status</th>
                         <th class="text-end pe-4 py-3 text-uppercase small fw-bold text-muted">Aksi</th>
@@ -96,7 +94,6 @@
                             {{ $module->subjectCategory->subject ?? 'Mapel Belum Set' }}
                         </td>
 
-                        {{-- ✅ TASK: Label kelas (nama kelas yang diajar guru) --}}
                         <td class="text-center py-3">
                             @if($module->kelas)
                                 <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 11px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
@@ -108,7 +105,6 @@
                             @endif
                         </td>
 
-                        {{-- Badge Status --}}
                         <td class="text-center py-3">
                             @php
                                 $status = $module->approval->status ?? 'pending';
@@ -133,9 +129,13 @@
                             @endif
                         </td>
 
-                        {{-- Aksi --}}
                         <td class="text-end pe-4 action-cell">
                             <div class="action-bar d-flex justify-content-end align-items-center gap-3">
+
+                                {{-- ✅ Tombol Statistik --}}
+                                <a href="{{ route('teacher.modules.statistik', $module->id) }}" title="Lihat Statistik">
+                                    <i class="fa-solid fa-chart-bar text-info"></i>
+                                </a>
 
                                 {{-- Tombol Kelola Sub-Materi --}}
                                 <a href="{{ route('admin.modules.addContent', $module->id) }}" class="position-relative" title="Kelola Sub-Materi">
@@ -178,7 +178,7 @@
     </div>
 </div>
 
-{{-- ================= MODAL CATATAN ADMIN UNTUK GURU ================= --}}
+{{-- Modal Catatan Admin --}}
 @foreach ($modules as $module)
     @if(!empty($module->approval->comment))
     <div class="modal fade text-start" id="noteModal{{ $module->id }}" tabindex="-1" aria-hidden="true">
@@ -191,7 +191,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{-- ✅ TASK: Info kelas di detail modul (dalam modal catatan) --}}
                     @if($module->kelas)
                         <div class="mb-3 p-2 rounded" style="background-color: #fff3e0; border-left: 3px solid var(--orange, #f57c00);">
                             <small class="fw-bold text-muted text-uppercase" style="font-size: 11px;">Kelas</small>
