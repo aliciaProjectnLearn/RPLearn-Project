@@ -374,7 +374,7 @@
 }
 
 .module-card {
-    background-color: var(--dark);
+    background-color: var(--light);
     padding: 20px;
     border-radius: 15px;
 }
@@ -2704,7 +2704,7 @@ select.input-modern option {
 .faq-question-title {
     font-weight: 800;
     margin: 0;
-    font-size: 18px; 
+    font-size: 18px;
 }
 
 .faq-meta {

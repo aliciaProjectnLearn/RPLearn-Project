@@ -18,18 +18,18 @@
                     <div class="search-box">
                         <input type="text" id="searchInput" name="search" placeholder="Cari Istilah ..." value="{{ request('search') }}" required>
                         <button type="submit" id="searchBtn" class="btn-search" disabled>
-                            <i class="fas fa-search"></i>
+                            <i class="ri-search-line"></i>
                         </button>
                     </div>
 
                     {{-- Tambah --}}
                     <a href="{{ route('teacher.dictionaries.create') }}" class="btn-add">
-                        <i class="fas fa-plus"></i> Tambah Istilah
+                        <i class="ri-plus-line"></i> Tambah Istilah
                     </a>
                 </div>
             </form>
     </div>
-    
+
     <div class="module-card">
         <div class="table-responsive">
             <table class="rplearn-table align-middle">
@@ -50,19 +50,19 @@
                         <td class="text-end pe-4 action-cell">
                             <div class="action-bar">
                                 <a href="{{ route('teacher.dictionaries.show', $item->id) }}" title="Detail">
-                                    <i class="fa-solid fa-book"></i>
+                                    <i class="ri-book-line"></i>
                                 </a>
 
 
                                 <a href="{{ route('teacher.dictionaries.edit', $item->id) }}" title="Edit">
-                                    <i class="fa-solid fa-pen"></i>
+                                    <i class="ri-pencil-line"></i>
                                 </a>
 
                                 <form action="{{ route('teacher.dictionaries.destroy', $item->id) }}" method="POST">
                                     @csrf @method('DELETE')
                                     <button type="submit" title="Hapus"
                                             onclick="return confirm('Hapus istilah ini?')">
-                                        <i class="fa-solid fa-trash"></i>
+                                        <i class="ri-delete-bin-line"></i>
                                     </button>
                                 </form>
                             </div>

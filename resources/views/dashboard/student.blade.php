@@ -22,7 +22,7 @@
             });
         </script>
     @endif
- 
+
     <section class="hero">
         <h1>Start <span>Learning. </span> Keep <br>Growing.</h1>
         <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
@@ -38,28 +38,26 @@
     <section class="module-section" id="module-section">
         <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-    {{-- SEARCH --}}
-    <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
-        <div class="module-search">
-            <i class="ri-search-line"></i>
-            <input type="text" name="search"
-                id="moduleSearchInput"
-                placeholder="Mau belajar apa hari ini?"
-                value="{{ request('search') }}">
+        {{-- SEARCH --}}
+        <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
+            <div class="module-search">
+                <i class="ri-search-line"></i>
+                <input type="text" name="search" id="moduleSearchInput" placeholder="Mau belajar apa hari ini?"
+                    value="{{ request('search') }}">
+            </div>
+        </form>
+
+        {{-- MODULE CARDS --}}
+        <div class="module-cards" id="moduleCardsContainer">
+            @include('partials._module_list', ['modules' => $modules])
         </div>
-    </form>
 
-    {{-- MODULE CARDS --}}
-    <div class="module-cards" id="moduleCardsContainer">
-    @include('partials._module_list', ['modules' => $modules])
-    </div>
-
-    <div class="button-more">
-        <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
-            Lihat Semua →
-        </a>
-    </div>
-</section>
+        <div class="button-more">
+            <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
+                Lihat Semua →
+            </a>
+        </div>
+    </section>
 
     {{-- DICTIONARY --}}
     <section class="dictionary-section reveal" id="dictionary-section">
@@ -89,8 +87,7 @@
                                 @foreach ($items as $dictionary)
                                     <tr class="dictionary-row">
                                         <td>
-                                            <span class="dictionary-term clickable-term"
-                                                data-term="{{ $dictionary->term }}"
+                                            <span class="dictionary-term clickable-term" data-term="{{ $dictionary->term }}"
                                                 data-definition="{{ $dictionary->definition }}">
                                                 {{ $dictionary->term }}
                                             </span>
@@ -136,7 +133,7 @@
                         </div>
                     @empty
                         <p style="text-align:center;color:#888;">
-                            Belum Tersedia Pertanyaan Apapun
+                            FAQ belum tersedia
                         </p>
                     @endforelse
                 </div>
@@ -168,7 +165,8 @@
                         </div>
                         <div class="form-group">
                             <label>Judul Pertanyaan</label>
-                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required style="background: #374151; color: #f9fafb">
+                            <input type="text" name="title" placeholder="Contoh: Masalah Login" required
+                                style="background: #374151; color: #f9fafb">
                         </div>
                         <div class="form-group">
                             <label>Pertanyaan</label>
@@ -217,16 +215,18 @@
                 function fetchModules() {
                     const params = new URLSearchParams(new FormData(filterForm)).toString();
                     fetch(`${window.location.pathname}?${params}&ajax=1`, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(res => res.text())
-                    .then(html => {
-                        moduleCards.innerHTML = html;
-                    });
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(res => res.text())
+                        .then(html => {
+                            moduleCards.innerHTML = html;
+                        });
                 }
 
-                if(searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
-                if(filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());
+                if (searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
+                if (filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());
 
                 function debounce(func, timeout = 300) {
                     let timer;
@@ -239,16 +239,20 @@
                 }
 
                 // --- B. LOGIKA TOMBOL PANAH BAWAH ---
-                if (toggleBtn) {
+                // --- B. LOGIKA TOMBOL PANAH BAWAH ---
+                const toggleBtn = document.getElementById('toggleBtn');
+                const allModulesSection = document.getElementById('allModulesSection');
+
+                if (toggleBtn && allModulesSection) {
                     toggleBtn.addEventListener('click', function() {
                         if (allModulesSection.style.display === 'none') {
                             allModulesSection.style.display = 'block';
                             this.innerHTML = '<i class="ri-arrow-up-line"></i>';
-                            this.style.background = '#F6973F'; // Ubah warna saat aktif
+                            this.style.background = '#F6973F';
                         } else {
                             allModulesSection.style.display = 'none';
                             this.innerHTML = '<i class="ri-arrow-down-line"></i>';
-                            this.style.background = '#393E46'; // Kembali ke warna awal
+                            this.style.background = '#393E46';
                         }
                     });
                 }
@@ -284,7 +288,7 @@
                         const keyword = this.value.toLowerCase();
                         document.querySelectorAll('.dictionary-row').forEach(row => {
                             const term = row.querySelector('.dictionary-term').textContent
-                        .toLowerCase();
+                                .toLowerCase();
                             row.style.display = term.includes(keyword) ? '' : 'none';
                         });
 
@@ -304,9 +308,11 @@
                     document.querySelectorAll('.faq-question').forEach(btn => {
                         btn.onclick = function() {
                             const item = this.parentElement;
+
                             document.querySelectorAll('.faq-item').forEach(i => {
                                 if (i !== item) i.classList.remove('active');
                             });
+
                             item.classList.toggle('active');
                         };
                     });
@@ -362,7 +368,8 @@
 
                         if (content.video_url) {
                             let vId = content.video_url.split('v=')[1]?.split('&')[0];
-                            videoElement = `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                            videoElement =
+                                `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
                         } else if (content.file_path && content.file_path.endsWith('.mp4')) {
                             videoElement = `<video width="100%" height="250" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
@@ -378,8 +385,8 @@
                                     <div class="video-container">${videoElement}</div>
                                     ${content.file_path && content.file_path.endsWith('.pdf') ?
                                         `<a href="/storage/${content.file_path}" target="_blank" class="pdf-btn">
-                                                    <i class="ri-file-pdf-line"></i> Download PDF Materi
-                                                </a>` : ''}
+                                                                                    <i class="ri-file-pdf-line"></i> Download PDF Materi
+                                                                                </a>` : ''}
                                     <div class="modal-tags-row">
                                         <div class="tag-group">
                                             <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
@@ -471,11 +478,10 @@
                     }
                 });
             });
-
         </script>
 
         <script>
-            document.addEventListener('click', function (e) {
+            document.addEventListener('click', function(e) {
 
                 if (!e.target.classList.contains('save-btn')) return;
 
@@ -490,23 +496,23 @@
                 button.classList.toggle('ri-bookmark-line');
 
                 fetch(`/student/modules/${moduleId}/save`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.saved) {
-                        button.classList.add('saved','ri-bookmark-fill');
-                        button.classList.remove('ri-bookmark-line');
-                    } else {
-                        button.classList.remove('saved','ri-bookmark-fill');
-                        button.classList.add('ri-bookmark-line');
-                    }
-                });
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.saved) {
+                            button.classList.add('saved', 'ri-bookmark-fill');
+                            button.classList.remove('ri-bookmark-line');
+                        } else {
+                            button.classList.remove('saved', 'ri-bookmark-fill');
+                            button.classList.add('ri-bookmark-line');
+                        }
+                    });
             });
-            </script>
+        </script>
     @endpush
 @endsection

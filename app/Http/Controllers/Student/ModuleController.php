@@ -29,36 +29,40 @@ class ModuleController extends Controller
             ->limit(5)
             ->get();
 
+        // ✅ Ambil kelas_id siswa yang login
+        $student = \App\Models\Student::where('user_id', auth()->id())->first();
+        $kelasId = $student?->kelas_id;
+
+        // ✅ Top modul hanya dari kelas siswa
         $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
             ->whereHas('approval', function ($q) {
                 $q->where('status', 'approved');
             })
+            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId))
             ->orderByDesc('like')
             ->limit(3)
             ->get();
 
-        // ✅ $query didefinisikan dulu sebelum dipakai filter
         $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
             ->whereHas('approval', function ($q) {
                 $q->where('status', 'approved');
-            });
+            })
+            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
-        if ($request->filled('grade_id')) {
-            $query->where('grade_category_id', $request->grade_id);
-        }
-        if ($request->filled('subject_id')) {
-            $query->where('subject_category_id', $request->subject_id);
-        }
 
         $userId = auth()->id();
 
-        $modules = $query->get()->map(function ($module) use ($userId) {
-            $module->isSaved = $module->savedByUsers()
-                ->where('user_id', $userId)
-                ->exists();
+        // ✅ Ambil modul yang sudah pernah dibuka
+        $viewedModuleIds = $student
+            ? \App\Models\ModuleView::where('student_id', $student->id)->pluck('module_id')->toArray()
+            : [];
+
+        $modules = $query->get()->map(function ($module) use ($userId, $viewedModuleIds) {
+            $module->isSaved  = $module->savedByUsers()->where('user_id', $userId)->exists();
+            $module->isViewed = in_array($module->id, $viewedModuleIds);
             return $module;
         });
 
@@ -87,9 +91,7 @@ $modules = $query->get()->map(function ($module) use ($userId) {
 });
 
         if ($request->ajax()) {
-            return view('partials._module_list', [
-                'modules' => $modules
-            ])->render();
+            return view('partials._module_list', ['modules' => $modules])->render();
         }
 
         return view('dashboard.student', compact(
@@ -105,10 +107,16 @@ $modules = $query->get()->map(function ($module) use ($userId) {
 
     public function show($id)
     {
-        $module = Module::with('contents')->findOrFail($id);
+        $module = Module::with(['contents', 'kelas', 'subjectCategory', 'gradeCategory', 'teacher'])->findOrFail($id);
 
-        // ✅ Tracking: catat view siswa, hanya sekali per modul
+        // ✅ Auth check: pastikan siswa hanya bisa akses modul kelasnya
         $student = \App\Models\Student::where('user_id', auth()->id())->first();
+
+        if ($student && $module->kelas_id && $student->kelas_id !== $module->kelas_id) {
+            abort(403, 'Kamu tidak punya akses ke modul ini.');
+        }
+
+        // ✅ Tracking view — cegah duplikasi
         if ($student) {
             \App\Models\ModuleView::firstOrCreate([
                 'module_id'  => $module->id,

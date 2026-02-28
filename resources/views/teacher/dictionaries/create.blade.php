@@ -12,9 +12,9 @@
                 <h3 class="fw-800 text-dark m-0" style="font-size: 3rem">{{ isset($dictionary) ? 'Edit' : 'Tambah' }} <span class="text-orange fw-bold">Istilah</span></h3>
             </div>
             <a href="{{ route('teacher.dictionaries.index') }}" class="btn-back">
-                <i class="fa-solid fa-arrow-left" style="color: var(--orange); font-size: 1.2rem;"></i>
+                <i class="ri-arrow-left-line" style="color: var(--orange); font-size: 1.2rem;"></i>
             </a> <br>
-        </div>  
+        </div>
 
         {{-- Form Card Sejajar --}}
         <div class="main-form-card">

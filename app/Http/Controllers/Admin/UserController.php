@@ -25,11 +25,11 @@ class UserController extends Controller
                     $query->where('username', 'like', "%$search%")
                         ->orWhereHas('student', function ($s) use ($search) {
                             $s->where('name', 'like', "%$search%")
-                              ->orWhere('nis', 'like', "%$search%");
+                                ->orWhere('nis', 'like', "%$search%");
                         })
                         ->orWhereHas('teacher', function ($t) use ($search) {
                             $t->where('name', 'like', "%$search%")
-                              ->orWhere('nip', 'like', "%$search%");
+                                ->orWhere('nip', 'like', "%$search%");
                         });
                 });
             })
@@ -79,6 +79,7 @@ class UserController extends Controller
                     'name'    => $request->name,
                     'nis'     => $request->nis,
                     'kelas'   => $request->kelas,
+                    'kelas_id' => $request->kelas_id ?: null,
                 ]);
             }
 
@@ -130,7 +131,12 @@ class UserController extends Controller
                 $user->teacher()?->delete();
                 Student::updateOrCreate(
                     ['user_id' => $user->id],
-                    ['name' => $request->name, 'nis' => $request->nis, 'kelas' => $request->kelas]
+                    [
+                        'name' => $request->name,
+                        'nis' => $request->nis,
+                        'kelas' => $request->kelas,
+                        'kelas_id' => $request->kelas_id ?: null,
+                    ]
                 );
             }
 
