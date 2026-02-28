@@ -10,6 +10,7 @@ use App\Models\Question;
 use App\Models\User;
 use App\Models\Dictionary;
 use Illuminate\Http\Request;
+use App\Models\SaveModule;
 use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
@@ -38,38 +39,42 @@ class ModuleController extends Controller
             ->limit(3)
             ->get();
 
-        // 3. TUGAS CARD 14: Query Modul Utama (Hanya yang Approved) untuk Filter & Grouping
-        $query = Module::with(['gradeCategory', 'subjectCategory', 'contents', 'teacher', 'approval'])
-            ->whereHas('approval', function ($query) {
-                $query->where('status', 'approved'); // Aturan dari catatan revisi
-            });
-
-        // TUGAS CARD 14: Logika Filter Module (Pencarian, Kelas, Materi)
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-        if ($request->filled('grade_id')) {
-            $query->where('grade_category_id', $request->grade_id);
-        }
-        if ($request->filled('subject_id')) {
-            $query->where('subject_category_id', $request->subject_id);
-        }
-
-        // TUGAS CARD 14: Kelompokkan modul berdasarkan jenjang kelas
-        // Ambil datanya dulu, lalu kelompokkan berdasarkan nama grade
-        $allModules = $query->get();
-        $groupedModules = $allModules->groupBy(function($module) {
-            return $module->gradeCategory ? $module->gradeCategory->grade : 'Tidak Ada Kelas';
-        });
-
-        // Handling untuk AJAX pencarian/filter tanpa load ulang halaman
-        if ($request->ajax() || $request->has('ajax')) {
-            // Nanti di frontend (partials._module_list) kita harus loop $groupedModules
-            return view('partials._module_list', compact('groupedModules'))->render();
-        }
-
-        return view('dashboard.student', compact('topModules', 'groupedModules', 'grades', 'subjects', 'dictionaries', 'faqs', 'teachers'));
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
     }
+    if ($request->filled('grade_id')) {
+        $query->where('grade_category_id', $request->grade_id);
+    }
+    if ($request->filled('subject_id')) {
+        $query->where('subject_category_id', $request->subject_id);
+    }
+
+    // 👉 INI YANG DIPERBAIKI
+    $userId = auth()->id();
+
+    $modules = $query->get()->map(function ($module) use ($userId) {
+        $module->isSaved = $module->savedByUsers()
+            ->where('user_id', $userId)
+            ->exists();
+        return $module;
+    });
+
+        if ($request->ajax()) {
+            return view('partials._module_list', [
+                'modules' => $modules
+            ])->render();
+        }
+
+    return view('dashboard.student', compact(
+        'topModules',
+        'modules',          // ✅ ini bikin error hilang
+        'grades',
+        'subjects',
+        'dictionaries',
+        'faqs',
+        'teachers'
+    ));
+}
 
     public function show($id)
     {
@@ -101,27 +106,16 @@ class ModuleController extends Controller
     }
 
 
-    public function save($id)
-    {
-        $modul = Module::findOrFail($id);
+    public function saves()
+{
+    return $this->hasMany(SaveModule::class);
+}
 
-        auth()->user()->savedModuls()->syncWithoutDetaching([$modul->id]);
-
-        return response()->json([
-            'status' => 'saved'
-        ]);
-    }
-
-    public function unsave($id)
-    {
-        $modul = Module::findOrFail($id);
-
-        auth()->user()->savedModuls()->detach($modul->id);
-
-        return response()->json([
-            'status' => 'unsaved'
-        ]);
-    }
+public function getIsSavedAttribute()
+{
+    return auth()->check() &&
+        $this->saves()->where('user_id', auth()->id())->exists();
+}
 
 
         public function toggleLike($id)

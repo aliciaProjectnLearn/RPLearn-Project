@@ -11,7 +11,7 @@
             <p>Kelola modul dan pantau aktivitas belajar siswa Anda.</p>
         </div>
 
-        {{-- STAT GRID --}}
+        {{-- STAT GRID --}} 
         <div class="admin-grid">
 
             <div class="admin-stat-card">
@@ -43,41 +43,6 @@
             </div>
 
         </div>
-
-        <br>
-
-        {{-- MODUL TERBARU --}}
-        {{-- <div class="card-box mt-4">
-            <div class="card-header">
-                <h5>📚 Modul Terbaru Anda</h5>
-                <p>5 modul terakhir yang Anda upload</p>
-            </div>
-
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Judul Modul</th>
-                            <th>Tanggal Upload</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($summary['modul_terbaru'] as $modul)
-                            <tr>
-                                <td>{{ $modul->title }}</td>
-                                <td>{{ $modul->created_at->format('d M Y') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="2" class="text-center empty-row">
-                                    Belum ada modul 😅
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div> --}}
 
         <div class="card-box shadow-sm border-0 mt-4">
             <div class="card-body">

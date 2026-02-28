@@ -22,135 +22,48 @@
             });
         </script>
     @endif
-
+ 
     <section class="hero">
         <h1>Start <span>Learning. </span> Keep <br>Growing.</h1>
         <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
             guided learning.</p>
 
         <div class="features-card">
-            <div class="feat-card"><i class="ri-book-open-line"></i><span>Learning Modules</span></div>
-            <div class="feat-card"><i class="ri-bookmark-line"></i><span>Dictionary</span></div>
-            <div class="feat-card"><i class="ri-question-line"></i><span>FAQ</span></div>
+            <div class="feat-card"><i class="ri-book-open-line"></i><span>Kumpulan Modul</span></div>
+            <div class="feat-card"><i class="ri-bookmark-line"></i><span>Kamus</span></div>
+            <div class="feat-card"><i class="ri-question-line"></i><span>Ruang Tanya</span></div>
         </div>
     </section>
 
     <section class="module-section" id="module-section">
         <h1>Cari <span>Modul</span> Belajarmu!</h1>
 
-        {{-- SEARCH & FILTER --}}
-        <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
-
-            <div class="module-search">
-                <i class="ri-search-line"></i>
-                <input type="text" name="search" id="moduleSearchInput" placeholder="Mau belajar apa hari ini?"
-                    value="{{ request('search') }}">
-            </div>
-
-            <div class="filter-group-modern">
-                {{-- Kelas --}}
-                <div class="custom-select-wrapper">
-                    <i class="ri-government-line select-icon"></i>
-                    {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
-                    <select name="grade_id">
-                        <option value="">Semua Kelas</option>
-                        @foreach ($grades as $grade)
-                            <option value="{{ $grade->id }}" {{ request('grade_id') == $grade->id ? 'selected' : '' }}>
-                                {{ $grade->grade }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line arrow-icon"></i>
-                </div>
-
-                {{-- Materi --}}
-                <div class="custom-select-wrapper">
-                    <i class="ri-book-3-line select-icon"></i>
-                    {{-- HAPUS onchange="this.form.submit()" DI SINI --}}
-                    <select name="subject_id">
-                        <option value="">Semua Materi</option>
-                        @foreach ($subjects as $subject)
-                            <option value="{{ $subject->id }}"
-                                {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
-                                {{ $subject->subject }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line arrow-icon"></i>
-                </div>
-            </div>
-        </form>
-
-        {{-- CEK APAKAH SEDANG ADA FILTER AKTIF DI URL --}}
-        @php
-            $isFiltering = request('search') || request('grade_id') || request('subject_id');
-        @endphp
-
-        {{-- ================= KONTINER UTAMA MODUL ================= --}}
-        <div id="moduleCardsContainer">
-
-            {{-- ================= TUGAS CARD 14: TOP 3 MODULES ================= --}}
-            {{-- INI BUNGKUSAN YANG BENAR UNTUK TOP 3, DENGAN ID YANG SESUAI --}}
-            <div id="top3Section" style="display: {{ $isFiltering ? 'none' : 'block' }};">
-
-                <div class="module-cards">
-                    @forelse ($topModules as $module)
-                        <div class="module-card">
-                            <div class="card-header-row">
-                                <span class="module-meta-text">
-                                    {{ $module->gradeCategory->grade ?? '-' }} |
-                                    {{ $module->subjectCategory->subject ?? '-' }}
-                                </span>
-
-                                <div class="media-icons-row">
-                                    @if ($module->contents->whereNotNull('video_url')->count())
-                                        <i class="ri-youtube-fill text-red"></i>
-                                    @endif
-                                    @if ($module->contents->whereNotNull('file_path')->count())
-                                        <i class="ri-file-pdf-2-fill"></i>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <h3 class="module-title" onclick="showDetail({{ $module->id }})"
-                                style="text-align: center; cursor: pointer; margin-top: 15px;">
-                                {{ $module->title }}
-                            </h3>
-
-                            <p class="module-desc-text" style="margin-top: 10px;">
-                                {{ Str::limit($module->desc, 80) }}
-                            </p>
-
-                            <div class="author-label" style="margin-top: 15px; margin-bottom: 15px;">
-                                <i class="ri-user-3-line"></i>
-                                {{ $module->teacher->username ?? 'Admin' }}
-                            </div>
-
-                            {{-- Ceklis Card 14: Ubah tombol jadi "Lihat detail Modul" --}}
-                            <button class="btn-pelajari-orange" onclick="showDetail({{ $module->id }})"
-                                style="background: linear-gradient(135deg, #F6973F, #D65A31); width: 100%;">
-                                Lihat detail Modul <i class="ri-arrow-right-line"></i>
-                            </button>
-                        </div>
-                    @empty
-                        <p style="grid-column: 1 / -1; text-align:center;">
-                            Belum ada modul terpopuler.
-                        </p>
-                    @endforelse
-                </div>
-            </div>
-
+    {{-- SEARCH --}}
+    <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
+        <div class="module-search">
+            <i class="ri-search-line"></i>
+            <input type="text" name="search"
+                id="moduleSearchInput"
+                placeholder="Mau belajar apa hari ini?"
+                value="{{ request('search') }}">
         </div>
-        <div class="button-more">
-            <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
-                Lihat Semua →
-            </a>
-        </div>
-    </section>
+    </form>
+
+    {{-- MODULE CARDS --}}
+    <div class="module-cards" id="moduleCardsContainer">
+    @include('partials._module_list', ['modules' => $modules])
+    </div>
+
+    <div class="button-more">
+        <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
+            Lihat Semua →
+        </a>
+    </div>
+</section>
 
     {{-- DICTIONARY --}}
     <section class="dictionary-section reveal" id="dictionary-section">
-        <h2>Dict<span>io</span>nary</h2>
+        <h2>Ka<span>m</span>us</h2>
         <p class="dictionary-desc">
             Learn common technical terms used in vocational learning.
         </p>
@@ -296,60 +209,24 @@
         {{-- JAVASCRIPT MASTER --}}
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // --- A. AJAX SEARCH MODUL (Instan & Dinamis) ---
+                // --- A. AJAX SEARCH MODUL (Sederhana) ---
                 const filterForm = document.getElementById('moduleFilterForm');
-                const allModulesSection = document.getElementById('allModulesSection');
-                const top3Section = document.getElementById(
-                'top3Section'); // Mengambil div Top 3 yang sekarang sudah BENAR
+                const moduleCards = document.getElementById('moduleCardsContainer');
                 const searchInput = document.getElementById('moduleSearchInput');
-                const toggleBtn = document.getElementById('toggleAllModulesBtn');
-
-                // Kita cari select elemen berdasarkan formnya biar aman
-                const gradeSelect = filterForm.querySelector('select[name="grade_id"]');
-                const subjectSelect = filterForm.querySelector('select[name="subject_id"]');
 
                 function fetchModules() {
                     const params = new URLSearchParams(new FormData(filterForm)).toString();
-
-                    // Cek apakah user sedang melakukan pencarian/filter
-                    const isFiltering = searchInput.value.trim() !== '' ||
-                        (gradeSelect && gradeSelect.value !== '') ||
-                        (subjectSelect && subjectSelect.value !== '');
-
-                    if (isFiltering) {
-                        // Jika sedang difilter: Sembunyikan Top 3, Tampilkan hasil
-                        if (top3Section) top3Section.style.display = 'none';
-                        if (allModulesSection) allModulesSection.style.display = 'block';
-                    } else {
-                        // Jika filter kosong: Munculkan Top 3, Sembunyikan daftar bawah
-                        if (top3Section) top3Section.style.display = 'block';
-                        if (allModulesSection) allModulesSection.style.display = 'none';
-                        if (toggleBtn) {
-                            toggleBtn.innerHTML = '<i class="ri-arrow-down-line"></i>';
-                            toggleBtn.style.background = '#393E46';
-                        }
-                    }
-
-                    if (allModulesSection) allModulesSection.style.opacity = '0.5';
-
                     fetch(`${window.location.pathname}?${params}&ajax=1`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(res => res.text())
-                        .then(html => {
-                            if (allModulesSection) {
-                                allModulesSection.innerHTML = html;
-                                allModulesSection.style.opacity = '1';
-                            }
-                        });
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        moduleCards.innerHTML = html;
+                    });
                 }
 
-                if (searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
-                if (gradeSelect) gradeSelect.addEventListener('change', fetchModules);
-                if (subjectSelect) subjectSelect.addEventListener('change', fetchModules);
-                if (filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());
+                if(searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
+                if(filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());
 
                 function debounce(func, timeout = 300) {
                     let timer;
@@ -485,10 +362,9 @@
 
                         if (content.video_url) {
                             let vId = content.video_url.split('v=')[1]?.split('&')[0];
-                            videoElement =
-                                `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                            videoElement = `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
                         } else if (content.file_path && content.file_path.endsWith('.mp4')) {
-                            videoElement = `<video width="100%" height="280" controls style="border-radius:10px; background:#000;">
+                            videoElement = `<video width="100%" height="250" controls style="border-radius:10px; background:#000;">
                                     <source src="/storage/${content.file_path}" type="video/mp4">
                                         Browser kamu tidak mendukung video player.
                                 </video>`;
@@ -505,14 +381,21 @@
                                                     <i class="ri-file-pdf-line"></i> Download PDF Materi
                                                 </a>` : ''}
                                     <div class="modal-tags-row">
-                                        <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
-                                        <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
-                                        <i class="fa-solid fa-heart love-btn ${data.isLiked ? 'liked' : ''}" data-id="${data.id}"></i>
+                                        <div class="tag-group">
+                                            <span class="m-tag">${data.grade_category?.grade_name || 'Umum'}</span>
+                                            <span class="m-tag">${data.subject_category?.subject_name || 'Materi'}</span>
+                                        </div>
+
+                                        <div class="icon-group">
+                                            <i class="${data.isSaved ? 'ri-bookmark-fill saved' : 'ri-bookmark-line'} save-btn"
+                                                data-id="${data.id}">
+                                            </i>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-side-text">
                                     <h2 class="modal-title-text">${data.title}</h2>
-                                    <div class="modal-scroll"><p>${data.desc}</p></div>
+                                    <div class="modal-scroll"><p style="font-size: 0.8rem;">${data.desc}</p></div>
                                 </div>
                             </div>`;
                     });
@@ -589,29 +472,41 @@
                 });
             });
 
-            // ====== LIKE MODULE (TETAP, TIDAK DIUBAH) ======
-            document.addEventListener('click', function(e) {
-                if (!e.target.classList.contains('love-btn')) return;
+        </script>
+
+        <script>
+            document.addEventListener('click', function (e) {
+
+                if (!e.target.classList.contains('save-btn')) return;
 
                 const button = e.target;
                 const moduleId = button.dataset.id;
 
-                button.classList.toggle('liked');
+                const isSaved = button.classList.contains('saved');
 
-                fetch(`/modules/${moduleId}/like`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.liked) button.classList.add('liked');
-                        else button.classList.remove('liked');
-                    })
-                    .catch(() => button.classList.toggle('liked'));
+                // ubah tampilan dulu biar responsif
+                button.classList.toggle('saved');
+                button.classList.toggle('ri-bookmark-fill');
+                button.classList.toggle('ri-bookmark-line');
+
+                fetch(`/student/modules/${moduleId}/save`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.saved) {
+                        button.classList.add('saved','ri-bookmark-fill');
+                        button.classList.remove('ri-bookmark-line');
+                    } else {
+                        button.classList.remove('saved','ri-bookmark-fill');
+                        button.classList.add('ri-bookmark-line');
+                    }
+                });
             });
-        </script>
+            </script>
     @endpush
 @endsection

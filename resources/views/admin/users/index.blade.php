@@ -34,7 +34,7 @@
                     <div class="search-box">
                         <input type="text" id="searchInput" name="search" placeholder="Cari username / nama..." value="{{ request('search') }}" required>
                         <button type="submit" id="searchBtn" class="btn-search" disabled>
-                            <i class="fas fa-search"></i>
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
 
@@ -138,7 +138,7 @@
 
                                     {{-- Edit --}}
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-action text-primary" title="Edit">
-                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <br>
 
@@ -151,7 +151,7 @@
                                         @method('DELETE')
                                         <button class="btn-action text-danger border-0 bg-transparent"
                                                 title="Hapus">
-                                            <i class="fa-solid fa-trash"></i>
+                                            <i class="bi bi-trash3"></i>
                                         </button>
                                     </form>
                                 </div>

@@ -42,6 +42,14 @@
                         onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
                         <i class="fa-solid fa-circle-question" style="width: 25px; color: #F6973F;"></i>
                         Pertayaanmu
+            <a href="{{ route('profile.edit') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
+                <i class="ri-user-settings-line" style="width: 25px; color: #F6973F; font-size: 0.8rem; margin-right: 10px;"></i> Pengaturan Profil
+            </a>
+
+            @auth
+                @if(auth()->user()->role === 'siswa')
+                    <a href="{{ route('student.modules.saved') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
+                        <i class="ri-bookmark-line" style="width: 25px; color: #F6973F; font-size: 0.8rem; margin-right: 10px;"></i> Modul Tersimpan
                     </a>
                 @endif
             @endauth

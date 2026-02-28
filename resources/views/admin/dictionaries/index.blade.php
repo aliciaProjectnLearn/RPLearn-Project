@@ -18,7 +18,7 @@
                     <div class="search-box">
                         <input type="text" id="searchInput" name="search" placeholder="Cari Istilah ..." value="{{ request('search') }}" required>
                         <button type="submit" id="searchBtn" class="btn-search" disabled>
-                            <i class="fas fa-search"></i>
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
 
@@ -50,19 +50,19 @@
                         <td class="text-end pe-4 action-cell">
                             <div class="action-bar">
                                 <a href="{{ route('admin.dictionaries.show', $item->id) }}" title="Detail">
-                                    <i class="fa-solid fa-book"></i>
+                                    <i class="bi bi-ticket-detailed-fill"></i>
                                 </a>
 
 
                                 <a href="{{ route('admin.dictionaries.edit', $item->id) }}" title="Edit">
-                                    <i class="fa-solid fa-pen"></i>
+                                    <i class="bi bi-pencil-square"></i>
                                 </a>
 
                                 <form action="{{ route('admin.dictionaries.destroy', $item->id) }}" method="POST">
                                     @csrf @method('DELETE')
                                     <button type="submit" title="Hapus"
                                             onclick="return confirm('Hapus istilah ini?')">
-                                        <i class="fa-solid fa-trash"></i>
+                                        <i class="bi bi-trash3"></i>
                                     </button>
                                 </form>
                             </div>

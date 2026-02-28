@@ -21,6 +21,7 @@ class Module extends Model
         'track',
         'is_published',
         'like',
+        'kelas_id',
     ];
 
     // === RELATIONS ===
@@ -47,7 +48,16 @@ class Module extends Model
 
     public function savedByUsers()
     {
-        return $this->belongsToMany(User::class,'save_modules');
+        return $this->belongsToMany(User::class,'save_modules', 'module_id', 'user_id');
+    }
+
+    public function getIsSavedAttribute()
+    {
+        if (!auth()->check()) return false;
+
+        return $this->savedByUsers()
+            ->where('user_id', auth()->id())
+            ->exists();
     }
 
     public function approval()
@@ -63,6 +73,11 @@ class Module extends Model
         public function isLiked()
     {
         return $this->likes()->where('user_id', auth()->id())->exists();
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
 }

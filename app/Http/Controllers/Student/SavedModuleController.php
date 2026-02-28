@@ -22,7 +22,7 @@ class SavedModuleController extends Controller
             return response()->json(['saved'=>false]);
         }
 
-        SaveModule::create([
+        SaveModule::firstOrCreate([
             'user_id'=>$user->id,
             'module_id'=>$module->id
         ]);

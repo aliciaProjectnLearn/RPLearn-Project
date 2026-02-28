@@ -14,7 +14,7 @@
             </p>
         </div>
         <br>
-        <a href="{{ route('teacher.modules.create') }}" class="btn-orange shadow-sm text-decoration-none" style="background: #f37021; color: white; padding: 10px 20px; border-radius: 10px; font-weight: 700;">
+        <a href="{{ route('teacher.modules.create') }}" class="shadow-sm text-decoration-none" style="background: var(--orange); color: white; padding: 10px 20px; border-radius: 10px; font-weight: 700;">
             Tambah Modul Baru
         </a>
     </div>
@@ -32,7 +32,7 @@
                 <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
             </select>
 
-            <button type="submit" class="btn btn-warning text-white fw-bold">Cari</button>
+            <button type="submit" class="btn text-white fw-bold" style="background-color: var(--orange)">Cari</button>
         </div>
     </form>
 

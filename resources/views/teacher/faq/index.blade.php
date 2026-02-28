@@ -6,7 +6,7 @@
     <div class="page-content px-4">
         <div class="admin-card-box faq-dashboard-card">
 
-            {{-- Header --}}
+            {{-- Header --}} 
             <div class="faq-header-modern">
                 <div>
                     <h2 class="faq-title">Fitur Tanya Jawab</h2>
@@ -124,7 +124,7 @@
                             </div>
 
                             {{-- Text --}}
-                            <p id="answer-text-{{ $q->answer->id }}"><br>
+                            <p id="answer-text-{{ $q->answer->id }}" style="font-size: 14px">
                                 {{ $q->answer->answer }}
                             </p>
 
