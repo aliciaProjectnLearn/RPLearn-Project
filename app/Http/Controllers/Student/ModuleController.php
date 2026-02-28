@@ -66,6 +66,30 @@ class ModuleController extends Controller
             return $module;
         });
 
+// FILTER SEARCH
+if ($request->filled('search')) {
+    $query->where('title', 'like', '%' . $request->search . '%');
+}
+
+// FILTER GRADE
+if ($request->filled('grade_id')) {
+    $query->where('grade_category_id', $request->grade_id);
+}
+
+// FILTER SUBJECT
+if ($request->filled('subject_id')) {
+    $query->where('subject_category_id', $request->subject_id);
+}
+
+$userId = auth()->id();
+
+$modules = $query->get()->map(function ($module) use ($userId) {
+    $module->isSaved = $module->savedByUsers()
+        ->where('user_id', $userId)
+        ->exists();
+    return $module;
+});
+
         if ($request->ajax()) {
             return view('partials._module_list', ['modules' => $modules])->render();
         }
