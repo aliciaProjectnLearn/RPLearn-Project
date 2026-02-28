@@ -1,150 +1,169 @@
 @extends('layouts.app')
 
 @section('content')
-<br><br><br>
+    <br><br><br>
 
-<div class="content-body px-4">
-    <div class="max-w-900 mx-auto">
-        <h3 class="fw-800 text-dark mb-4">Tambah User Baru</h3>
+    <div class="content-body px-4">
+        <div class="max-w-900 mx-auto">
+            <h3 class="fw-800 text-dark mb-4">Tambah User Baru</h3>
 
-        <div class="main-form-card">
-            <form action="{{ route('admin.users.store') }}" method="POST">
-                @csrf
+            <div class="main-form-card">
+                <form action="{{ route('admin.users.store') }}" method="POST">
+                    @csrf
 
-                {{-- ===================== --}}
-                {{-- SECTION: AKUN LOGIN --}}
-                {{-- ===================== --}}
-                <h6 class="section-title">AKUN LOGIN</h6>
+                    {{-- ===================== --}}
+                    {{-- SECTION: AKUN LOGIN --}}
+                    {{-- ===================== --}}
+                    <h6 class="section-title">AKUN LOGIN</h6>
 
-                {{-- Username --}}
-                <div class="row mb-4 align-items-center">
-                    <label class="col-sm-3 label-modern">Username</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="username" value="{{ old('username') }}" class="input-modern" placeholder="Contoh: rpl_user123" required>
-                    </div>
-                </div>
-
-                {{-- Password --}}
-                <div class="row mb-4 align-items-center">
-                    <label class="col-sm-3 label-modern">Password</label>
-                    <div class="col-sm-9">
-                        <input type="password" name="password" class="input-modern" placeholder="Minimal 6 karakter" required>
-                    </div>
-                </div>
-
-                {{-- Role --}}
-                <div class="row mb-4 align-items-center">
-                    <label class="col-sm-3 label-modern">Role (Jabatan)</label>
-                    <div class="col-sm-6">
-                        <select name="role"
-                                id="roleSelect"
-                                class="input-modern"
-                                onchange="toggleFields()"
-                                required>
-                            <option value="siswa" {{ old('role')=='siswa'?'selected':'' }}>Siswa</option>
-                            <option value="guru"  {{ old('role')=='guru'?'selected':'' }}>Guru</option>
-                            <option value="admin" {{ old('role')=='admin'?'selected':'' }}>Admin</option>
-                        </select>
-                    </div>
-                </div>
-
-                {{-- ===================== --}}
-                {{-- FIELD NAME (Siswa + Guru) --}}
-                {{-- ===================== --}}
-                <div id="nameField">
+                    {{-- Username --}}
                     <div class="row mb-4 align-items-center">
-                        <label class="col-sm-3 label-modern">Nama Lengkap</label>
+                        <label class="col-sm-3 label-modern">Username</label>
                         <div class="col-sm-9">
-                            <input type="text" name="name" value="{{ old('name') }}" class="input-modern" placeholder="Masukkan nama lengkap">
+                            <input type="text" name="username" value="{{ old('username') }}" class="input-modern"
+                                placeholder="Contoh: rpl_user123" required>
                         </div>
                     </div>
-                </div>
 
-                {{-- ===================== --}}
-                {{-- SECTION: SISWA --}}
-                {{-- ===================== --}}
-                <div id="studentFields">
-                    <h6 class="section-title mt-5">PROFIL SISWA</h6>
-
-                    {{-- NIS --}}
+                    {{-- Password --}}
                     <div class="row mb-4 align-items-center">
-                        <label class="col-sm-3 label-modern">NIS</label>
-                        <div class="col-sm-6">
-                            <input type="text" name="nis" value="{{ old('nis') }}" class="input-modern" placeholder="Nomor Induk Siswa">
+                        <label class="col-sm-3 label-modern">Password</label>
+                        <div class="col-sm-9">
+                            <input type="password" name="password" class="input-modern" placeholder="Minimal 6 karakter"
+                                required>
                         </div>
                     </div>
 
-                    {{-- Kelas --}}
+                    {{-- Role --}}
                     <div class="row mb-4 align-items-center">
-                        <label class="col-sm-3 label-modern">Kelas</label>
+                        <label class="col-sm-3 label-modern">Role (Jabatan)</label>
                         <div class="col-sm-6">
-                            <input type="text" name="kelas" value="{{ old('kelas') }}" class="input-modern" placeholder="Contoh: XII RPL 1">
+                            <select name="role" id="roleSelect" class="input-modern" onchange="toggleFields()" required>
+                                <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                                <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru</option>
+                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            </select>
                         </div>
                     </div>
-                </div>
 
-                {{-- ===================== --}}
-                {{-- SECTION: GURU --}}
-                {{-- ===================== --}}
-                <div id="teacherFields" style="display:none;">
-                    <h6 class="section-title mt-5">PROFIL GURU</h6>
-
-                    {{-- NIP --}}
-                    <div class="row mb-4 align-items-center">
-                        <label class="col-sm-3 label-modern">NIP</label>
-                        <div class="col-sm-6">
-                            <input type="text" name="nip" value="{{ old('nip') }}" class="input-modern" placeholder="Nomor Induk Pegawai">
+                    {{-- ===================== --}}
+                    {{-- FIELD NAME (Siswa + Guru) --}}
+                    {{-- ===================== --}}
+                    <div id="nameField">
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Nama Lengkap</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="name" value="{{ old('name') }}" class="input-modern"
+                                    placeholder="Masukkan nama lengkap">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- ===================== --}}
-                {{-- FOOTER BUTTON --}}
-                {{-- ===================== --}}
-                <div class="form-footer mt-4">
-                    <button type="submit" class="btn-save-modern">
-                        Simpan User
-                    </button>
+                    {{-- ===================== --}}
+                    {{-- SECTION: SISWA --}}
+                    {{-- ===================== --}}
+                    <div id="studentFields">
+                        <h6 class="section-title mt-5">PROFIL SISWA</h6>
 
-                    <a href="{{ route('admin.users.index', ['role' => request('role', 'siswa')]) }}" class="btn-cancel-modern">
-                        Batal
-                    </a>
-                </div>
-            </form>
+                        {{-- NIS --}}
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">NIS</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="nis" value="{{ old('nis') }}" class="input-modern"
+                                    placeholder="Nomor Induk Siswa">
+                            </div>
+                        </div>
+
+                        {{-- Kelas --}}
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Kelas</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="kelas" value="{{ old('kelas') }}" class="input-modern"
+                                    placeholder="Contoh: XII RPL 1">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ===================== --}}
+                    {{-- SECTION: GURU --}}
+                    {{-- ===================== --}}
+                    <div id="teacherFields" style="display:none;">
+                        <h6 class="section-title mt-5">PROFIL GURU</h6>
+
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">NIP</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="nip" value="{{ old('nip') }}" class="input-modern"
+                                    placeholder="Nomor Induk Pegawai">
+                            </div>
+                        </div>
+
+                        {{-- ✅ Multi-pilih kelas yang diampu --}}
+                        <div class="row mb-4 align-items-start">
+                            <label class="col-sm-3 label-modern pt-2">Kelas yang Diampu</label>
+                            <div class="col-sm-6">
+                                <div class="border rounded p-3" style="background: #fafafa;">
+                                    @foreach ($kelas as $k)
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="kelas_ids[]"
+                                                value="{{ $k->id }}" id="kelas_{{ $k->id }}"
+                                                {{ in_array($k->id, old('kelas_ids', [])) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="kelas_{{ $k->id }}">
+                                                {{ $k->nama }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <small class="text-muted mt-1 d-block">Centang semua kelas yang diampu guru ini</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ===================== --}}
+                    {{-- FOOTER BUTTON --}}
+                    {{-- ===================== --}}
+                    <div class="form-footer mt-4">
+                        <button type="submit" class="btn-save-modern">
+                            Simpan User
+                        </button>
+
+                        <a href="{{ route('admin.users.index', ['role' => request('role', 'siswa')]) }}"
+                            class="btn-cancel-modern">
+                            Batal
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-{{-- ===================== --}}
-{{-- SCRIPT TOGGLE --}}
-{{-- ===================== --}}
-<script>
-function toggleFields() {
-    const role = document.getElementById("roleSelect").value;
+    {{-- ===================== --}}
+    {{-- SCRIPT TOGGLE --}}
+    {{-- ===================== --}}
+    <script>
+        function toggleFields() {
+            const role = document.getElementById("roleSelect").value;
 
-    const nameDiv    = document.getElementById("nameField");
-    const studentDiv = document.getElementById("studentFields");
-    const teacherDiv = document.getElementById("teacherFields");
+            const nameDiv = document.getElementById("nameField");
+            const studentDiv = document.getElementById("studentFields");
+            const teacherDiv = document.getElementById("teacherFields");
 
-    if(role === "siswa"){
-        nameDiv.style.display    = "block";
-        studentDiv.style.display = "block";
-        teacherDiv.style.display = "none";
-    }
-    else if(role === "guru"){
-        nameDiv.style.display    = "block";
-        studentDiv.style.display = "none";
-        teacherDiv.style.display = "block";
-    }
-    else {
-        // Admin
-        nameDiv.style.display    = "none";
-        studentDiv.style.display = "none";
-        teacherDiv.style.display = "none";
-    }
-}
+            if (role === "siswa") {
+                nameDiv.style.display = "block";
+                studentDiv.style.display = "block";
+                teacherDiv.style.display = "none";
+            } else if (role === "guru") {
+                nameDiv.style.display = "block";
+                studentDiv.style.display = "none";
+                teacherDiv.style.display = "block";
+            } else {
+                // Admin
+                nameDiv.style.display = "none";
+                studentDiv.style.display = "none";
+                teacherDiv.style.display = "none";
+            }
+        }
 
-document.addEventListener("DOMContentLoaded", toggleFields);
-</script>
-
+        document.addEventListener("DOMContentLoaded", toggleFields);
+    </script>
 @endsection

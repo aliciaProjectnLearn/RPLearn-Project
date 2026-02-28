@@ -9,7 +9,7 @@
         <div onclick="toggleProfileMenu()"
             style="cursor: pointer; display: flex; align-items: center; gap: 15px; user-select: none;">
             <span style="color: white; font-weight: 600; font-size: 0.8rem;">
-                {{ Auth::user()->username }} </i>
+                {{ Auth::user()->username }}
             </span>
 
             <div
@@ -23,8 +23,7 @@
 
             <div style="padding: 16px 20px; background-color: #f8f9fa; border-bottom: 1px solid #eee;">
                 <p style="margin: 0; font-size: 0.8rem; color: #888;">Masuk sebagai</p>
-                <p style="margin: 0; font-weight: bold; color: #222831; font-size: 0.8rem;">{{ Auth::user()->username }}
-                </p>
+                <p style="margin: 0; font-weight: bold; color: #222831; font-size: 0.8rem;">{{ Auth::user()->username }}</p>
             </div>
 
             <a href="{{ route('profile.edit') }}"
@@ -34,22 +33,21 @@
                 Profil
             </a>
 
-            {{--  MENU YOUR QUESTION (HANYA STUDENT) --}}
             @auth
                 @if (Auth::user()->role === 'siswa')
                     <a href="{{ route('student.questions.index') }}"
                         style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;"
                         onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
                         <i class="fa-solid fa-circle-question" style="width: 25px; color: #F6973F;"></i>
-                        Pertayaanmu
-            <a href="{{ route('profile.edit') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
-                <i class="ri-user-settings-line" style="width: 25px; color: #F6973F; font-size: 0.8rem; margin-right: 10px;"></i> Pengaturan Profil
-            </a>
+                        Pertanyaanmu
+                    </a>
 
-            @auth
-                @if(auth()->user()->role === 'siswa')
-                    <a href="{{ route('student.modules.saved') }}" style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
-                        <i class="ri-bookmark-line" style="width: 25px; color: #F6973F; font-size: 0.8rem; margin-right: 10px;"></i> Modul Tersimpan
+                    <a href="{{ route('student.modules.saved') }}"
+                        style="display: block; padding: 14px 20px; color: #393E46; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.2s;"
+                        onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background='white'">
+                        <i class="ri-bookmark-line"
+                            style="width: 25px; color: #F6973F; font-size: 0.8rem; margin-right: 10px;"></i> Modul
+                        Tersimpan
                     </a>
                 @endif
             @endauth
@@ -59,12 +57,13 @@
                 <button type="button" id="logout-btn"
                     style="display: block; width: 100%; text-align: left; background: white; border: none; padding: 14px 20px; color: #d63031; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: 0.2s;"
                     onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background='white'">
-                    <i class="fa-solid fa-right-from-bracket" style="width: 25px; font-size: 0.8rem;"></i> Keluar
+                    <i class="fa-solid fa-right-from-bracket" style="width: 25px; font-size: 0.8rem;"></i>
+                    Keluar
                 </button>
             </form>
 
-        </div>
-    </div>
+        </div>{{-- End profileDropdown --}}
+    </div>{{-- End navbar-user --}}
 </nav>
 
 <script>
@@ -82,11 +81,11 @@
         const navbarUser = document.querySelector('.navbar-user');
         const dropdown = document.getElementById('profileDropdown');
 
-        // Cek apakah klik terjadi di luar div .navbar-user
         if (navbarUser && !navbarUser.contains(event.target)) {
             dropdown.style.display = 'none';
         }
     });
+
     document.getElementById('logout-btn').addEventListener('click', function(e) {
         e.preventDefault();
 
