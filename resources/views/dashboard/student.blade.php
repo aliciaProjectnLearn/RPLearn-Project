@@ -35,29 +35,46 @@
         </div>
     </section>
 
-    <section class="module-section" id="module-section">
+<section class="module-section" id="module-section">
+
+    {{-- HEADER --}}
+    <div class="module-section-header">
         <h1>Cari <span>Modul</span> Belajarmu!</h1>
+    </div>
 
-        {{-- SEARCH --}}
-        <form id="moduleFilterForm" action="{{ url()->current() }}" method="GET" class="module-filter-form">
-            <div class="module-search">
-                <i class="ri-search-line"></i>
-                <input type="text" name="search" id="moduleSearchInput" placeholder="Mau belajar apa hari ini?"
-                    value="{{ request('search') }}">
-            </div>
-        </form>
+    {{-- SEARCH --}}
+    <form id="moduleFilterForm"
+          action="{{ url()->current() }}"
+          method="GET"
+          class="module-filter-form">
 
-        {{-- MODULE CARDS --}}
-        <div class="module-cards" id="moduleCardsContainer">
-            @include('partials._module_list', ['modules' => $modules])
+        <div class="module-search">
+            <i class="ri-search-line"></i>
+            <input type="text"
+                   name="search"
+                   id="moduleSearchInput"
+                   placeholder="Mau belajar apa hari ini?"
+                   value="{{ request('search') }}">
         </div>
+    </form>
 
-        <div class="button-more">
-            <a href="{{ route('student.modules.index') }}" class="btn-more-dictionary">
-                Lihat Semua →
-            </a>
-        </div>
-    </section>
+    {{-- MODULE CARDS --}}
+    <div class="module-cards" id="moduleCardsContainer">
+
+        {{-- ✅ pakai partial yang sudah ada fitur isViewed --}}
+        @include('partials._module_list', ['modules' => $modules])
+
+    </div>
+
+    {{-- BUTTON LIHAT SEMUA --}}
+    <div class="button-more">
+        <a href="{{ route('student.modules.index') }}"
+           class="btn-more-dictionary">
+            Lihat Semua →
+        </a>
+    </div>
+
+</section>
 
     {{-- DICTIONARY --}}
     <section class="dictionary-section reveal" id="dictionary-section">
