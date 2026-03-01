@@ -24,24 +24,24 @@
                         {{ strtoupper(substr($user->username, 0, 2)) }}
                     </div>
                     <h2 class="profile-name">{{ $user->username }}</h2>
-                    <p class="profile-email">{{ $user->email ?? 'admin@rplearn.com' }}</p>
+                    <p class="profile-email">{{ auth()->user()?->student?->kelas?->nama ?? '-' }}</p>
                 </div>
 
                 {{-- Menu Navigasi --}}
                 <div class="profile-menu">
                     <div class="menu-label">MENU</div>
                     <a href="#" class="menu-item active">
-                        <span class="icon">👤</span> Edit Profile
+                        <i class="ri-edit-line"  style="margin-right: 10px;"></i> Edit Profile
                     </a>
                     <a href="#security-section" class="menu-item">
-                        <span class="icon">🔒</span> Keamanan
+                        <i class="ri-shield-keyhole-line" style="margin-right: 10px; color: var(--orange);"></i> Keamanan
                     </a>
 
                     {{-- Logout Form --}}
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="menu-item logout-btn">
-                            <span class="icon">🚪</span> Logout
+                            <i class="ri-logout-box-line" style="margin-right: 10px;"></i> Logout
                         </button>
                     </form>
                 </div>
