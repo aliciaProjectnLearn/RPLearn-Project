@@ -61,20 +61,50 @@
 @endforelse
 
 <style>
-    .module-card{
-    position: relative;
+/* GRID WRAPPER (kalau belum ada) */
+.modules-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+    gap:25px;
 }
 
+/* CARD */
+.module-card{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:#1f2937;
+    border-radius:18px;
+    padding:20px;
+    height:100%;              /* penting */
+}
+
+/* BAGIAN TENGAH fleksibel */
+.module-card .module-desc-text{
+    flex-grow:1;              /* ini bikin tinggi rata */
+}
+
+/* FOOTER selalu di bawah */
+.foot-module-card{
+    margin-top:auto;          /* ini kunci utamanya */
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* Badge tetap aman */
 .view-badge{
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:#1da54f;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    background:#16a34a;
     color:white;
-    padding:4px 8px;
-    border-radius:6px;
+    padding:2px 8px;
+    border-radius:20px;
     font-size:10px;
     font-weight:bold;
+    width:fit-content;
+    margin-bottom:10px;
 }
 
 .foot-module-card{

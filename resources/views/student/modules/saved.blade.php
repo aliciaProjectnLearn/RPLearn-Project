@@ -40,28 +40,48 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
     const filterForm = document.getElementById('moduleFilterForm');
     const moduleContainer = document.getElementById('moduleCardsContainer');
     const searchInput = document.getElementById('moduleSearchInput');
 
+    // Fungsi utama mengambil data
     function fetchModules() {
-        const params = new URLSearchParams(new FormData(filterForm)).toString();
-        moduleContainer.style.opacity = '0.5';
+        // Ambil data dari form secara otomatis
+        const formData = new FormData(filterForm);
+        const params = new URLSearchParams(formData).toString();
+        
+        // Efek loading agar user tahu proses sedang berjalan
+        if (moduleContainer) moduleContainer.style.opacity = '0.5';
 
+        // Fetch ke URL saat ini dengan header AJAX
         fetch(`${window.location.pathname}?${params}&ajax=1`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'text/html'
+            }
         })
-        .then(res => res.text())
+        .then(res => {
+            if (!res.ok) throw new Error('Gagal memuat data');
+            return res.text();
+        })
         .then(html => {
-            moduleContainer.innerHTML = html;
-            moduleContainer.style.opacity = '1';
+            if (moduleContainer) {
+                // Update isi kontainer dengan partial blade
+                moduleContainer.innerHTML = html;
+                moduleContainer.style.opacity = '1';
+                
+                // Opsional: Update URL di browser tanpa reload halaman (History API)
+                const newUrl = `${window.location.pathname}?${params}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+        })
+        .catch(err => {
+            console.error('Fetch Error:', err);
+            if (moduleContainer) moduleContainer.style.opacity = '1';
         });
     }
 
-    searchInput.addEventListener('input', debounce(fetchModules, 300));
-    filterForm.addEventListener('submit', (e) => e.preventDefault());
-
+    // Fungsi Debounce: Menahan eksekusi agar tidak boros request saat mengetik
     function debounce(func, timeout = 300) {
         let timer;
         return (...args) => {
@@ -71,7 +91,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }, timeout);
         };
     }
+
+    // Event Listener untuk Input
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(() => {
+            fetchModules();
+        }, 400)); // Delay 400ms lebih nyaman untuk user
+    }
+
+    // Mencegah form reload total saat tekan Enter
+    if (filterForm) {
+        filterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            fetchModules();
+        });
+    }
 });
+
 </script>
 
 <script>

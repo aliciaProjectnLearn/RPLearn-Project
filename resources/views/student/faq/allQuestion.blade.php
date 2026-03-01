@@ -3,7 +3,6 @@
 @section('content')
     <div class="faq-title">
         <h2>Semua <span>Pertanyaan</span></h2>
-        <p class="page-subtitle">Pertanyaan dari siswa yang sudah dijawab guru</p>
     </div>
 
     <div class="faq-controls">
@@ -44,12 +43,11 @@
             margin-bottom: 3rem;
         }
         .faq-title h2 {
-            font-size: 3rem;
+            font-size: 2rem;
             text-align: center;
             color: var(--dark-soft);
             font-weight: 700;
             margin-top: 3rem;
-            margin-bottom: 1rem;
             font-weight: 700;
         }
 
