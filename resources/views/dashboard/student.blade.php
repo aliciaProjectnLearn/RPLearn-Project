@@ -25,8 +25,7 @@
 
     <section class="hero">
         <h1>Start <span>Learning. </span> Keep <br>Growing.</h1>
-        <p>RPLearn is designed to support vocational students <br>in developing real-world skills through structured and
-            guided learning.</p>
+        <p>Semua materi kelas dalam satu genggaman. RPLearn menyusun modul pembelajaran secara sistematis untuk bantu kamu kuasai keahlian dunia nyata dengan lebih mudah dan terpadu.</p>
 
         <div class="features-card">
             <div class="feat-card"><i class="ri-book-open-line"></i><span>Kumpulan Modul</span></div>
@@ -79,9 +78,6 @@
     {{-- DICTIONARY --}}
     <section class="dictionary-section reveal" id="dictionary-section">
         <h2>Ka<span>m</span>us</h2>
-        <p class="dictionary-desc">
-            Learn common technical terms used in vocational learning.
-        </p>
 
         <div class="dictionary-search">
             <i class="ri-search-line"></i>
@@ -230,17 +226,31 @@
                 const searchInput = document.getElementById('moduleSearchInput');
 
                 function fetchModules() {
-                    const params = new URLSearchParams(new FormData(filterForm)).toString();
-                    fetch(`${window.location.pathname}?${params}&ajax=1`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(res => res.text())
-                        .then(html => {
-                            moduleCards.innerHTML = html;
-                        });
-                }
+    // Ambil query dari input langsung supaya lebih aman
+    const searchValue = searchInput.value;
+    const url = new URL(window.location.href);
+    
+    // Set parameter search
+    url.searchParams.set('search', searchValue);
+    url.searchParams.set('ajax', '1');
+
+    fetch(url.toString(), {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.text();
+    })
+    .then(html => {
+        // Pastikan element moduleCards ada di DOM
+        if (moduleCards) {
+            moduleCards.innerHTML = html;
+        }
+    })
+    .catch(err => console.error('Error fetching modules:', err));
+}
 
                 if (searchInput) searchInput.addEventListener('input', debounce(fetchModules, 300));
                 if (filterForm) filterForm.addEventListener('submit', (e) => e.preventDefault());

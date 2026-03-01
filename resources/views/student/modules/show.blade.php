@@ -4,15 +4,20 @@
 <div class="admin-spacer" style="height: 30px;"></div>
 
 <div class="content-body px-4 py-4">
-    <div class="max-w-900 mx-auto">
 
-        {{-- Tombol Kembali --}}
+    <div class="rounded-3 shadow-sm p-4 p-md-5" style="background: none">
+            {{-- Header Modul --}}
+                    <div class="module-header">
+                        {{-- Tombol Kembali --}}
         <a href="{{ url()->previous() }}" class="d-inline-flex align-items-center gap-2 text-decoration-none text-muted mb-4 fw-bold">
             <i class="ri-arrow-left-line"></i> Kembali
         </a>
-
-        <div class="bg-white rounded-3 shadow-sm p-4 p-md-5">
-
+                        <button id="saveBtn"
+                            class="save-btn {{ $module->isSaved ? 'saved ri-bookmark-fill' : 'ri-bookmark-line' }}"
+                            data-id="{{ $module->id }}">
+                        </button>
+                    </div>
+ 
             {{-- ✅ Label Kelas --}}
             @if($module->kelas)
                 <div class="mb-3">
@@ -23,8 +28,8 @@
                 </div>
             @endif
 
-            {{-- Header Modul --}}
-            <h1 class="fw-bold text-dark mb-2" style="font-size: 1.8rem;">{{ $module->title }}</h1>
+            
+                <h1 class="fw-bold text-dark mb-0">{{ $module->title }}</h1>
 
             <div class="d-flex flex-wrap align-items-center gap-3 mb-4 text-muted small">
                 <span><i class="ri-chalkboard-user-line me-1"></i>{{ $module->teacher->username ?? 'Guru' }}</span>
@@ -41,14 +46,14 @@
             {{-- Deskripsi --}}
             <div class="mb-4 p-3 rounded-3" style="background: #f8fafc; border-left: 4px solid var(--orange, #f57c00);">
                 <h6 class="fw-bold text-muted text-uppercase small mb-2">Deskripsi Modul</h6>
-                <p class="text-dark mb-0">{{ $module->desc }}</p>
+                <p class="text-dark mb-0" style="font-size: 14px">{{ $module->desc }}</p>
             </div>
 
             <hr class="my-4">
 
             {{-- Konten Materi --}}
             <h5 class="fw-bold mb-4">
-                <i class="fa-solid fa-layer-group text-primary me-2"></i>
+                <i class="ri-file-text-line text-orange me-2"></i>
                 Materi Pembelajaran
             </h5>
 
@@ -90,6 +95,83 @@
                 @endforelse
             </div>
         </div>
-    </div>
 </div>
+
+<style>
+    .module-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:10px;
+}
+
+h1{
+    font-size:28px;
+}
+
+.save-btn{
+    font-size:20px;
+    border:2px solid #f57c00;
+    color:#f57c00;
+    background:transparent;
+    border-radius:12px;
+    padding:8px 12px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.save-btn:hover{
+    transform:scale(1.05);
+}
+
+.save-btn.saved{
+    background:#f57c00;
+    color:white;
+    border-color:#f57c00;
+}
+
+.module-detail-header small{
+    color:#64748b;
+}
+
+.prose p{
+    margin-bottom:10px;
+}
+
+.rounded-3.shadow-sm{
+    background:white;
+    border:1px solid #eee;
+}
+</style>
+
+@push('scripts')
+<script>
+document.getElementById('saveBtn')?.addEventListener('click', function () {
+
+    const btn = this;
+    const moduleId = btn.dataset.id;
+
+    fetch(`/student/modules/${moduleId}/save`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.saved){
+            btn.classList.add('saved','ri-bookmark-fill');
+            btn.classList.remove('ri-bookmark-line');
+        }else{
+            btn.classList.remove('saved','ri-bookmark-fill');
+            btn.classList.add('ri-bookmark-line');
+        }
+    });
+});
+</script>
+@endpush
+
 @endsection
