@@ -15,95 +15,92 @@ use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
-    public function index(Request $request)
-    {
-        $grades       = GradeCategory::all();
-        $subjects     = SubjectCategory::all();
-        $teachers     = User::where('role', 'guru')->get();
-        $dictionaries = Dictionary::orderBy('term', 'asc')->limit(6)->get();
+public function index(Request $request)
+{
+    $grades       = GradeCategory::all();
+    $subjects     = SubjectCategory::all();
+    $teachers     = User::where('role', 'guru')->get();
+    $dictionaries = Dictionary::orderBy('term', 'asc')->limit(6)->get();
 
-        $faqs = Question::with('answer')
-            ->where('status', 'answered')
-            ->whereHas('answer')
-            ->latest()
-            ->limit(5)
-            ->get();
+    $faqs = Question::with('answer')
+        ->where('status', 'answered')
+        ->whereHas('answer')
+        ->latest()
+        ->limit(5)
+        ->get();
 
-        // ✅ Ambil kelas_id siswa yang login
-        $student = \App\Models\Student::where('user_id', auth()->id())->first();
-        $kelasId = $student?->kelas_id;
+    // ✅ ambil siswa login
+    $student = \App\Models\Student::where('user_id', auth()->id())->first();
+    $kelasId = $student?->kelas_id;
 
-        // ✅ Top modul hanya dari kelas siswa
-        $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
-            ->whereHas('approval', function ($q) {
-                $q->where('status', 'approved');
-            })
-            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId))
-            ->orderByDesc('like')
-            ->limit(3)
-            ->get();
+    // ✅ query dasar
+    $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
+        ->whereHas('approval', function ($q) {
+            $q->where('status', 'approved');
+        })
+        ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
 
-        $query = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
-            ->whereHas('approval', function ($q) {
-                $q->where('status', 'approved');
-            })
-            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
-
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-
-        $userId = auth()->id();
-
-        // ✅ Ambil modul yang sudah pernah dibuka
-        $viewedModuleIds = $student
-            ? \App\Models\ModuleView::where('student_id', $student->id)->pluck('module_id')->toArray()
-            : [];
-
-        $modules = $query->get()->map(function ($module) use ($userId, $viewedModuleIds) {
-            $module->isSaved  = $module->savedByUsers()->where('user_id', $userId)->exists();
-            $module->isViewed = in_array($module->id, $viewedModuleIds);
-            return $module;
-        });
-
-// FILTER SEARCH
-if ($request->filled('search')) {
-    $query->where('title', 'like', '%' . $request->search . '%');
-}
-
-// FILTER GRADE
-if ($request->filled('grade_id')) {
-    $query->where('grade_category_id', $request->grade_id);
-}
-
-// FILTER SUBJECT
-if ($request->filled('subject_id')) {
-    $query->where('subject_category_id', $request->subject_id);
-}
-
-$userId = auth()->id();
-
-$modules = $query->get()->map(function ($module) use ($userId) {
-    $module->isSaved = $module->savedByUsers()
-        ->where('user_id', $userId)
-        ->exists();
-    return $module;
-});
-
-        if ($request->ajax()) {
-            return view('partials._module_list', ['modules' => $modules])->render();
-        }
-
-        return view('dashboard.student', compact(
-            'topModules',
-            'modules',
-            'grades',
-            'subjects',
-            'dictionaries',
-            'faqs',
-            'teachers'
-        ));
+    // ✅ FILTER SEARCH
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
     }
+
+    // ✅ FILTER GRADE
+    if ($request->filled('grade_id')) {
+        $query->where('grade_category_id', $request->grade_id);
+    }
+
+    // ✅ FILTER SUBJECT
+    if ($request->filled('subject_id')) {
+        $query->where('subject_category_id', $request->subject_id);
+    }
+
+    $modules = $query->get();
+
+    $userId = auth()->id();
+
+    // ✅ ambil semua module yang sudah pernah dibuka SEKALI saja
+    $viewedModuleIds = $student
+        ? \App\Models\ModuleView::where('student_id', $student->id)
+            ->pluck('module_id')
+            ->toArray()
+        : [];
+
+    // ✅ inject attribute tambahan
+    $modules->map(function ($module) use ($userId, $viewedModuleIds) {
+        $module->isSaved  = $module->savedByUsers()
+            ->where('user_id', $userId)
+            ->exists();
+
+        $module->isViewed = in_array($module->id, $viewedModuleIds);
+
+        return $module;
+    });
+
+    // ✅ Top module tetap
+    $topModules = Module::with(['gradeCategory', 'subjectCategory', 'teacher', 'approval'])
+        ->whereHas('approval', function ($q) {
+            $q->where('status', 'approved');
+        })
+        ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId))
+        ->orderByDesc('like')
+        ->limit(3)
+        ->get();
+
+    if ($request->ajax()) {
+        return view('partials._module_list', ['modules' => $modules])->render();
+    }
+
+    return view('dashboard.student', compact(
+        'topModules',
+        'modules',
+        'grades',
+        'subjects',
+        'dictionaries',
+        'faqs',
+        'teachers'
+    ));
+}
 
     public function show($id)
     {

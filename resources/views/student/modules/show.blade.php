@@ -8,7 +8,7 @@
 
         {{-- Tombol Kembali --}}
         <a href="{{ url()->previous() }}" class="d-inline-flex align-items-center gap-2 text-decoration-none text-muted mb-4 fw-bold">
-            <i class="fa-solid fa-arrow-left"></i> Kembali
+            <i class="ri-arrow-left-line"></i> Kembali
         </a>
 
         <div class="bg-white rounded-3 shadow-sm p-4 p-md-5">
@@ -17,7 +17,7 @@
             @if($module->kelas)
                 <div class="mb-3">
                     <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 12px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
-                        <i class="fa-solid fa-users" style="font-size: 11px;"></i>
+                        <i class="ri-users-line" style="font-size: 11px;"></i>
                         {{ $module->kelas->nama }}
                     </span>
                 </div>
@@ -27,14 +27,14 @@
             <h1 class="fw-bold text-dark mb-2" style="font-size: 1.8rem;">{{ $module->title }}</h1>
 
             <div class="d-flex flex-wrap align-items-center gap-3 mb-4 text-muted small">
-                <span><i class="fa-solid fa-chalkboard-user me-1"></i>{{ $module->teacher->username ?? 'Guru' }}</span>
+                <span><i class="ri-chalkboard-user-line me-1"></i>{{ $module->teacher->username ?? 'Guru' }}</span>
                 <span>|</span>
-                <span><i class="fa-solid fa-book me-1"></i>{{ $module->subjectCategory->subject ?? '-' }}</span>
+                <span><i class="ri-book-line me-1"></i>{{ $module->subjectCategory->subject ?? '-' }}</span>
                 <span>|</span>
                 <span class="badge bg-secondary">Track: {{ $module->track ?? '-' }}</span>
                 {{-- ✅ Indikator sudah dibuka --}}
                 <span class="badge bg-success ms-auto">
-                    <i class="fa-solid fa-circle-check me-1"></i> Sudah Dibuka
+                    <i class="ri-check-line me-1"></i> Sudah Dibuka
                 </span>
             </div>
 
@@ -78,13 +78,13 @@
                         @if($content->file_path)
                             <a href="{{ asset('storage/' . $content->file_path) }}" target="_blank"
                                 class="btn btn-sm btn-outline-danger mt-3">
-                                <i class="fa-solid fa-file-pdf me-1"></i> Download PDF Materi
+                                <i class="ri-file-pdf-line me-1"></i> Download PDF Materi
                             </a>
                         @endif
                     </div>
                 @empty
                     <div class="text-center text-muted py-5">
-                        <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i>
+                        <i class="ri-inbox-line fa-2x mb-2 d-block"></i>
                         Belum ada konten materi untuk modul ini.
                     </div>
                 @endforelse
