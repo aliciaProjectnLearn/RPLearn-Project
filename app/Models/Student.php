@@ -18,7 +18,6 @@ class Student extends Model
         'user_id',
         'nis',
         'name',
-        'kelas',
         'kelas_id',
     ];
 

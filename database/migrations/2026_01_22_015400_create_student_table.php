@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nis'); // Nis: String
             $table->string('name'); // name: String
-            $table->string('kelas'); // kelas: String
             $table->timestamps(); // Mencakup Created_at
         });
     }
