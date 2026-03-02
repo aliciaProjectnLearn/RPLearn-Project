@@ -7,7 +7,7 @@
         {{-- MENU KHUSUS ADMIN --}}
         @if(auth()->user()->role === 'admin')
             <li class="{{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('admin.dashboard') }}">Dashboard Admin</a>
+                <a href="{{ route('admin.dashboard') }}">Dashboard</a>
             </li>
             <li class="{{ Route::is('admin.modules*') ? 'active' : '' }}">
                 <a href="{{ route('admin.modules.index') }}">Fitur Modul</a>
