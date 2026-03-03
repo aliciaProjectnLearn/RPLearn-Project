@@ -138,7 +138,7 @@
                                 </a>
 
                                 {{-- Tombol Kelola Sub-Materi --}}
-                                <a href="{{ route('admin.modules.addContent', $module->id) }}" class="position-relative" title="Kelola Sub-Materi">
+                                <a href="{{ route('teacher.modules.addContent', $module->id) }}" class="position-relative" title="Kelola Sub-Materi">
                                     <i class="ri-stack-line text-primary"></i>
                                     @if($module->contents->count())
                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style="font-size: 10px;">

@@ -29,7 +29,7 @@ class ModuleController extends Controller
         }
 
         $modules = $query->latest()->paginate(10);
-        $rolePrefix = auth()->user()->role === 'guru' ? 'teacher' : 'admin';
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
 
         return view("{$rolePrefix}.modules.index", compact('modules'));
     }
@@ -46,7 +46,8 @@ class ModuleController extends Controller
             $kelas   = $teacher ? $teacher->kelas : collect();
         }
 
-        return view('admin.modules.create', compact('grades', 'subjects', 'teachers', 'kelas'));
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
+        return view("{$rolePrefix}.modules.create", compact('grades', 'subjects', 'teachers', 'kelas'));
     }
 
     public function store(Request $request)
@@ -113,7 +114,8 @@ class ModuleController extends Controller
         $prev = $playlist[$currentIndex - 1] ?? null;
         $next = $playlist[$currentIndex + 1] ?? null;
 
-        return view('admin.modules.content_detail', compact('content', 'playlist', 'prev', 'next'));
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
+        return view("{$rolePrefix}.modules.content_detail", compact('content', 'playlist', 'prev', 'next'));
     }
 
     public function edit($id)
@@ -123,7 +125,8 @@ class ModuleController extends Controller
         $subjects = \App\Models\SubjectCategory::all();
         $teachers = \App\Models\User::where('role', 'guru')->get();
 
-        return view('admin.modules.edit', compact('module', 'grades', 'subjects', 'teachers'));
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
+        return view("{$rolePrefix}.modules.edit", compact('module', 'grades', 'subjects', 'teachers'));
     }
 
     public function update(Request $request, $id)
@@ -171,7 +174,8 @@ class ModuleController extends Controller
 
         $contents = $query->get();
 
-        return view('admin.modules.add_content', compact('module', 'contents'));
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
+        return view("{$rolePrefix}.modules.add_content", compact('module', 'contents'));
     }
 
     public function storeContent(Request $request, $id)
@@ -214,6 +218,7 @@ class ModuleController extends Controller
 
     public function editContent(ModuleContent $content)
     {
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
         return view('admin.modules.content_edit', compact('content'));
     }
 
@@ -227,6 +232,7 @@ class ModuleController extends Controller
 
         $content->update($request->only('title', 'content', 'video_url'));
 
+        $rolePrefix = in_array(auth()->user()->role, ['guru', 'teacher']) ? 'teacher' : 'admin';
         return redirect()
             ->route('admin.modules.content.show', $content->id)
             ->with('success', 'Sub-Materi berhasil diupdate bro 🔥');
