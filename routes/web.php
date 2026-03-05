@@ -85,6 +85,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
     Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
     Route::get('/modules', [StudentModuleAllController::class, 'index'])->name('modules.index');
+    Route::get('/modules/content/{content}/download-pdf', [StudentModuleController::class, 'downloadPdf'])->name('modules.download-pdf');
 
 Route::get('/modules/{id}/json', function($id) {
 

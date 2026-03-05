@@ -10,7 +10,7 @@
         <div>
             <h2 class="fw-bold text-dark mb-1">Modul Saya</h2><br>
             <p class="text-secondary m-0">
-                Total: <span class="text-orange fw-bold">{{ $modules->count() }} Modul</span>
+                Total: <span class="text-orange fw-bold">{{ $modules->total() }} Modul</span>
             </p>
         </div>
         <br>
@@ -54,7 +54,6 @@
     <form method="GET" action="{{ route('teacher.modules.index') }}" class="mb-3">
         <div class="d-flex gap-2">
             <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari modul berdasarkan judul...">
-
             <select name="status" class="form-select" style="max-width: 200px;" onchange="this.form.submit()">
                 <option value="">Semua Status</option>
                 <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -62,7 +61,6 @@
                 <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>Revisi</option>
                 <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
             </select>
-
             <button type="submit" class="btn text-white fw-bold" style="background-color: var(--orange)">Cari</button>
         </div>
     </form>
@@ -94,9 +92,22 @@
                             {{ $module->subjectCategory->subject ?? 'Mapel Belum Set' }}
                         </td>
 
+                        {{-- ✅ Tampilkan kelasList (many-to-many baru) --}}
                         <td class="text-center py-3">
-                            @if($module->kelas)
-                                <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 11px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
+                            @if($module->kelasList && $module->kelasList->isNotEmpty())
+                                <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                    @foreach($module->kelasList as $k)
+                                        <span class="px-2 py-1 rounded-pill small fw-bold"
+                                            style="font-size: 11px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
+                                            <i class="ri-group-line" style="font-size: 10px;"></i>
+                                            {{ $k->nama }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @elseif($module->kelas)
+                                {{-- Fallback: modul lama yang masih pakai kelas_id --}}
+                                <span class="px-3 py-1 rounded-pill small fw-bold"
+                                    style="font-size: 11px; background-color: #f0f0f0; color: #888; border: 1px solid #ddd;">
                                     <i class="ri-group-line" style="font-size: 10px;"></i>
                                     {{ $module->kelas->nama }}
                                 </span>
@@ -110,10 +121,10 @@
                                 $status = $module->approval->status ?? 'pending';
                                 $badgeColor = match($status) {
                                     'approved' => 'bg-success',
-                                    'pending' => 'bg-warning text-dark',
-                                    'revisi' => 'bg-info text-dark',
+                                    'pending'  => 'bg-warning text-dark',
+                                    'revisi'   => 'bg-info text-dark',
                                     'rejected' => 'bg-danger',
-                                    default => 'bg-secondary'
+                                    default    => 'bg-secondary'
                                 };
                             @endphp
                             <span class="badge {{ $badgeColor }} text-uppercase px-2 py-1" style="font-size: 11px; letter-spacing: 0.5px;">
@@ -122,7 +133,10 @@
 
                             @if(!empty($module->approval->comment))
                                 <div class="mt-2">
-                                    <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#noteModal{{ $module->id }}" style="font-size: 11px; padding: 2px 8px; border-radius: 6px;">
+                                    <button type="button" class="btn btn-sm btn-outline-info"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#noteModal{{ $module->id }}"
+                                        style="font-size: 11px; padding: 2px 8px; border-radius: 6px;">
                                         <i class="ri-mail-open-line"></i> Lihat Catatan
                                     </button>
                                 </div>
@@ -131,13 +145,9 @@
 
                         <td class="text-end pe-4 action-cell">
                             <div class="action-bar d-flex justify-content-end align-items-center gap-3">
-
-                                {{-- ✅ Tombol Statistik --}}
                                 <a href="{{ route('teacher.modules.statistik', $module->id) }}" title="Lihat Statistik">
                                     <i class="ri-bar-chart-line text-info"></i>
                                 </a>
-
-                                {{-- Tombol Kelola Sub-Materi --}}
                                 <a href="{{ route('teacher.modules.addContent', $module->id) }}" class="position-relative" title="Kelola Sub-Materi">
                                     <i class="ri-stack-line text-primary"></i>
                                     @if($module->contents->count())
@@ -146,13 +156,9 @@
                                         </span>
                                     @endif
                                 </a>
-
-                                {{-- Tombol Edit Modul --}}
                                 <a href="{{ route('teacher.modules.edit', $module->id) }}" title="Edit">
                                     <i class="ri-pencil-line text-warning"></i>
                                 </a>
-
-                                {{-- Tombol Hapus Modul --}}
                                 <form action="{{ route('teacher.modules.destroy', $module->id) }}" method="POST" class="m-0">
                                     @csrf @method('DELETE')
                                     <button type="submit" title="Hapus" onclick="return confirm('Hapus modul ini?')" style="background: none; border: none; padding: 0;">
@@ -172,7 +178,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">
+        <div class="mt-3 px-3 pb-3">
             {{ $modules->withQueryString()->links() }}
         </div>
     </div>
@@ -191,12 +197,17 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @if($module->kelas)
+                    {{-- ✅ Tampilkan semua kelas (many-to-many) --}}
+                    @if($module->kelasList && $module->kelasList->isNotEmpty())
                         <div class="mb-3 p-2 rounded" style="background-color: #fff3e0; border-left: 3px solid var(--orange, #f57c00);">
                             <small class="fw-bold text-muted text-uppercase" style="font-size: 11px;">Kelas</small>
-                            <div class="fw-bold" style="color: var(--orange, #f57c00);">
-                                <i class="ri-group-line" style="font-size: 12px;"></i>
-                                {{ $module->kelas->nama }}
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                @foreach($module->kelasList as $k)
+                                    <span class="fw-bold" style="color: var(--orange, #f57c00); font-size: 13px;">
+                                        <i class="ri-group-line" style="font-size: 12px;"></i>
+                                        {{ $k->nama }}
+                                    </span>
+                                @endforeach
                             </div>
                         </div>
                     @endif
@@ -212,4 +223,5 @@
     </div>
     @endif
 @endforeach
+
 @endsection

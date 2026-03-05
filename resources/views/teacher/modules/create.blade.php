@@ -114,21 +114,31 @@
                         @endif
 
                         @if (auth()->user()->role === 'guru')
-                            <div class="row mb-4 align-items-center">
-                                <label class="col-sm-3 label-modern">Kelas yang Diajar</label>
+                            <div class="row mb-4 align-items-start">
+                                <label class="col-sm-3 label-modern pt-2">Kelas yang Diajar</label>
                                 <div class="col-sm-6">
                                     @if ($kelas->isNotEmpty())
-                                        <select name="kelas_id" class="input-modern" required>
-                                            <option value="">-- Pilih Kelas --</option>
+                                        {{-- Kotak checkbox mirip admin --}}
+                                        <div style="border: 1px solid #dee2e6; border-radius: 8px; padding: 12px 16px; background: #fff; max-height: 220px; overflow-y: auto;">
                                             @foreach ($kelas as $k)
-                                                <option value="{{ $k->id }}" {{ old('kelas_id') == $k->id ? 'selected' : '' }}>
-                                                    {{ $k->nama }}
-                                                </option>
+                                                <div class="form-check mb-2">
+                                                    <input
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        name="kelas_ids[]"
+                                                        value="{{ $k->id }}"
+                                                        id="kelas_{{ $k->id }}"
+                                                        {{ is_array(old('kelas_ids')) && in_array($k->id, old('kelas_ids')) ? 'checked' : '' }}
+                                                    >
+                                                    <label class="form-check-label" for="kelas_{{ $k->id }}">
+                                                        {{ $k->nama }}
+                                                    </label>
+                                                </div>
                                             @endforeach
-                                        </select>
+                                        </div>
                                         <small class="text-muted mt-1 d-block">
                                             <i class="fa-solid fa-circle-info" style="font-size: 11px;"></i>
-                                            Hanya menampilkan kelas yang Anda ampu
+                                            Centang semua kelas yang akan menerima modul ini
                                         </small>
                                     @else
                                         <input type="text" class="input-modern" value="Belum ada kelas terdaftar" disabled style="background-color: #f0f0f0; cursor: not-allowed; color: #dc3545;">
@@ -138,7 +148,7 @@
                                         </small>
                                     @endif
 
-                                    @error('kelas_id')
+                                    @error('kelas_ids')
                                         <small class="text-danger d-block mt-1">{{ $message }}</small>
                                     @enderror
                                 </div>

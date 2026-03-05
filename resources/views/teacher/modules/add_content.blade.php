@@ -24,15 +24,20 @@
                         <i class="fa-solid fa-layer-group text-orange me-2"></i>
                         Struktur Materi
                     </h5>
-                    <br>
                     <span class="badge-count">
                         {{ $contents->count() }} Sub-Materi
                     </span>
                 </div>
 
-                {{-- HANYA GURU YANG BISA MELIHAT TOMBOL TAMBAH (SEKARANG MEMBUKA MODAL) --}}
+                {{-- ✅ Tombol buka modal - pakai onclick sebagai fallback --}}
                 @if(auth()->user()->role === 'guru')
-                <button class="btn-save-modern" data-bs-toggle="modal" data-bs-target="#addContentModal">
+                <button
+                    class="btn-save-modern"
+                    id="btnTambahSubMateri"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addContentModal"
+                    onclick="bukaModal()"
+                    type="button">
                     + Tambah Sub-Materi
                 </button>
                 @endif
@@ -50,18 +55,14 @@
                 @forelse($contents as $index => $content)
                 <br>
                     <div class="content-row">
-
                         <div class="left-info">
                             <div class="hover-number">{{ $index + 1 }}</div>
-
                             <div>
                                 <h6 class="fw-800 mb-1">{{ $content->title }}</h6>
-
                                 <div class="d-flex gap-2">
                                     @if($content->video_url)
                                         <span class="badge-modern bg-soft-blue">VIDEO</span>
                                     @endif
-
                                     @if($content->file_path)
                                         <span class="badge-modern bg-soft-red">PDF</span>
                                     @endif
@@ -80,7 +81,6 @@
                             </form>
                             @endif
                         </div>
-
                     </div>
                 @empty
                     <div class="empty-box">
@@ -94,14 +94,14 @@
     </div>
 </div>
 
-{{-- ================= MODAL TAMBAH SUB-MATERI (KHUSUS GURU) ================= --}}
+{{-- ================= MODAL TAMBAH SUB-MATERI ================= --}}
 @if(auth()->user()->role === 'guru')
-<div class="modal fade text-start" id="addContentModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade text-start" id="addContentModal" tabindex="-1" aria-labelledby="addContentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-900 text-orange">Tambah Sub-Materi Baru</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-900 text-orange" id="addContentModalLabel">Tambah Sub-Materi Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="tutupModal()"></button>
             </div>
 
             <form action="{{ route('teacher.modules.storeContent', $module->id) }}" method="POST" enctype="multipart/form-data">
@@ -118,13 +118,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="label-modern">Video URL</label>
-                        <input type="url" name="video_url" class="input-modern">
+                        <label class="label-modern">Video URL (YouTube)</label>
+                        <input type="url" name="video_url" class="input-modern" placeholder="https://www.youtube.com/watch?v=...">
                     </div>
 
                     <div class="mb-3">
                         <label class="label-modern">File PDF</label>
-                        <input type="file" name="file_path" class="input-modern">
+                        <input type="file" name="file_path" class="input-modern" accept=".pdf">
                         <small class="text-muted">Max 20MB, PDF only</small>
                     </div>
 
@@ -135,7 +135,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px;">Batal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="tutupModal()" style="border-radius: 10px;">Batal</button>
                     <button type="submit" class="btn-save-modern">Simpan Materi</button>
                 </div>
             </form>
@@ -262,6 +262,63 @@
     border: 2px dashed #ddd;
     border-radius: 14px;
 }
+
+.addContentModal.show-manual {
+    display: block !important;
+    background: rgba(0,0,0,0.5);
+}
 </style>
+
+@push('scripts')
+<script>
+// ✅ Fungsi fallback jika Bootstrap JS tidak load
+function bukaModal() {
+    // Coba Bootstrap dulu
+    try {
+        var modalEl = document.getElementById('addContentModal');
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        } else {
+            // Fallback manual jika bootstrap tidak ada
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+            modalEl.style.background = 'rgba(0,0,0,0.5)';
+            document.body.classList.add('modal-open');
+        }
+    } catch(e) {
+        // Fallback paling sederhana
+        var modalEl = document.getElementById('addContentModal');
+        modalEl.style.display = 'block';
+        modalEl.style.background = 'rgba(0,0,0,0.5)';
+    }
+}
+
+function tutupModal() {
+    try {
+        var modalEl = document.getElementById('addContentModal');
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.hide();
+        } else {
+            modalEl.classList.remove('show');
+            modalEl.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        }
+    } catch(e) {
+        var modalEl = document.getElementById('addContentModal');
+        if (modalEl) modalEl.style.display = 'none';
+    }
+}
+
+// ✅ Pastikan modal bisa ditutup klik di luar
+document.addEventListener('click', function(e) {
+    var modal = document.getElementById('addContentModal');
+    if (modal && e.target === modal) {
+        tutupModal();
+    }
+});
+</script>
+@endpush
 
 @endsection

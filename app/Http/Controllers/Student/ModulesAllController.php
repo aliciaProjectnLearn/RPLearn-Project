@@ -9,6 +9,8 @@ use App\Models\GradeCategory;
 use App\Models\SaveModule;
 use App\Models\SubjectCategory;
 use App\Models\ModuleView;
+use App\Models\ModuleContent;
+use Illuminate\Support\Facades\Storage;
 
 class ModulesAllController extends Controller
 {

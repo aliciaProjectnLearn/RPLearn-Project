@@ -14,11 +14,6 @@
             </p>
         </div>
 
-        {{-- Tombol Approve All di kanan --}}
-        @php
-            $pendingCount = $modules->filter(fn($m) => ($m->approval->status ?? 'pending') === 'pending')->count();
-        @endphp
-
         @if($pendingCount > 0)
         <div>
             <button id="btnApproveAll" class="btn text-white fw-bold" style="background: #f37021;">
@@ -56,7 +51,7 @@
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Kelas</th>
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Pengajar</th>
                         <th class="text-center py-3 text-uppercase small fw-bold text-muted">Status</th>
-                        <th class="text-end pe-4 py-3 text-uppercase small fw-bold text-muted">Aksi</th>
+                        <th class="text-end pe-4 py-3 text-uppercase small fw-bold text-muted" style="min-width: 130px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +71,7 @@
 
                         <td class="text-center py-3">
                             <span class="badge-grade px-3 py-1 rounded-pill bg-light text-dark small fw-bold" style="font-size: 11px;">
-                                {{ $module->gradeCategory->grade ?? 'N/A' }}
+                                {{ $module->kelas->nama ?? 'N/A' }}
                             </span>
                         </td>
 
@@ -100,7 +95,7 @@
                             </span>
 
                             @if(!empty($module->approval->comment))
-                                <i class="bi bi-chat-left-text style="cursor: help;" title="Catatan: {{ $module->approval->comment }}"></i>
+                                <i class="bi bi-chat-left-text" style="cursor: help;" title="Catatan: {{ $module->approval->comment }}"></i>
                             @endif
                         </td>
 
@@ -108,13 +103,15 @@
                         <td class="text-end pe-4 action-cell">
                             <div class="action-bar d-flex justify-content-end align-items-center gap-2">
 
-                                <a href="{{ route('admin.modules.addContent', $module->id) }}" class="btn btn-sm btn-light border position-relative" title="Lihat Isi Materi">
+                                <a href="{{ route('admin.modules.addContent', $module->id) }}"
+                                class="btn btn-sm btn-light border"
+                                title="Lihat Isi Materi">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
 
                                 {{-- Tombol Buka Modal Review --}}
-                                <button type="button" class="btn btn-sm text-white" style="background: #f37021;" data-bs-toggle="modal" data-bs-target="#reviewModal{{ $module->id }}">
-                                    <i class="fa-solid fa-clipboard-check"></i> Review
+                                <button type="button" class="btn btn-sm text-white fw-bold px-3" style="background: #f37021; white-space: nowrap;" data-bs-toggle="modal" data-bs-target="#reviewModal{{ $module->id }}">
+                                    <i class="bi bi-layout-text-sidebar-reverse"></i>
                                 </button>
                             </div>
                         </td>
