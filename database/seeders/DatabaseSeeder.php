@@ -27,9 +27,7 @@ class DatabaseSeeder extends Seeder
         DictionarySeeder::class,
         SubjectCategorySeeder::class,
         ModuleSeeder::class,
-        ModuleContentSeeder::class;
+        ModuleContentSeeder::class,
     ]);
-
-
     }
 }

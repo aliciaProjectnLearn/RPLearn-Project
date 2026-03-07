@@ -175,4 +175,27 @@ public function index(Request $request)
             return response()->json(['liked' => true]);
         }
     }
+
+    public function downloadPdf($contentId)
+    {
+        $content = \App\Models\ModuleContent::findOrFail($contentId);
+
+        if (!$content->file_path || !\Illuminate\Support\Facades\Storage::disk('public')->exists($content->file_path)) {
+            abort(404, 'File PDF tidak ditemukan.');
+        }
+
+        $student = \App\Models\Student::where('user_id', auth()->id())->first();
+        $module  = \App\Models\Module::findOrFail($content->module_id);
+
+        if ($student && $module->kelas_id && $student->kelas_id !== $module->kelas_id) {
+            abort(403, 'Kamu tidak punya akses ke file ini.');
+        }
+
+        $filePath = \Illuminate\Support\Facades\Storage::disk('public')->path($content->file_path);
+        $fileName = $content->title . '.pdf';
+
+        return response()->download($filePath, $fileName, [
+            'Content-Type' => 'application/pdf',
+        ]);
+    }
 }

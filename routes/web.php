@@ -85,6 +85,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     Route::get('/dashboard', [StudentModuleController::class, 'index'])->name('dashboard');
     Route::get('/dictionary', [StudentDictionaryController::class, 'index'])->name('dictionary.index');
     Route::get('/modules', [StudentModuleAllController::class, 'index'])->name('modules.index');
+    Route::get('/modules/content/{content}/download-pdf', [StudentModuleController::class, 'downloadPdf'])->name('modules.download-pdf');
 
 Route::get('/modules/{id}/json', function($id) {
 
@@ -120,11 +121,22 @@ Route::get('/modules/{id}/json', function($id) {
 | Shared Routes (Teacher & Profile)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherController::class, 'index'])->name('dashboard');
 
+    // === TAMBAHAN ROUTE MODUL & SUB-MATERI UNTUK GURU ===
+    Route::get('modules/{id}/add-content', [AdminModuleController::class, 'addContent'])->name('modules.addContent');
+    Route::post('modules/{id}/store-content', [AdminModuleController::class, 'storeContent'])->name('modules.storeContent');
+
+    // Resource utama modul guru
     Route::resource('modules', AdminModuleController::class);
+
+    // Fitur detail, edit, delete sub-materi guru
+    Route::get('modules/content/{content}', [AdminModuleController::class, 'showContent'])->name('modules.content.show');
+    Route::delete('modules/content/{content}', [AdminModuleController::class, 'destroyContent'])->name('modules.content.destroy');
+    Route::get('modules/content/{content}/edit', [AdminModuleController::class, 'editContent'])->name('modules.content.edit');
+    Route::put('modules/content/{content}', [AdminModuleController::class, 'updateContent'])->name('modules.content.update');
+    // ====================================================
 
     Route::resource('dictionaries', App\Http\Controllers\Teacher\DictionaryController::class);
 
@@ -132,8 +144,8 @@ Route::middleware(['auth', 'role.teacher'])->prefix('teacher')->name('teacher.')
     Route::post('/faq/answer/{id}', [App\Http\Controllers\Teacher\FAQController::class, 'answer'])->name('faq.answer');
     Route::put('/teacher/faq/{answer}/update', [App\Http\Controllers\Teacher\FAQController::class, 'update'])->name('faq.update');
     Route::delete('/faq/{answer}/delete', [App\Http\Controllers\Teacher\FAQController::class, 'destroy'])->name('faq.delete');
-    Route::get('modules/{id}/statistik', [App\Http\Controllers\Teacher\ModuleStatController::class, 'show'])->name('modules.statistik');
 
+    Route::get('modules/{id}/statistik', [App\Http\Controllers\Teacher\ModuleStatController::class, 'show'])->name('modules.statistik');
 });
 
 Route::middleware(['auth'])->group(function () {

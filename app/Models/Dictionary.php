@@ -11,4 +11,8 @@ class Dictionary extends Model
         'definition',
     ];
 
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
 }

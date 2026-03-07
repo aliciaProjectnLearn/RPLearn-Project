@@ -80,6 +80,11 @@ class Module extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
+    public function kelasList()
+    {
+        return $this->belongsToMany(Kelas::class, 'module_kelas', 'module_id', 'kelas_id');
+    }
+
     public function views()
     {
         return $this->hasMany(ModuleView::class, 'module_id');
