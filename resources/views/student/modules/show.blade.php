@@ -18,12 +18,14 @@
         </div>
 
         {{-- Label Kelas --}}
-        @if($module->kelas)
-            <div class="mb-3">
-                <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 12px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
-                    <i class="ri-users-line" style="font-size: 11px;"></i>
-                    {{ $module->kelas->nama }}
-                </span>
+        @if($module->kelasList && $module->kelasList->count() > 0)
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                @foreach($module->kelasList as $k)
+                    <span class="px-3 py-1 rounded-pill small fw-bold" style="font-size: 12px; background-color: #fff3e0; color: var(--orange, #f57c00); border: 1px solid #ffcc80;">
+                        <i class="ri-users-line" style="font-size: 11px;"></i>
+                        {{ $k->nama }}
+                    </span>
+                @endforeach
             </div>
         @endif
 

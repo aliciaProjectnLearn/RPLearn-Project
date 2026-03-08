@@ -38,7 +38,7 @@ public function index(Request $request)
         ->whereHas('approval', function ($q) {
             $q->where('status', 'approved');
         })
-        ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
+        ->when($kelasId, fn($q) => $q->whereHas('kelasList', fn($k) => $k->where('kelas.id', $kelasId)));
 
     // ✅ FILTER SEARCH
     if ($request->filled('search')) {
@@ -82,7 +82,7 @@ public function index(Request $request)
         ->whereHas('approval', function ($q) {
             $q->where('status', 'approved');
         })
-        ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId))
+        ->when($kelasId, fn($q) => $q->whereHas('kelasList', fn($k) => $k->where('kelas.id', $kelasId)))
         ->orderByDesc('like')
         ->limit(3)
         ->get();
@@ -109,8 +109,11 @@ public function index(Request $request)
         // ✅ Auth check: pastikan siswa hanya bisa akses modul kelasnya
         $student = \App\Models\Student::where('user_id', auth()->id())->first();
 
-        if ($student && $module->kelas_id && $student->kelas_id !== $module->kelas_id) {
-            abort(403, 'Kamu tidak punya akses ke modul ini.');
+        if ($student && $module->kelasList->count() > 0) {
+            $allowed = $module->kelasList->pluck('id')->contains($student->kelas_id);
+            if (!$allowed) {
+                abort(403, 'Kamu tidak punya akses ke modul ini.');
+            }
         }
 
         // ✅ Tracking view — cegah duplikasi
@@ -187,8 +190,11 @@ public function index(Request $request)
         $student = \App\Models\Student::where('user_id', auth()->id())->first();
         $module  = \App\Models\Module::findOrFail($content->module_id);
 
-        if ($student && $module->kelas_id && $student->kelas_id !== $module->kelas_id) {
-            abort(403, 'Kamu tidak punya akses ke file ini.');
+        if ($student && $module->kelasList->count() > 0) {
+            $allowed = $module->kelasList->pluck('id')->contains($student->kelas_id);
+            if (!$allowed) {
+                abort(403, 'Kamu tidak punya akses ke file ini.');
+            }
         }
 
         $filePath = \Illuminate\Support\Facades\Storage::disk('public')->path($content->file_path);

@@ -30,7 +30,7 @@ class ModulesAllController extends Controller
 
         // ✅ Filter hanya modul dari kelas siswa
         if ($kelasId) {
-            $query->where('kelas_id', $kelasId);
+            $query->whereHas('kelasList', fn($k) => $k->where('kelas.id', $kelasId));
         }
 
         if ($request->filled('search')) {
