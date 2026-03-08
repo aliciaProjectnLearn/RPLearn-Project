@@ -60,7 +60,7 @@ class UserController extends Controller
             'role'      => 'required|in:siswa,guru,admin',
             'name'      => 'required_if:role,siswa,guru',
             'nis'       => 'required_if:role,siswa',
-            'kelas'     => 'required_if:role,siswa',
+            'kelas_id' => 'required_if:role,siswa|exists:kelas,id',
             'nip'       => 'required_if:role,guru',
             'kelas_ids' => 'nullable|array',
             'kelas_ids.*' => 'exists:kelas,id',
@@ -75,11 +75,10 @@ class UserController extends Controller
 
             if ($request->role === 'siswa') {
                 Student::create([
-                    'user_id' => $user->id,
-                    'name'    => $request->name,
-                    'nis'     => $request->nis,
-                    'kelas'   => $request->kelas,
-                    'kelas_id' => $request->kelas_id ?: null,
+                    'user_id'  => $user->id,
+                    'name'     => $request->name,
+                    'nis'      => $request->nis,
+                    'kelas_id' => $request->kelas_id,
                 ]);
             }
 
@@ -111,7 +110,7 @@ class UserController extends Controller
             'role'        => 'required|in:siswa,guru,admin',
             'name'        => 'required_if:role,siswa,guru',
             'nis'         => 'required_if:role,siswa',
-            'kelas'       => 'required_if:role,siswa',
+            'kelas_id' => 'required_if:role,siswa|exists:kelas,id',
             'nip'         => 'required_if:role,guru',
             'kelas_ids'   => 'nullable|array',
             'kelas_ids.*' => 'exists:kelas,id',
@@ -132,10 +131,9 @@ class UserController extends Controller
                 Student::updateOrCreate(
                     ['user_id' => $user->id],
                     [
-                        'name' => $request->name,
-                        'nis' => $request->nis,
-                        'kelas' => $request->kelas,
-                        'kelas_id' => $request->kelas_id ?: null,
+                        'name'     => $request->name,
+                        'nis'      => $request->nis,
+                        'kelas_id' => $request->kelas_id,
                     ]
                 );
             }

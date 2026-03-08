@@ -70,9 +70,17 @@
                         </td>
 
                         <td class="text-center py-3">
-                            <span class="badge-grade px-3 py-1 rounded-pill bg-light text-dark small fw-bold" style="font-size: 11px;">
-                                {{ $module->kelas->nama ?? 'N/A' }}
-                            </span>
+                            @if($module->kelasList && $module->kelasList->count() > 0)
+                                <div class="d-flex flex-wrap justify-content-center gap-1">
+                                    @foreach($module->kelasList as $k)
+                                        <span class="badge-grade px-2 py-1 rounded-pill bg-light text-dark small fw-bold" style="font-size: 11px;">
+                                            {{ $k->nama }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @else
+                                <span class="badge-grade px-3 py-1 rounded-pill bg-light text-muted small fw-bold" style="font-size: 11px;">N/A</span>
+                            @endif
                         </td>
 
                         <td class="text-center text-muted small fw-600 py-3">

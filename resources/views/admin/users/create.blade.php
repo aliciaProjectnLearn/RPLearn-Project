@@ -78,11 +78,17 @@
                         <div class="row mb-4 align-items-center">
                             <label class="col-sm-3 label-modern">Kelas</label>
                             <div class="col-sm-6">
-                                <input type="text" name="kelas" value="{{ old('kelas') }}" class="input-modern"
-                                    placeholder="Contoh: XII RPL 1">
+                                <select name="kelas_id" class="input-modern">
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $k)
+                                        <option value="{{ $k->id }}" {{ old('kelas_id') == $k->id ? 'selected' : '' }}>
+                                            {{ $k->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
-                    </div>
+                    </div> {{-- END #studentFields --}}
 
                     {{-- ===================== --}}
                     {{-- SECTION: GURU --}}
@@ -98,7 +104,7 @@
                             </div>
                         </div>
 
-                        {{-- ✅ Multi-pilih kelas yang diampu --}}
+                        {{-- Multi-pilih kelas yang diampu --}}
                         <div class="row mb-4 align-items-start">
                             <label class="col-sm-3 label-modern pt-2">Kelas yang Diampu</label>
                             <div class="col-sm-6">
@@ -117,7 +123,7 @@
                                 <small class="text-muted mt-1 d-block">Centang semua kelas yang diampu guru ini</small>
                             </div>
                         </div>
-                    </div>
+                    </div> {{-- END #teacherFields --}}
 
                     {{-- ===================== --}}
                     {{-- FOOTER BUTTON --}}
@@ -126,12 +132,12 @@
                         <button type="submit" class="btn-save-modern">
                             Simpan User
                         </button>
-
                         <a href="{{ route('admin.users.index', ['role' => request('role', 'siswa')]) }}"
                             class="btn-cancel-modern">
                             Batal
                         </a>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -143,7 +149,6 @@
     <script>
         function toggleFields() {
             const role = document.getElementById("roleSelect").value;
-
             const nameDiv = document.getElementById("nameField");
             const studentDiv = document.getElementById("studentFields");
             const teacherDiv = document.getElementById("teacherFields");
@@ -157,7 +162,6 @@
                 studentDiv.style.display = "none";
                 teacherDiv.style.display = "block";
             } else {
-                // Admin
                 nameDiv.style.display = "none";
                 studentDiv.style.display = "none";
                 teacherDiv.style.display = "none";

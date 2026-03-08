@@ -32,8 +32,8 @@ class Student extends Model
         return $this->hasMany(Question::class);
     }
 
-    public function kelas()
+    public function kelas_rel()
     {
-        return $this->belongsTo(Kelas::class, 'kelas_id');
+        return $this->belongsTo(\App\Models\Kelas::class, 'kelas_id');
     }
 }

@@ -120,7 +120,7 @@
                             {{-- Kolom Dinamis --}}
                             @if(request('role', 'siswa') == 'siswa')
                                 <td>{{ $user->student->nis ?? '-' }}</td>
-                                <td>{{ $user->student->kelas ?? '-' }}</td>
+                                <td>{{ $user->student->kelas_rel->nama ?? '-' }}</td>
 
                             @elseif(request('role', 'siswa') == 'guru')
                                 <td>{{ $user->teacher->nip ?? '-' }}</td>

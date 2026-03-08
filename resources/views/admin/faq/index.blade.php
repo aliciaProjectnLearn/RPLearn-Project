@@ -8,7 +8,7 @@
         {{-- Header --}}
         <div class="page-header d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">
             <div>
-                <h2 class="fw-bold text-dark mb-1">Monitoring FAQ</h2><br>
+                <h2 class="fw-bold text-dark mb-1">Monitoring Ruang Tanya</h2><br>
                 <p class="text-secondary m-0">
                     Total: <span class="text-orange fw-bold">{{ $questions->count() }} Pertanyaan</span>
                 </p>

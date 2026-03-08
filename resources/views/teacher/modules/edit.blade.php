@@ -1,109 +1,180 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="admin-spacer" style="height: 90px;"></div>
+    <br><br><br>
 
-<div class="content-body px-4 pb-5">
-    <div class="max-w-900 mx-auto">
-        <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
-            <div>
-                <h3 class="fw-800 text-dark m-0">Edit Modul</h3>
-                <p class="text-muted small">Update informasi materi <span class="text-orange fw-bold">RPLearn</span> Anda</p>
-            </div>
-        </div>
-        <br>
-        <div class="main-form-card shadow-sm border-0 bg-white rounded-4 p-4" style="border: 1px solid #eef0f2;">
-            <form action="{{ route('teacher.modules.update', $module->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+    <div class="content-body px-4">
+        <div class="max-w-900 mx-auto">
 
-                <div class="form-section mb-5">
-                    <h6 class="section-title-premium">
-                        <span class="dot-indicator"></span> INFORMASI DASAR
-                    </h6>
-
-                    {{-- Class 'row' dan 'col' dibuang supaya input memanjang maksimal --}}
-                    <div class="mb-4">
-                        <label class="label-modern-bold d-block mb-2">JUDUL MODUL</label>
-                        <input type="text" name="title" class="input-modern-premium"
-                               style="width: 100%; display: block;" {{-- Paksa panjang 100% --}}
-                               value="{{ $module->title }}" placeholder="Masukkan judul materi..." required>
-                    </div>
-                    <br>
-                    <div class="mb-0">
-                        <label class="label-modern-bold d-block mb-2">DESKRIPSI MATERI</label>
-                        <textarea name="desc" class="input-modern-premium" rows="5"
-                                  style="width: 100%; display: block;" {{-- Paksa panjang 100% --}}
-                                  placeholder="Jelaskan isi modul ini..." required>{{ $module->desc }}</textarea>
-                    </div>
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h3 class="fw-800 text-dark m-0">Edit Modul</h3>
+                    <p class="text-muted small">Update informasi materi <span class="text-orange fw-bold">RPLearn</span> Anda</p>
                 </div>
-                <br>
-                <div class="settings-suite-container mb-5 p-1 rounded-4">
-                    <div class="bg-white rounded-4 p-4 shadow-sm border">
-                        <h6 class="section-title-premium mb-4">
-                            <span class="dot-indicator bg-orange"></span> KLASIFIKASI & PENGAJAR
-                        </h6>
+                <a href="{{ route('teacher.modules.index') }}" class="btn-back">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+            </div>
 
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #198754;">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>{{ session('success') }}</span>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-                        <div class="settings-grid">
-                            <div class="setting-item">
-                                <div class="setting-icon bg-soft-blue"><i class="fa-solid fa-graduation-cap"></i></div>
-                                <div class="setting-content">
-                                    <label>KELAS / TINGKATAN</label>
-                                    <select name="grade_category_id" class="form-select-premium" required>
-                                        @foreach($grades as $grade)
-                                            <option value="{{ $grade->id }}" {{ $module->grade_category_id == $grade->id ? 'selected' : '' }}>{{ $grade->grade }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    <span>{{ session('error') }}</span>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-start gap-2 mb-4" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
+                    <i class="fa-solid fa-triangle-exclamation mt-1"></i>
+                    <div>
+                        <strong>Gagal menyimpan perubahan!</strong>
+                        <ul class="mb-0 mt-1 ps-3">
+                            @foreach ($errors->all() as $error)
+                                <li style="font-size: 13px;">{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <div class="main-form-card">
+                <form action="{{ route('teacher.modules.update', $module->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    {{-- ===== INFORMASI DASAR ===== --}}
+                    <div class="form-section mb-5">
+                        <h6 class="section-title">INFORMASI DASAR</h6>
+
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Judul Modul</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="title" class="input-modern"
+                                       placeholder="Contoh: Dasar Pemrograman Laravel"
+                                       value="{{ old('title', $module->title) }}" required>
                             </div>
+                        </div>
 
-                            <div class="setting-item">
-                                <div class="setting-icon bg-soft-green"><i class="fa-solid fa-book-open"></i></div>
-                                <div class="setting-content">
-                                    <label>MATA PELAJARAN</label>
-                                    <select name="subject_category_id" class="form-select-premium" required>
-                                        @foreach($subjects as $subject)
-                                            <option value="{{ $subject->id }}" {{ $module->subject_category_id == $subject->id ? 'selected' : '' }}>{{ $subject->subject }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="setting-item">
-                                <div class="setting-icon bg-soft-purple"><i class="fa-solid fa-code-branch"></i></div>
-                                <div class="setting-content">
-                                    <label>JALUR BELAJAR (TRACK)</label>
-                                    <select name="track" class="form-select-premium" required>
-                                        <option value="BE" {{ $module->track == 'BE' ? 'selected' : '' }}>Backend Development</option>
-                                        <option value="FE" {{ $module->track == 'FE' ? 'selected' : '' }}>Frontend Development</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="setting-item">
-                                <div class="setting-icon bg-soft-orange"><i class="fa-solid fa-user-tie"></i></div>
-                                <div class="setting-content">
-                                    <label>GURU PENGAJAR</label>
-                                    <select name="teacher_id" class="form-select-premium" required>
-                                        @foreach($teachers as $teacher)
-                                            <option value="{{ $teacher->id }}" {{ $module->teacher_id == $teacher->id ? 'selected' : '' }}>{{ $teacher->username }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                        <div class="row mb-4 align-items-start">
+                            <label class="col-sm-3 label-modern pt-2">Deskripsi Singkat</label>
+                            <div class="col-sm-9">
+                                <textarea name="desc" class="input-modern" rows="4"
+                                          placeholder="Jelaskan isi modul ini secara ringkas..." required>{{ old('desc', $module->desc) }}</textarea>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-footer pt-4 border-top d-flex align-items-center">
-                    <button type="submit" class="btn-save-modern border-0"
-                            style="background: #f37021; color: white; padding: 12px 35px; border-radius: 12px; font-weight: 700; transition: 0.3s;">
-                        Simpan Perubahan
-                    </button>
-                    <a href="{{ route('teacher.modules.index') }}" class="btn-cancel-modern ms-4 text-decoration-none fw-bold text-muted small">Batal</a>
-                </div>
-            </form>
+
+                    {{-- ===== KLASIFIKASI & PENGAJAR ===== --}}
+                    <div class="form-section mb-5">
+                        <h6 class="section-title">KLASIFIKASI & PENGAJAR</h6>
+
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Mata Pelajaran</label>
+                            <div class="col-sm-6">
+                                <select name="subject_category_id" class="input-modern" required>
+                                    <option value="">-- Pilih Mapel --</option>
+                                    @foreach ($subjects as $subject)
+                                        <option value="{{ $subject->id }}"
+                                            {{ old('subject_category_id', $module->subject_category_id) == $subject->id ? 'selected' : '' }}>
+                                            {{ $subject->subject }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 label-modern">Jalur (Track)</label>
+                            <div class="col-sm-6">
+                                <select name="track" class="input-modern" required>
+                                    <option value="">-- Pilih Track --</option>
+                                    <option value="BE" {{ old('track', $module->track) == 'BE' ? 'selected' : '' }}>Backend Development</option>
+                                    <option value="FE" {{ old('track', $module->track) == 'FE' ? 'selected' : '' }}>Frontend Development</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        @if (auth()->user()->role === 'teacher')
+                            <div class="row mb-4 align-items-center">
+                                <label class="col-sm-3 label-modern">Pengajar (Guru)</label>
+                                <div class="col-sm-6">
+                                    <select name="teacher_id" class="input-modern" required>
+                                        <option value="">-- Pilih Guru --</option>
+                                        @foreach ($teachers as $teacher)
+                                            <option value="{{ $teacher->id }}"
+                                                {{ old('teacher_id', $module->teacher_id) == $teacher->id ? 'selected' : '' }}>
+                                                {{ $teacher->username }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if (auth()->user()->role === 'guru')
+                            @php
+                                $selectedKelasIds = old('kelas_ids', $module->kelasList->pluck('id')->toArray());
+                            @endphp
+                            <div class="row mb-4 align-items-start">
+                                <label class="col-sm-3 label-modern pt-2">Kelas yang Diajar</label>
+                                <div class="col-sm-6">
+                                    @if ($kelas->isNotEmpty())
+                                        <div style="border: 1px solid #dee2e6; border-radius: 8px; padding: 12px 16px; background: #fff; max-height: 220px; overflow-y: auto;">
+                                            @foreach ($kelas as $k)
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           name="kelas_ids[]"
+                                                           value="{{ $k->id }}"
+                                                           id="kelas_{{ $k->id }}"
+                                                           {{ in_array($k->id, $selectedKelasIds) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="kelas_{{ $k->id }}">
+                                                        {{ $k->nama }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">
+                                            <i class="fa-solid fa-circle-info" style="font-size: 11px;"></i>
+                                            Centang semua kelas yang akan menerima modul ini
+                                        </small>
+                                    @else
+                                        <input type="text" class="input-modern" value="Belum ada kelas terdaftar" disabled
+                                               style="background-color: #f0f0f0; cursor: not-allowed; color: #dc3545;">
+                                        <small class="text-danger mt-1 d-block">
+                                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 11px;"></i>
+                                            Hubungi admin untuk mendaftarkan kelas Anda
+                                        </small>
+                                    @endif
+
+                                    @error('kelas_ids')
+                                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
+
+                    {{-- ===== TOMBOL AKSI ===== --}}
+                    <div class="form-footer">
+                        <button type="submit" class="btn-save-modern">
+                            Simpan Perubahan
+                        </button>
+                        <a href="{{ route('teacher.modules.index') }}" class="btn-cancel-modern">Batal</a>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
-</div>
 @endsection
